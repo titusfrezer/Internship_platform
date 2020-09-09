@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class _PostJobState extends State<PostJob> {
   TextEditingController AllowanceController = TextEditingController();
   var isloading = false;
   DatabaseReference postRef = FirebaseDatabase.instance.reference().child('posts');
+  FirebaseAuth _auth = FirebaseAuth.instance;
   PosttoFirebase(String title,String description,String howLong,String companyName,String allowance)async{
      await postRef.push().set(<dynamic, dynamic> {
        'jobTitle':title,
@@ -71,7 +73,13 @@ class _PostJobState extends State<PostJob> {
                  duration:  Duration(seconds: 3),
                )..show(context);
              }
-           )
+           ),
+          RaisedButton(
+            child: Text('logout'),
+            onPressed: (){
+              _auth.signOut();
+            },
+          )
         ],
       ),
     );

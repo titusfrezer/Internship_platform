@@ -20,7 +20,7 @@ class LoginScreen extends StatelessWidget {
   Duration get loginTime => Duration(milliseconds: 2250);
 
   Future<String> _authUser(LoginData data) async{
-
+ name = data.name;
     print('Name: ${data.name}, Password: ${data.password}');
     return Future.delayed(loginTime).then((_) async {
       try {
@@ -90,26 +90,25 @@ class LoginScreen extends StatelessWidget {
       logo: 'assets/images/ecorp-lightblue.png',
       onLogin: _authUser,
       onSignup: _signupUser,
-      onSubmitAnimationCompleted: () async{
+      onSubmitAnimationCompleted: () {
         print('hi');
         final userRef = FirebaseDatabase.instance.reference().child('Users');
-        await userRef.once().then((DataSnapshot snap) {
+         userRef.once().then((DataSnapshot snap) {
           var KEYS = snap.value.keys;
           var DATA = snap.value;
           print(DATA);
 
 
           for (var individualKey in KEYS) {
-            if ((DATA[individualKey]['email'] == name) &&
-                (int.parse(DATA[individualKey]['identity']) == 0962491657)) {
+            if ((DATA[individualKey]['email'].toString() == name.toString()) && DATA[individualKey]['identity'] == 'Intern') {
               privelege = "intern";
 
-             Navigator.of(context).push(MaterialPageRoute(builder: (context)=>Apply()));
+             Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Apply()));
             }
             else if((DATA[individualKey]['email'] == name) &&
-                (int.parse(DATA[individualKey]['identity']) != 0962491657)){
+               DATA[individualKey]['identity'] == 'Employer'){
               print("hello");
-              Navigator.of(context).push(MaterialPageRoute(builder:(context)=>PostJob()));
+              Navigator.of(context).push(MaterialPageRoute(builder:(BuildContext context)=>PostJob()));
             }
           }
         });
@@ -153,7 +152,25 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-class HomeController extends StatelessWidget {
+class HomeController extends StatefulWidget {
+  @override
+  _HomeControllerState createState() => _HomeControllerState();
+}
+
+class _HomeControllerState extends State<HomeController> {
+   FirebaseAuth _firebaseAuth;
+  FirebaseUser  user;
+   void initState() {
+     // TODO: implement initState
+     super.initState();
+     _firebaseAuth = FirebaseAuth.instance;
+     getUser();
+   }
+  getUser() async{
+    user = await _firebaseAuth.currentUser();
+  }
+  @override
+
   @override
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of(context).auth;
@@ -164,24 +181,25 @@ class HomeController extends StatelessWidget {
       builder: (context,  snapshot) {
         if (snapshot.connectionState == ConnectionState.active) {
           final bool signedIn = snapshot.hasData;
-print(signedIn);
-           return signedIn? StreamBuilder(
-             stream:FirebaseDatabase.instance.reference().child("Users").equalTo(auth.currentUser()).onValue,
-             builder: (context,snapshot){
-               if(snapshot.hasData){
-                 Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-                 print("map is ${map.values.toList()[0]['identity']}");
-                if( int.parse(map.values.toList()[0]['identity']) == 0962491657){
+          print(signedIn);
+          return signedIn? StreamBuilder(
+            stream:FirebaseDatabase.instance.reference().child("Users").orderByChild('email').equalTo(user.email).onValue,
+            builder: (context,snapshot){
+              if(snapshot.hasData){
+                Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
+//                print("map is ${getUser().toString()}");
+                if( map.values.toList()[0]['identity'] == 'Intern'){
+//                  auth.signOut();
                   return Apply();
-                }else if(map.values.toList()[0]['identity']!= 0962491657){
+                }else if(map.values.toList()[0]['identity']== 'Employer'){
 
                   return PostJob();
                 }
 
-               }
-               return Container();
-             },
-           ):LoginScreen();
+              }
+              return Container();
+            },
+          ):LoginScreen();
 
         }
         return SpinKitWave(color: Colors.pink,);
@@ -189,6 +207,8 @@ print(signedIn);
     );
   }
 }
+
+
 class Provider extends InheritedWidget {
   final AuthService auth;
 

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flushbar/flushbar.dart';
@@ -23,7 +24,7 @@ class _ApplyState extends State<Apply> {
   String _name;
   String _email;
   String _expertise;
-
+  FirebaseAuth _auth = FirebaseAuth.instance;
   posttoFirebase(String name,String email,String expertise)async{
 
     StorageReference reference = FirebaseStorage.instance.ref().child('${name}.pdf');
@@ -133,6 +134,12 @@ class _ApplyState extends State<Apply> {
                         getPdfAndUpload();
                       },
                     ),
+                    RaisedButton(
+                      child: Text('logout'),
+                      onPressed: (){
+                        _auth.signOut();
+                      },
+                    )
                   ],
                 ),
               ),
