@@ -3,7 +3,10 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:internship_platform/main.dart';
 
+List<String> _getdata = List();
+String initdata= "Mechanical Engineering";
 class PostJob extends StatefulWidget {
   @override
   _PostJobState createState() => _PostJobState();
@@ -17,8 +20,9 @@ class _PostJobState extends State<PostJob> {
   TextEditingController AllowanceController = TextEditingController();
   var isloading = false;
   DatabaseReference postRef = FirebaseDatabase.instance.reference().child('posts');
+  DatabaseReference catRef;
   FirebaseAuth _auth = FirebaseAuth.instance;
-  PosttoFirebase(String title,String description,String howLong,String companyName,String allowance)async{
+  PosttoFirebase(String title,String description,String howLong,String companyName,String allowance,String category)async{
      await postRef.push().set(<dynamic, dynamic> {
        'jobTitle':title,
 
@@ -28,12 +32,50 @@ class _PostJobState extends State<PostJob> {
 
        'companyName':companyName,
 
-       'allowance':allowance
+       'allowance':allowance,
+
+       'category':category
      });
      setState(() {
        isloading = false;
      });
   }
+  void initState(){
+    _getdata.clear();
+    super.initState();
+    getdatafromDb();
+  }
+  void getdatafromDb() async {
+    /*
+    _db.drinks.then((drinks){
+        setState((){
+            _getdata.addAll(drinks);
+            initdata = _getdata[0];
+        });
+    });
+    */
+    catRef = FirebaseDatabase.instance.reference().child("Categories");
+
+
+    setState(() async{
+      await catRef.once().then((DataSnapshot snap) {
+        var KEYS = snap.value.keys;
+        var DATA = snap.value;
+
+
+
+
+        for (var individualKey in KEYS) {
+          _getdata.addAll([
+            DATA[individualKey]['type'].toString()
+          ]);
+        }
+        print(_getdata);
+        initdata = _getdata[0].toString();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,6 +96,28 @@ class _PostJobState extends State<PostJob> {
            ReusableRow('How long it take', forhowLong),
            SizedBox(height: 10,),
            ReusableRow('Allowance', AllowanceController),
+          DropdownButtonFormField(hint: Text('hfgh') ,
+            items: _getdata.length > 0
+                ? _getdata.map((e) {
+              return DropdownMenuItem<String>(
+                child: Text(e.toString()),
+                value: e.toString(),
+              );
+            }).toList()
+                : [
+              DropdownMenuItem<String>(
+                child: Text("Mechanical Engineering"),
+                value: 'Mechanical Engineering',
+              )
+            ],
+            value: initdata,
+            onChanged: (value) {
+              setState(() {
+                initdata = value;
+                print(initdata);
+              });
+            },
+          ),
            RaisedButton(
              child: isloading?SpinKitWave(color: Colors.pinkAccent,):Text('Post'),
              onPressed: () async {
@@ -63,7 +127,7 @@ class _PostJobState extends State<PostJob> {
                await PosttoFirebase(
                    jobTitleController.text, jobDescriptionController.text,
                    forhowLong.text, companyNameController.text,
-                   AllowanceController.text);
+                   AllowanceController.text,initdata);
                Flushbar(
                  icon: Icon(Icons.check,color: Colors.green,),
                  backgroundColor: Colors.green,
@@ -74,10 +138,13 @@ class _PostJobState extends State<PostJob> {
                )..show(context);
              }
            ),
+
+
           RaisedButton(
             child: Text('logout'),
-            onPressed: (){
-              _auth.signOut();
+            onPressed: () async{
+              await _auth.signOut();
+
             },
           )
         ],

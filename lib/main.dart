@@ -6,6 +6,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/Employer/PostJob.dart';
+import 'package:internship_platform/Intern/CategoryPage.dart';
 
 import 'Intern/ApplyforJob.dart';
 import 'authService.dart';
@@ -14,6 +15,7 @@ var z;
 var check;
 var privelege;
 var name;
+var username;
 class LoginScreen extends StatelessWidget {
   final dbref= FirebaseDatabase.instance.reference().child('Users').orderByChild('email').equalTo('tio@gmail.com').once();
 
@@ -90,7 +92,7 @@ class LoginScreen extends StatelessWidget {
       logo: 'assets/images/ecorp-lightblue.png',
       onLogin: _authUser,
       onSignup: _signupUser,
-      onSubmitAnimationCompleted: () {
+      onSubmitAnimationCompleted: () async{
         print('hi');
         final userRef = FirebaseDatabase.instance.reference().child('Users');
          userRef.once().then((DataSnapshot snap) {
@@ -100,18 +102,25 @@ class LoginScreen extends StatelessWidget {
 
 
           for (var individualKey in KEYS) {
-            if ((DATA[individualKey]['email'].toString() == name.toString()) && DATA[individualKey]['identity'] == 'Intern') {
-              privelege = "intern";
+            if ((DATA[individualKey]['email']== name) && DATA[individualKey]['identity'] == 'Intern') {
+              privelege = "Intern";
 
-             Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>Apply()));
+
             }
             else if((DATA[individualKey]['email'] == name) &&
                DATA[individualKey]['identity'] == 'Employer'){
+              privelege = "Employer";
               print("hello");
-              Navigator.of(context).push(MaterialPageRoute(builder:(BuildContext context)=>PostJob()));
+
             }
           }
         });
+         if(privelege == 'Intern'){
+          await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>InternCategoryPage(name)));
+         }else if(privelege =="Employer"){
+           await Navigator.of(context).push(MaterialPageRoute(builder:(BuildContext context)=>PostJob()));
+         }
+//      await Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context)=>MyApp()));
 
       },
 //      onRecoverPassword: _recoverPassword,
@@ -164,17 +173,34 @@ class _HomeControllerState extends State<HomeController> {
      // TODO: implement initState
      super.initState();
      _firebaseAuth = FirebaseAuth.instance;
+
      getUser();
    }
   getUser() async{
+
     user = await _firebaseAuth.currentUser();
+
+    Query userRef = FirebaseDatabase.instance.reference().child("Users").orderByChild('email').equalTo(user.email);
+    await userRef.once().then((DataSnapshot snap){
+//      username = snap.value[snap.value.keys]['userName'];
+      var KEYS = snap.value.keys;
+      var DATA = snap.value;
+      print(DATA);
+
+
+      for (var individualKey in KEYS) {
+        username = DATA[individualKey]['userName'];
+        print(username);
+      }
+
+    });
+    print('logged user email is $user');
   }
   @override
 
   @override
   Widget build(BuildContext context) {
     final AuthService auth = Provider.of(context).auth;
-    FirebaseAuth _auth = FirebaseAuth.instance;
 
     return StreamBuilder<String>(
       stream: auth.onAuthStateChanged,
@@ -182,25 +208,31 @@ class _HomeControllerState extends State<HomeController> {
         if (snapshot.connectionState == ConnectionState.active) {
           final bool signedIn = snapshot.hasData;
           print(signedIn);
+          print(name);
+          user!=null?print("is user null = ${user.email}"):print('no user');
           return signedIn? StreamBuilder(
-            stream:FirebaseDatabase.instance.reference().child("Users").orderByChild('email').equalTo(user.email).onValue,
+            stream:FirebaseDatabase.instance.reference().child("Users").orderByChild('email').equalTo(user!=null?user.email:name).onValue,
             builder: (context,snapshot){
               if(snapshot.hasData){
+
                 Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-//                print("map is ${getUser().toString()}");
+                print("map is ${map.values.toList()}");
                 if( map.values.toList()[0]['identity'] == 'Intern'){
 //                  auth.signOut();
-                  return Apply();
+                print("your are intern");
+                  return InternCategoryPage(username);
                 }else if(map.values.toList()[0]['identity']== 'Employer'){
-
+                  print("your are employer");
                   return PostJob();
                 }
 
               }
-              return Container();
+              return SpinKitWave(color: Colors.pink,);
             },
           ):LoginScreen();
 
+        }else if (snapshot.connectionState == ConnectionState.waiting) {
+          return SpinKitWave(color: Colors.pink,);
         }
         return SpinKitWave(color: Colors.pink,);
       },
