@@ -12,5 +12,9 @@ class AuthService {
   signOut() {
     _firebaseAuth.signOut();
   }
+  currentUser(){
+
+    _firebaseAuth.currentUser();
+  }
 
 }
