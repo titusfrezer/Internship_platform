@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:internship_platform/Utilities/variables.dart';
 
-class InternCategoryPage extends StatefulWidget {
+class InternWelcomePage extends StatefulWidget {
   @override
-  _InternCategoryPageState createState() => _InternCategoryPageState();
+  _InternWelcomePageState createState() => _InternWelcomePageState();
 }
 
-class _InternCategoryPageState extends State<InternCategoryPage> {
+class _InternWelcomePageState extends State<InternWelcomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
