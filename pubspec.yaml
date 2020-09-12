@@ -31,6 +31,7 @@ dependencies:
   flushbar : 1.9.1
   flutter_spinkit:
   file_picker:
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
