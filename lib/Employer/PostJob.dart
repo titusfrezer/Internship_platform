@@ -4,12 +4,16 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/main.dart';
-
+import 'package:intl/intl.dart';
 List<String> _getdata = List();
 String initdata= "Mechanical Engineering";
 class PostJob extends StatefulWidget {
   @override
   _PostJobState createState() => _PostJobState();
+
+  String category;
+
+  PostJob(this.category);
 }
 
 class _PostJobState extends State<PostJob> {
@@ -22,6 +26,7 @@ class _PostJobState extends State<PostJob> {
   DatabaseReference postRef = FirebaseDatabase.instance.reference().child('posts');
   DatabaseReference catRef;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseUser user;
   PosttoFirebase(String title,String description,String howLong,String companyName,String allowance,String category)async{
      await postRef.push().set(<dynamic, dynamic> {
        'jobTitle':title,
@@ -34,46 +39,25 @@ class _PostJobState extends State<PostJob> {
 
        'allowance':allowance,
 
-       'category':category
+       'category':widget.category,
+
+       'postedBy':user.email,
+
+       'postedAt':DateFormat('yyyy-MM-dd').format(DateTime.now()),
+
+       'status':'open'
      });
      setState(() {
        isloading = false;
      });
   }
-  void initState(){
-    _getdata.clear();
-    super.initState();
-    getdatafromDb();
+  void getUser() async{
+    user = await _auth.currentUser();
   }
-  void getdatafromDb() async {
-    /*
-    _db.drinks.then((drinks){
-        setState((){
-            _getdata.addAll(drinks);
-            initdata = _getdata[0];
-        });
-    });
-    */
-    catRef = FirebaseDatabase.instance.reference().child("Categories");
+  void initState(){
 
-
-    setState(() async{
-      await catRef.once().then((DataSnapshot snap) {
-        var KEYS = snap.value.keys;
-        var DATA = snap.value;
-
-
-
-
-        for (var individualKey in KEYS) {
-          _getdata.addAll([
-            DATA[individualKey]['type'].toString()
-          ]);
-        }
-        print(_getdata);
-        initdata = _getdata[0].toString();
-      });
-    });
+    super.initState();
+   getUser();
   }
 
   @override
@@ -81,9 +65,9 @@ class _PostJobState extends State<PostJob> {
     return Scaffold(
 
       appBar: AppBar(
-        title: Text('Post Job'),
+        title: Text('Post Job on Category ${widget.category})'),
         centerTitle: true,
-        backgroundColor: Colors.brown,
+        backgroundColor: Colors.black,
       ),
       body: ListView(
         children: <Widget>[
@@ -96,57 +80,53 @@ class _PostJobState extends State<PostJob> {
            ReusableRow('How long it take', forhowLong),
            SizedBox(height: 10,),
            ReusableRow('Allowance', AllowanceController),
-          DropdownButtonFormField(hint: Text('hfgh') ,
-            items: _getdata.length > 0
-                ? _getdata.map((e) {
-              return DropdownMenuItem<String>(
-                child: Text(e.toString()),
-                value: e.toString(),
-              );
-            }).toList()
-                : [
-              DropdownMenuItem<String>(
-                child: Text("Mechanical Engineering"),
-                value: 'Mechanical Engineering',
-              )
-            ],
-            value: initdata,
-            onChanged: (value) {
-              setState(() {
-                initdata = value;
-                print(initdata);
-              });
-            },
-          ),
+
            RaisedButton(
              child: isloading?SpinKitWave(color: Colors.pinkAccent,):Text('Post'),
              onPressed: () async {
                setState(() {
                  isloading = true;
                });
-               await PosttoFirebase(
-                   jobTitleController.text, jobDescriptionController.text,
-                   forhowLong.text, companyNameController.text,
-                   AllowanceController.text,initdata);
-               Flushbar(
-                 icon: Icon(Icons.check,color: Colors.green,),
-                 backgroundColor: Colors.green,
+               if(AllowanceController.text.isNotEmpty || forhowLong.text.isNotEmpty || jobDescriptionController.text.isNotEmpty
+               || jobTitleController.text.isNotEmpty || companyNameController.text.isNotEmpty){
+                 await PosttoFirebase(
+                     jobTitleController.text, jobDescriptionController.text,
+                     forhowLong.text, companyNameController.text,
+                     AllowanceController.text,initdata);
+                 Flushbar(
+                   icon: Icon(Icons.check,color: Colors.green,),
+                   backgroundColor: Colors.green,
 
-                 title:  "Success",
-                 message:  "Job posted successfully",
-                 duration:  Duration(seconds: 3),
-               )..show(context);
+                   title:  "Success",
+                   message:  "Job posted successfully",
+                   duration:  Duration(seconds: 3),
+                 )..show(context);
+               }
+               else{
+                 setState(() {
+                   isloading = false;
+                 });
+                 Flushbar(
+                   icon: Icon(Icons.error,color: Colors.red,),
+                   backgroundColor: Colors.red,
+
+                   title:  "Error",
+                   message:  "Fill the Above fields",
+                   duration:  Duration(seconds: 3),
+                 )..show(context);
+               }
+
              }
            ),
 
 
-          RaisedButton(
-            child: Text('logout'),
-            onPressed: () async{
-              await _auth.signOut();
-
-            },
-          )
+//          RaisedButton(
+//            child: Text('logout'),
+//            onPressed: () async{
+//              await _auth.signOut();
+//
+//            },
+//          )
         ],
       ),
     );
@@ -155,11 +135,15 @@ class _PostJobState extends State<PostJob> {
 Widget ReusableRow(name,controller){
   return Row(
     children: <Widget>[
-      Text(name),
-      Container(
-        height: 40,
-        width: 50,
-        child: TextField(
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(name,style: TextStyle(fontSize: 20),),
+      ),
+      Expanded(
+
+        child: TextField(decoration: InputDecoration(
+
+        ),
           controller:controller
         ),
       )

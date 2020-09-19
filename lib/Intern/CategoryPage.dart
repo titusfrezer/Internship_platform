@@ -5,9 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Intern/chooseJob.dart';
 import 'package:internship_platform/authService.dart';
 
 import 'ApplyforJob.dart';
+import 'myApplication.dart';
+import 'package:intl/intl.dart';
 FirebaseAuth _firebaseAuth;
 FirebaseUser  user;
 
@@ -38,12 +41,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
         title: Text("Intern Platform"),
         elevation: 0.0,
         backgroundColor: myColor.myBlack,
-        actions: [
-          CircleAvatar(
-            backgroundColor: myColor.myGrey,
-            child: Icon(Icons.person),
-          )
-        ],
+
       ),
       drawer: Drawer(
         child: SafeArea(
@@ -53,9 +51,15 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                 leading: Icon(Icons.person),
                 title: Text("My Profile"),
               ),
-              ListTile(
-                leading: Icon(Icons.description),
-                title: Text("My Applications"),
+              InkWell(
+                child:ListTile(
+                  leading: Icon(Icons.description),
+                  title: Text("My Applications"),
+                ),
+                onTap: (){
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(builder:(context)=>MyApplication(widget.name)));
+                },
               ),
               InkWell(
                  child: ListTile(
@@ -83,7 +87,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
             Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text(
-                'Hi ${widget.name}',
+                'Hi ${widget.name.split("@")[0]}',
                 style: TextStyle(
                     color: myColor.myWhite,
                     fontFamily: 'Oswald',
@@ -145,7 +149,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
                                 onTap: (){
-                                  Navigator.of(context).push(MaterialPageRoute(builder:(context)=>Apply(map.values.toList()[index]['type'].toString()) ));
+                                  Navigator.of(context).push(MaterialPageRoute(builder:(context)=>chooseJob(map.values.toList()[index]['type'].toString()) ));
                                 },
                                 child: Container(
                                   width: 120,
@@ -205,21 +209,48 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                       Expanded(
                         child: Padding(
                             padding: EdgeInsets.only(left: 20, top: 10),
-                            child: ListView.builder(
-                                scrollDirection: Axis.vertical,
-                                itemCount: 5,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return ListTile(
-                                    leading: Icon(
-                                      Icons.favorite,
-                                      color: myColor.myPurple,
-                                    ),
-                                    title: Text("Flutter Developer"),
-                                    subtitle: Text("Adika Taxi"),
-                                    trailing: FlatButton(
-                                        onPressed: () {}, child: Text("Detail")),
-                                  );
-                                })),
+                            child: StreamBuilder(
+                              stream: FirebaseDatabase.instance.reference().child("posts").onValue,
+                              builder: (context, snapshot) {
+                                if(snapshot.hasData) {
+                                  Map<dynamic,dynamic> map = snapshot.data.snapshot.value;
+
+                                  return ListView.builder(
+                                      scrollDirection: Axis.vertical,
+                                      itemCount: map.values.toList().length,
+                                      itemBuilder: (BuildContext context,
+                                          int index) {
+                                      var  year= map.values.toList()[index]['postedAt'].toString().split("-")[0];
+                                      var  month =  map.values.toList()[index]['postedAt'].toString().split("-")[1];
+                                      var  day =map.values.toList()[index]['postedAt'].toString().split("-")[2];
+                                             if(int.parse(year) == DateTime.now().year&&int.parse(month) == DateTime.now().month && (DateTime.now().day)-(int.parse(day))<=5){
+                                               return ListTile(
+                                                 leading: Icon(
+                                                   Icons.favorite,
+                                                   color: myColor.myPurple,
+                                                 ),
+                                                 title: Text("${map.values.toList()[index]['jobTitle']}"),
+                                                 subtitle: Row(
+//                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                   children: <Widget>[
+                                                     Container(width:100,child: Text("${map.values.toList()[index]['companyName']} company",overflow: TextOverflow.ellipsis,)),
+
+                                                     Text('${map.values.toList()[index]['postedAt']}')
+                                                   ],
+                                                 ),
+                                                 trailing: FlatButton(
+                                                     onPressed: () {
+                                                       Navigator.of(context).push(MaterialPageRoute(builder:(context)=>Apply(map.values.toList()[index]['jobTitle'],map.values.toList()[index]['category'],map.values.toList()[index]['postedTo'])));
+                                                     },
+                                                     child: Text("Detail")),
+                                               );
+                                             }
+                                         return Container();
+                                      });
+                                }
+                                return Container();
+                              }
+                            )),
                       )
                     ],
                   ),

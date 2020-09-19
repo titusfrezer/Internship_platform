@@ -11,8 +11,10 @@ var file;
 FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseUser user;
 class Apply extends StatefulWidget {
+  String jobTitle;
   String Category;
-  Apply(this.Category);
+  String postedTo;
+  Apply(this.jobTitle,this.Category,this.postedTo);
   @override
   _ApplyState createState() => _ApplyState();
 
@@ -44,14 +46,14 @@ class _ApplyState extends State<Apply> {
 
 
   posttoFirebase(String name,String email,String expertise)async{
-
-    StorageReference reference = FirebaseStorage.instance.ref().child('${name}.pdf');
-    StorageUploadTask uploadTask = reference.putData(file.readAsBytesSync());
-
-    String url = await (await uploadTask.onComplete).ref.getDownloadURL();
-    print(url);
-    int length = await file.length();
-    print('the length is ${length}');
+//
+//    StorageReference reference = FirebaseStorage.instance.ref().child('${name}.pdf');
+//    StorageUploadTask uploadTask = reference.putData(file.readAsBytesSync());
+//
+//    String url = await (await uploadTask.onComplete).ref.getDownloadURL();
+//    print(url);
+//    int length = await file.length();
+//    print('the length is ${length}');
 //    documentFileUpload(url,length);
     applyRef.push().set(<dynamic,dynamic>{
 
@@ -61,9 +63,13 @@ class _ApplyState extends State<Apply> {
 
        'ApplierExpertise':expertise,
 
-       'cvUrl' : url,
+       'cvUrl' : "https://firebasestorage.googleapis.com/v0/b/internshipplatform-8d452.appspot.com/o/tito.pdf?alt=media&token=56f33dd6-d0ac-4c7c-b5d9-ad68664a9fda",
 
-      'category':widget.Category
+      'category':widget.Category,
+
+      'AppliedTo':widget.postedTo,
+
+      'jobTitle':widget.jobTitle
     });
     setState(() {
       isloading = false;
@@ -83,7 +89,7 @@ class _ApplyState extends State<Apply> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${widget.Category}'),
-        backgroundColor: Colors.brown,
+        backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -151,7 +157,7 @@ class _ApplyState extends State<Apply> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Text("Pick File"),
                       onPressed: () {
-                        getPdfAndUpload();
+//                        getPdfAndUpload();
                       },
                     ),
 
