@@ -51,7 +51,7 @@ class _ApplyState extends State<Apply> {
   }
   Future getPdfAndUpload() async {
     file =
-    await FilePicker.getFile(type: FileType.CUSTOM, fileExtension: 'pdf');
+    await FilePicker.getFilePath(type: FileType.CUSTOM, fileExtension: 'pdf');
 //    String name = file.path.split('/').last;
     String fileName = '${applierName.text}.pdf';
     print(fileName);
