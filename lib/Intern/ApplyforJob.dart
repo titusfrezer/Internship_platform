@@ -8,7 +8,13 @@ import 'package:file_picker/file_picker.dart';
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 var isloading=false;
 var file;
+FirebaseAuth _auth = FirebaseAuth.instance;
+FirebaseUser user;
 class Apply extends StatefulWidget {
+  String jobTitle;
+  String Category;
+  String postedTo;
+  Apply(this.jobTitle,this.Category,this.postedTo);
   @override
   _ApplyState createState() => _ApplyState();
 
@@ -16,34 +22,54 @@ class Apply extends StatefulWidget {
 }
 
 class _ApplyState extends State<Apply> {
+  getUser() async{
+    user = await _auth.currentUser();
+    print("${user.email} is fdjfdfsdkdjs");
+
+  }
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _auth = FirebaseAuth.instance;
+    getUser();
+  }
+
   TextEditingController applierName = TextEditingController();
   TextEditingController areaofExpertise = TextEditingController();
   TextEditingController appplierEmail = TextEditingController();
   DatabaseReference applyRef = FirebaseDatabase.instance.reference().child('application');
   bool _autoValidate = false;
   String _name;
-  String _email;
+  String _description;
   String _expertise;
-  FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+
   posttoFirebase(String name,String email,String expertise)async{
-
-    StorageReference reference = FirebaseStorage.instance.ref().child('${name}.pdf');
-    StorageUploadTask uploadTask = reference.putData(file.readAsBytesSync());
-
-    String url = await (await uploadTask.onComplete).ref.getDownloadURL();
-    print(url);
-    int length = await file.length();
-    print('the length is ${length}');
+//
+//    StorageReference reference = FirebaseStorage.instance.ref().child('${name}.pdf');
+//    StorageUploadTask uploadTask = reference.putData(file.readAsBytesSync());
+//
+//    String url = await (await uploadTask.onComplete).ref.getDownloadURL();
+//    print(url);
+//    int length = await file.length();
+//    print('the length is ${length}');
 //    documentFileUpload(url,length);
     applyRef.push().set(<dynamic,dynamic>{
 
        'ApplierName': name,
 
-       'ApplierEmail' :email,
+       'ApplierEmail' :user.email,
 
        'ApplierExpertise':expertise,
 
-       'cvUrl' : url
+       'cvUrl' : "https://firebasestorage.googleapis.com/v0/b/internshipplatform-8d452.appspot.com/o/tito.pdf?alt=media&token=56f33dd6-d0ac-4c7c-b5d9-ad68664a9fda",
+
+      'category':widget.Category,
+
+      'AppliedTo':widget.postedTo,
+
+      'jobTitle':widget.jobTitle
     });
     setState(() {
       isloading = false;
@@ -62,8 +88,8 @@ class _ApplyState extends State<Apply> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Apply'),
-        backgroundColor: Colors.brown,
+        title: Text('${widget.Category}'),
+        backgroundColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -101,11 +127,11 @@ class _ApplyState extends State<Apply> {
            },
         ),
          TextFormField(
-          decoration: const InputDecoration(labelText: 'Email'),
-          keyboardType: TextInputType.emailAddress,
-           validator: validateEmail,
+          decoration: const InputDecoration(labelText: 'Description'),
+          keyboardType: TextInputType.text,
+           validator: validateDescription,
            onSaved: (String val) {
-             _email = val;
+             _description = val;
            },
         ),
          SizedBox(
@@ -131,15 +157,10 @@ class _ApplyState extends State<Apply> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Text("Pick File"),
                       onPressed: () {
-                        getPdfAndUpload();
+//                        getPdfAndUpload();
                       },
                     ),
-                    RaisedButton(
-                      child: Text('logout'),
-                      onPressed: (){
-                        _auth.signOut();
-                      },
-                    )
+
                   ],
                 ),
               ),
@@ -153,14 +174,14 @@ class _ApplyState extends State<Apply> {
             setState(() {
               isloading = true;
             });
-           await posttoFirebase(_name,_email,_expertise);
+           await posttoFirebase(_name,_description,_expertise);
 
             Flushbar(
               icon: Icon(Icons.check,color: Colors.green,),
               backgroundColor: Colors.green,
 
               title:  "Success",
-              message:  "Job posted successfully",
+              message:  "Application posted successfully",
               duration:  Duration(seconds: 3),
             )..show(context);
           },
@@ -197,12 +218,10 @@ class _ApplyState extends State<Apply> {
       return null;
   }
 
-  String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
-    RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value))
-      return 'Enter Valid Email';
+  String validateDescription(String value) {
+
+    if (value.length<10)
+      return 'Enter More description please';
     else
       return null;
   }

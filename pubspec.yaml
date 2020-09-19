@@ -31,7 +31,10 @@ dependencies:
   flushbar : 1.9.1
   flutter_spinkit:
   file_picker:
-
+  dropdown_formfield:
+  splashscreen:
+  flutter_plugin_pdf_viewer:
+  url_launcher:
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -64,10 +67,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-     - family: Oswald
-       fonts:
-         - asset: assets/Oswald-Bold.ttf
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
