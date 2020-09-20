@@ -48,7 +48,7 @@ class _chooseJobState extends State<chooseJob> {
                   }
                 }
 
-                    print("the count is$counter and the list size is ${map.values.toList().length}");
+//                    print("the count is$counter and the list size is ${map.values.toList().length}");
 
                if(counter==map.values.toList().length){ return Center(child:Text('No post from ${widget.Category}'));}
                else {

@@ -151,7 +151,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         elevation: 0,
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
-                          Icons.lock,
+                          Icons.school,
                           color: Colors.purple,
                         ),
                       ),

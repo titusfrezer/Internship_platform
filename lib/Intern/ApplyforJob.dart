@@ -10,7 +10,16 @@ var isloading=false;
 var file;
 FirebaseAuth _auth = FirebaseAuth.instance;
 FirebaseUser user;
+TextEditingController applierName = TextEditingController();
+TextEditingController areaofExpertise = TextEditingController();
+TextEditingController appplierEmail = TextEditingController();
+DatabaseReference applyRef = FirebaseDatabase.instance.reference().child('application');
+bool _autoValidate = false;
+String _name;
+String _description;
+String _expertise;
 class Apply extends StatefulWidget {
+  String userName;
   String jobTitle;
   String Category;
   String postedTo;
@@ -24,25 +33,22 @@ class Apply extends StatefulWidget {
 class _ApplyState extends State<Apply> {
   getUser() async{
     user = await _auth.currentUser();
-    print("${user.email} is fdjfdfsdkdjs");
-
+    print("${user.email} is the loggedUser");
+ Query userRef=FirebaseDatabase.instance.reference().child("Users").orderByChild('email').equalTo(user.email);
+ userRef.once().then((DataSnapshot snap){
+   var DATA=snap.value;
+   for (var individualKey in snap.value.keys) {
+   widget.userName= DATA[individualKey]['userName'];
+   }
+ });
   }
   void initState() {
     // TODO: implement initState
     super.initState();
     _auth = FirebaseAuth.instance;
     getUser();
+
   }
-
-  TextEditingController applierName = TextEditingController();
-  TextEditingController areaofExpertise = TextEditingController();
-  TextEditingController appplierEmail = TextEditingController();
-  DatabaseReference applyRef = FirebaseDatabase.instance.reference().child('application');
-  bool _autoValidate = false;
-  String _name;
-  String _description;
-  String _expertise;
-
 
 
   posttoFirebase(String name,String email,String expertise)async{
@@ -57,7 +63,7 @@ class _ApplyState extends State<Apply> {
 //    documentFileUpload(url,length);
     applyRef.push().set(<dynamic,dynamic>{
 
-       'ApplierName': name,
+       'ApplierName': widget.userName,
 
        'ApplierEmail' :user.email,
 
@@ -108,7 +114,7 @@ class _ApplyState extends State<Apply> {
     return new Column(
       children: <Widget>[
          TextFormField(
-
+//           readOnly: true,
           decoration: const InputDecoration(labelText: 'Name'),
           keyboardType: TextInputType.text,
            validator: validateName,

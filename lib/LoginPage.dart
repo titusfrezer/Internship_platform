@@ -132,6 +132,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
+                  obscureText: true,
                   validator: (value){
                     if(value.isEmpty){
                       return 'Enter valid password';
