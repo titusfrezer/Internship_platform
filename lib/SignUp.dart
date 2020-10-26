@@ -7,9 +7,11 @@ import 'package:internship_platform/ChoosePrivelege.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/LoginPage.dart';
 import 'package:internship_platform/WaveClipper.dart';
+import 'package:internship_platform/util/dbclient.dart';
 
 import 'main.dart';
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+import 'model/eventItem.dart';
+
 bool _autoValidate = false;
 bool isValid;
 DatabaseReference userRef =
@@ -27,7 +29,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   void initState(){
     super.initState();
     print(widget.fullName);
@@ -248,6 +250,12 @@ class _SignUpPageState extends State<SignUpPage> {
                             email: widget.email,
                             password: widget.password,
                           );
+
+
+                          var db = new DatabaseHelper();
+
+                          // Add user
+                          int savedUser = await db.saveUser(User(widget.privelege,widget.email,widget.fullName,widget.furtherInfo));
                           await userRef
                               .push()
                               .set(<dynamic, dynamic>{

@@ -2,6 +2,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Intern/jobDetail.dart';
 
 import 'ApplyforJob.dart';
 
@@ -68,6 +69,7 @@ class _chooseJobState extends State<chooseJob> {
                              borderRadius: BorderRadius.circular(10.0),
                            ),
                            child: ListTile(
+
                              leading: Icon(
                                Icons.work,
                                color: Colors.red,
@@ -93,11 +95,11 @@ class _chooseJobState extends State<chooseJob> {
                                  onTap: () {
                                    Navigator.of(context).push(MaterialPageRoute(
                                        builder: (context) =>
-                                           Apply(
+                                           jobDetail(
                                                map.values
                                                    .toList()[index]['jobTitle'],
                                                map.values
-                                                   .toList()[index]['category']
+                                                   .toList()[index]['jobDescription']
                                                    .toString(),
                                                map.values
                                                    .toList()[index]['postedBy'])));
@@ -106,6 +108,7 @@ class _chooseJobState extends State<chooseJob> {
                                    'See more',
                                    style: TextStyle(color: myColor.myWhite),
                                  )),
+
                            ),
                          ),
                        );

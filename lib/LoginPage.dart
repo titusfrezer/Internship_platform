@@ -6,7 +6,7 @@ import 'package:internship_platform/ChoosePrivelege.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/main.dart';
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 bool _autoValidate = false;
 bool isValid= true;
 class LoginSevenPage extends StatefulWidget {
@@ -17,6 +17,7 @@ String password;
 }
 
 class _LoginSevenPageState extends State<LoginSevenPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -185,28 +186,38 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       print('Login pressed');
                       _validateInputs();
                       try {
+                        name=widget.email;
                         await FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: widget.email, password: widget.password);
-                        setState(() {
-                          isLoading=false;
-                        });
-                        name=widget.email;
+//                        setState(() {
+//                          isLoading=false;
+//                        });
+
 //                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>HomeController(widget.email)));
                       } catch (Exception) {
+                        print(Exception.toString());
                         if (Exception.toString() ==
                             "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null)") {
+
                           Flushbar(duration: Duration(seconds: 3),
                             backgroundColor: Colors.red,
                             icon: Icon(Icons.error),
                             message: 'Connection error',
                           )..show(context);
+                        }else if(Exception.toString() == 'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null)'){
+                          Flushbar(
+                            duration: Duration(seconds: 3),
+                            backgroundColor: Colors.red,
+                            icon: Icon(Icons.error),
+                            message: 'Email Doesnt exist',
+                          )..show(context);
                         }
-                        Flushbar(
-                          duration: Duration(seconds: 3),
-                          backgroundColor: Colors.red,
-                          icon: Icon(Icons.error),
-                          message: 'Email Doesnt exist',
-                        )..show(context);
+
+                      }
+                      finally{
+                       setState(() {
+                         isLoading=false;
+                       });
                       }
 
                     },

@@ -1,4 +1,5 @@
 
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,6 +10,7 @@ import 'package:internship_platform/Intern/chooseJob.dart';
 import 'package:internship_platform/authService.dart';
 
 import 'ApplyforJob.dart';
+import 'jobDetail.dart';
 import 'myApplication.dart';
 import 'package:intl/intl.dart';
 FirebaseAuth _firebaseAuth;
@@ -29,9 +31,68 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     _firebaseAuth = FirebaseAuth.instance;
     getUser();
   }
+  bool connected=false;
   getUser() async{
     user = await _firebaseAuth.currentUser();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      print('connected via cellular');
+      connected=true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      print('connected via wifi');
+      connected=true;
+    }
+    else if(connectivityResult==ConnectivityResult.none){
+      print('not connected');
+      connected=false;
 
+    }
+  }
+  var queryResultSet = [];
+  var tempSearchStore = [];
+
+
+  initiateSearch(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+
+      });
+
+    }
+    var capitalizedValue = value.substring(0,1).toUpperCase()+value.substring(1);
+    if (queryResultSet.isEmpty && value.toString().length == 1) {
+      print("true");
+      Query query = FirebaseDatabase.instance
+          .reference()
+          .child('posts')
+          .orderByChild('firstLetter')
+          .equalTo(value.substring(0, 1).toUpperCase());
+      query.once().then((DataSnapshot snapshot) {
+        var KEYS = snapshot.value.keys;
+        var DATA = snapshot.value;
+        for (var individualKey in KEYS) {
+          print("${DATA[individualKey]['jobTitle']} is the value");
+          queryResultSet.add(DATA[individualKey]);
+
+        }
+      });
+    } else {
+
+      tempSearchStore = [];
+      queryResultSet.forEach((element) {
+        print("titus element$capitalizedValue");
+        //print("element is ${element['productName'][0]}");
+
+        if (element['jobTitle'].toString().startsWith(capitalizedValue)) {
+          print("hooray");
+          setState(() {
+            tempSearchStore.add(element);
+          });
+        }
+      });
+    }
   }
   @override
   Widget build(BuildContext context) {
@@ -87,7 +148,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
             Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text(
-                'Hi ${widget.name.split("@")[0]}',
+                'Hi ${widget.name}',
                 style: TextStyle(
                     color: myColor.myWhite,
                     fontFamily: 'Oswald',
@@ -105,6 +166,10 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                   color: myColor.myGrey,
                   borderRadius: BorderRadius.circular(20)),
               child: TextFormField(
+                onChanged: (value){
+
+                  initiateSearch(value);
+                },
                 decoration: InputDecoration(
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(color: Colors.transparent),
@@ -128,6 +193,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: Text(
@@ -135,12 +201,14 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                     style: TextStyle(color: myColor.myWhite, fontSize: 18),
                   ),
                 ),
+
                 Container(
                     height: 100,
                     child: StreamBuilder(
                       stream: FirebaseDatabase.instance.reference().child("Categories").onValue,
                       builder: (BuildContext context,snapshot){
                         if(snapshot.hasData){
+
                           Map<dynamic,dynamic> map = snapshot.data.snapshot.value;
                           print(map.values.toList());
                           return ListView.builder(
@@ -174,12 +242,39 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                             },
                           );
                         }
+                        if(!connected){
+
+                          return Center(
+                            child: RaisedButton(child:Text('No conncection'),onPressed: ()async{
+                              var connectivityResult = await (Connectivity().checkConnectivity());
+                              print(connectivityResult);
+                              if((connectivityResult==ConnectivityResult.wifi)||connectivityResult==ConnectivityResult.mobile){
+                                connected = true;
+                                print('connected');
+                                setState(() {
+
+                                });
+                              }else{
+                                print('not connected');
+                              }
+                            },),
+                          );
+
+                        }
 
 
                        return SpinKitWave(color: Colors.purple,);
                       },
 
                     )),
+                ListView(
+                  shrinkWrap: true,
+                  primary: false,
+                  children: tempSearchStore.map((element) {
+                    print('the element to be build is ${element['jobTitle']}');
+                    return buildResultCard(element, context);
+                  }).toList(),
+                ),
               ],
             ),
             SizedBox(
@@ -215,40 +310,87 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                 if(snapshot.hasData) {
                                   Map<dynamic,dynamic> map = snapshot.data.snapshot.value;
 
-                                  return ListView.builder(
-                                      scrollDirection: Axis.vertical,
-                                      itemCount: map.values.toList().length,
-                                      itemBuilder: (BuildContext context,
-                                          int index) {
-                                      var  year= map.values.toList()[index]['postedAt'].toString().split("-")[0];
-                                      var  month =  map.values.toList()[index]['postedAt'].toString().split("-")[1];
-                                      var  day =map.values.toList()[index]['postedAt'].toString().split("-")[2];
-                                             if(int.parse(year) == DateTime.now().year&&int.parse(month) == DateTime.now().month && (DateTime.now().day)-(int.parse(day))<=5){
-                                               return ListTile(
-                                                 leading: Icon(
-                                                   Icons.favorite,
-                                                   color: myColor.myPurple,
-                                                 ),
-                                                 title: Text("${map.values.toList()[index]['jobTitle']}"),
-                                                 subtitle: Row(
-//                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                   children: <Widget>[
-                                                     Container(width:100,child: Text("${map.values.toList()[index]['companyName']} company",overflow: TextOverflow.ellipsis,)),
+                                  var counter =0;
+                                  for(var i=0;i<map.values.toList().length;i++){
+                                    if(int.parse(map.values.toList()[i]['postedAt'].toString().split("-")[0]) == DateTime.now().year &&
+                                        int.parse(map.values.toList()[i]['postedAt'].toString().split("-")[1])==DateTime.now().month &&
+                                            DateTime.now().day-(int.parse(map.values.toList()[i]['postedAt'].toString().split("-")[2])) <=5){
 
-                                                     Text('${map.values.toList()[index]['postedAt']}')
-                                                   ],
-                                                 ),
-                                                 trailing: FlatButton(
-                                                     onPressed: () {
-                                                       Navigator.of(context).push(MaterialPageRoute(builder:(context)=>Apply(map.values.toList()[index]['jobTitle'],map.values.toList()[index]['category'],map.values.toList()[index]['postedTo'])));
-                                                     },
-                                                     child: Text("Detail")),
-                                               );
-                                             }
-                                         return Container();
-                                      });
+                                      counter++;
+                                    }
+                                  }
+                                  if(counter==0){
+                                    return Center(child: Text('No recent post yet'),);
+                                  }
+                                  else {
+                                    return ListView.builder(
+                                        scrollDirection: Axis.vertical,
+                                        itemCount: map.values
+                                            .toList()
+                                            .length,
+                                        itemBuilder: (BuildContext context,
+                                            int index) {
+                                          var year = map.values
+                                              .toList()[index]['postedAt']
+                                              .toString()
+                                              .split("-")[0];
+                                          var month = map.values
+                                              .toList()[index]['postedAt']
+                                              .toString()
+                                              .split("-")[1];
+                                          var day = map.values
+                                              .toList()[index]['postedAt']
+                                              .toString()
+                                              .split("-")[2];
+                                          if (int.parse(year) == DateTime
+                                              .now()
+                                              .year &&
+                                              int.parse(month) == DateTime
+                                                  .now()
+                                                  .month && (DateTime
+                                              .now()
+                                              .day) - (int.parse(day)) <= 5) {
+                                            return ListTile(
+                                              leading: Icon(
+                                                Icons.favorite,
+                                                color: myColor.myPurple,
+                                              ),
+                                              title: Text("${map.values
+                                                  .toList()[index]['jobTitle']}"),
+                                              subtitle: Row(
+//                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                children: <Widget>[
+                                                  Container(width: 100,
+                                                      child: Text("${map.values
+                                                          .toList()[index]['companyName']} company",
+                                                        overflow: TextOverflow
+                                                            .ellipsis,)),
+
+                                                  Text('${map.values
+                                                      .toList()[index]['postedAt']}')
+                                                ],
+                                              ),
+                                              trailing: FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                            builder: (
+                                                                context) =>
+                                                                jobDetail(map.values
+                                                                    .toList()[index]['jobTitle'],
+                                                                    map.values
+                                                                        .toList()[index]['category'],
+                                                                    map.values
+                                                                        .toList()[index]['postedTo'])));
+                                                  },
+                                                  child: Text("Detail")),
+                                            );
+                                          }
+                                          return Container();
+                                        });
+                                  }
                                 }
-                                return Container();
+                                return SpinKitWave(color: Colors.purple,);
                               }
                             )),
                       )
@@ -260,4 +402,20 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
       ),
     );
   }
+}
+Widget buildResultCard(data, BuildContext context) {
+
+  return InkWell(
+    onTap: () {
+
+    },
+    child: Row(
+      children: <Widget>[
+        Icon(Icons.work)
+          ,
+        Text(data['jobTitle'],
+            style: TextStyle(color: Colors.white24, fontSize: 20)),
+      ],
+    ),
+  );
 }

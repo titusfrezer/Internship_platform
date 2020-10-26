@@ -133,7 +133,7 @@ class _LandingPageState extends State<LandingPage> {
                   }
 
 
-                  return SpinKitWave(color: Colors.purple,);
+                  return Center(child: SpinKitWave(color: Colors.pink,));
                 },
 
               )),

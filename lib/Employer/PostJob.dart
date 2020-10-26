@@ -29,7 +29,9 @@ class _PostJobState extends State<PostJob> {
   FirebaseUser user;
   PosttoFirebase(String title,String description,String howLong,String companyName,String allowance,String category)async{
      await postRef.push().set(<dynamic, dynamic> {
-       'jobTitle':title,
+       'jobTitle':title.substring(0,1).toUpperCase()+title.substring(1,title.length),
+
+       'firstLetter':title.substring(0,1).toUpperCase(),
 
        'jobDescription':description,
 
