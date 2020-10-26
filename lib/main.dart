@@ -70,11 +70,11 @@ class _HomeControllerState extends State<HomeController> {
   getUser() async {
     user = await _firebaseAuth.currentUser();
 
-  client= await db.getUser(user.email);
+  client= await db.getUser(name != null ? name : user.email);
 
   identity = client[0]['identity'];
   fullName = client[0]['fullName'];
-
+    print("$name is trying to log in and identity is$identity");
   print("user iss $client");
 
 
@@ -106,20 +106,21 @@ class _HomeControllerState extends State<HomeController> {
           final bool signedIn = snapshot.hasData;
 
           print(signedIn);
-           print("$name is trying to log in and identity is$identity");
+
           return signedIn?FutureBuilder(
               future:db.getUser(name!=null?name:user.email),
               builder: (context,snapshot){
-                print("identity is $identity");
-                if(identity == 'Intern'){
-                  print("your are intern");
+                if(snapshot.hasData) {
+                  print("identity from future is ${snapshot.data[0]['email']}");
+                  if (snapshot.data[0]['identity'] == 'Intern') {
+                    print("your are intern");
                     return InternCategoryPage(
                         fullName);
-                }else if(identity == 'Employer'){
-                  print("your are employer");
+                  } else if (snapshot.data[0]['identity'] == 'Employer') {
+                    print("your are employer");
                     return LandingPage(name != null ? name : user.email);
+                  }
                 }
-
                 return SpinKitWave(color: Colors.pink,);
           })
 //              ? StreamBuilder(

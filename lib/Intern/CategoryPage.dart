@@ -317,7 +317,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                             DateTime.now().day-(int.parse(map.values.toList()[i]['postedAt'].toString().split("-")[2])) <=5){
 
                                       counter++;
-                                    }
+                                    } // if there is at least less than 5 days post
                                   }
                                   if(counter==0){
                                     return Center(child: Text('No recent post yet'),);
@@ -390,7 +390,29 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                         });
                                   }
                                 }
-                                return SpinKitWave(color: Colors.purple,);
+                                if(!connected){
+
+                                  return Center(
+                                    child: RaisedButton(child:Text('No conncection'),onPressed: ()async{
+                                      var connectivityResult = await (Connectivity().checkConnectivity());
+                                      print(connectivityResult);
+                                      if((connectivityResult==ConnectivityResult.wifi)||connectivityResult==ConnectivityResult.mobile){
+                                        connected = true;
+                                        print('connected');
+                                        setState(() {
+
+                                        });
+                                      }else{
+                                        print('not connected');
+                                      }
+                                    },),
+                                  );
+
+                                }
+
+                                else {
+                                  return SpinKitWave(color: Colors.purple,);
+                                }
                               }
                             )),
                       )

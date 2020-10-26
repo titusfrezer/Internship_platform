@@ -39,15 +39,18 @@ class _jobDetailState extends State<jobDetail> {
 
     super.initState();
     _firebaseAuth = FirebaseAuth.instance;
+    getInfo();
 
   }
 
   getInfo() async{
     user = await _firebaseAuth.currentUser();
+
     client= await db.getUser(user.email);
 
     identity = client[0]['identity'];
     fullName = client[0]['fullName'];
+    email = client[0]['email'];
     furtherInfo = client[0]['furtherInfo'];
   }
 
@@ -64,7 +67,7 @@ class _jobDetailState extends State<jobDetail> {
 
       'ApplierName': fullName,
 
-      'ApplierEmail' :user.email,
+      'ApplierEmail' :email,
 
       'ApplierExpertise':furtherInfo,
 
@@ -75,6 +78,9 @@ class _jobDetailState extends State<jobDetail> {
       'AppliedTo':widget.postedBy,
 
       'jobTitle':widget.jobTitle
+    });
+    setState(() {
+      isloading = false;
     });
   }
   @override

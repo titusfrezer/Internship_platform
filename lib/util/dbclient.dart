@@ -69,6 +69,9 @@ Future getUser(String email)async{
 
     print("email is $email");
     var dbClient = await db;
+
+//    var allResult = await dbClient.rawQuery("SELECT * FROM $tablename");
+//    print(allResult);
     var result = await dbClient.rawQuery("SELECT * FROM $tablename WHERE email = '$email' ");
     print("${result[0]['identity']} is result" );
 
