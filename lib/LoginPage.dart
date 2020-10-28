@@ -171,7 +171,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.purple),
                   child: FlatButton(
-                    child: isLoading==true?SpinKitWave(color:Colors.pink):Text(
+                    child: isLoading==true?SpinKitWave(color:Colors.white,size: 12,):Text(
                       "Login",
                       style: TextStyle(
                           color: Colors.white,
