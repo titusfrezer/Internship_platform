@@ -108,7 +108,7 @@ class _InternWelcomePageState extends State<InternWelcomePage> {
                           width: 75,
                           margin: EdgeInsets.symmetric(horizontal: 10),
                           child: Card(
-                            color: myColor.myPurple,
+                            color: Colors.purple,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
@@ -157,7 +157,7 @@ class _InternWelcomePageState extends State<InternWelcomePage> {
                               return ListTile(
                                 leading: Icon(
                                   Icons.favorite,
-                                  color: myColor.myPurple,
+                                  color: Colors.purple,
                                 ),
                                 title: Text("Flutter Developer"),
                                 subtitle: Text("Adika Taxi"),

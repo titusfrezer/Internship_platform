@@ -33,7 +33,8 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Ethio-Intern',
         theme: ThemeData(
-          appBarTheme: AppBarTheme(color: myColor.myPurple),
+         primarySwatch: Colors.purple,
+
 
         ),
         home: HomeController(),

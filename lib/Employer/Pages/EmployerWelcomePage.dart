@@ -68,7 +68,7 @@ crossAxisAlignment: CrossAxisAlignment.start,
                             width: 75,
                             margin: EdgeInsets.symmetric(horizontal: 10),
                             child: Card(
-                              color: myColor.myPurple,
+                              color: Colors.purple,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
@@ -77,7 +77,7 @@ crossAxisAlignment: CrossAxisAlignment.start,
 
                                 children: [
                                   CircleAvatar(backgroundColor: myColor.myGrey,radius: 30,
-                                  child: Text("S",style: TextStyle(color: myColor.myPurple),),),
+                                  child: Text("S",style: TextStyle(color: Colors.purple),),),
                                  SizedBox(
                                 height: 20,
                             ),
