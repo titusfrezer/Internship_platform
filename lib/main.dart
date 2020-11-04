@@ -8,17 +8,8 @@ import 'package:internship_platform/Employer/ELandingPage.dart';
 import 'package:internship_platform/Intern/CategoryPage.dart';
 import 'package:internship_platform/LoginPage.dart';
 import 'package:internship_platform/util/dbclient.dart';
-
+import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'authService.dart';
-
-var z;
-var check;
-var privelege;
-var name;
-var username;
-FirebaseAuth _firebaseAuth;
-FirebaseUser user;
-var connectivityResult;
 
 
 void main() => runApp(MaterialApp(home: MyApp()));
@@ -58,26 +49,24 @@ class _HomeControllerState extends State<HomeController> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _firebaseAuth = FirebaseAuth.instance;
+    firebaseAuth = FirebaseAuth.instance;
 
     getUser();
   }
   var db = new DatabaseHelper();
   var client;
   var identity;
-  var fullName;
   bool connected=false;
   getUser() async {
-    user = await _firebaseAuth.currentUser();
-
-  client= await db.getUser(name != null ? name : user.email);
+    user = await firebaseAuth.currentUser();
+if(user!=null || name!=null) {
+  client = await db.getUser(name != null ? name : user.email);
 
   identity = client[0]['identity'];
   fullName = client[0]['fullName'];
-    print("$name is trying to log in and identity is$identity");
+  print("$name is trying to log in and identity is$identity");
   print("user iss $client");
-
-
+}
   }
 
 
@@ -101,28 +90,30 @@ class _HomeControllerState extends State<HomeController> {
 
       builder: (context, snapshot) {
 
-        if (snapshot.connectionState==ConnectionState.active) {
 
-          final bool signedIn = snapshot.hasData;
+              if(snapshot.connectionState == ConnectionState.active) {
+                final bool signedIn = snapshot.hasData;
 
-          print(signedIn);
+                print("$signedIn has signed In");
 
-          return signedIn?FutureBuilder(
-              future:db.getUser(name!=null?name:user.email),
-              builder: (context,snapshot){
-                if(snapshot.hasData) {
-                  print("identity from future is ${snapshot.data[0]['email']}");
-                  if (snapshot.data[0]['identity'] == 'Intern') {
-                    print("your are intern");
-                    return InternCategoryPage(
-                        fullName);
-                  } else if (snapshot.data[0]['identity'] == 'Employer') {
-                    print("your are employer");
-                    return LandingPage(name != null ? name : user.email);
-                  }
-                }
-                return SpinKitWave(color: Colors.pink,);
-          })
+                return signedIn ? FutureBuilder(
+                    future: db.getUser(name != null ? name : user.email),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        print("identity from future is ${snapshot
+                            .data[0]['identity']}");
+                        if (snapshot.data[0]['identity'] == 'Intern') {
+                          print("your are intern");
+                          return InternCategoryPage(
+                              name != null ? name : snapshot.data[0]['email']);
+                        } else if (snapshot.data[0]['identity'] == 'Employer') {
+                          print("your are employer");
+                          return LandingPage(
+                              name != null ? name : snapshot.data[0]['email']);
+                        }
+                      }
+                      return SpinKitWave(color: Colors.purple,);
+                    })
 //              ? StreamBuilder(
 //            stream: FirebaseDatabase.instance
 //                .reference()
@@ -152,9 +143,12 @@ class _HomeControllerState extends State<HomeController> {
 //              return SpinKitWave(color: Colors.pink);
 //            },
 //          )
-              : LoginSevenPage();
-        }
-        return SpinKitWave(color: Colors.pink,);
+                    : LoginSevenPage();
+              }else{
+              return SpinKitWave(color: Colors.purple,);}
+
+//        }
+//
       },
     );
   }
