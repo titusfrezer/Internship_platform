@@ -228,7 +228,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.purple),
                   child: FlatButton(
-                    child: isLoading?SpinKitWave(color: Colors.white,):Text(
+                    child: isLoading?SpinKitWave(color: Colors.white,size: 12,):Text(
                       "SignUp",
                       style: TextStyle(
                           color: Colors.white,
