@@ -49,7 +49,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     client = await db.getUser(widget.name);
     fullName = client[0]['fullName'];
     imageurl = client[0]['image'];
-    decodedImage = Base64Decoder().convert(imageurl);
+    decodedImage = imageurl=='none'?null:Base64Decoder().convert(imageurl);
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');

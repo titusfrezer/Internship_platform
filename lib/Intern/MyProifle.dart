@@ -313,7 +313,7 @@ class _MyProfileState extends State<MyProfile> {
                            }else{
 
                              url = imageUrl;
-                             base64Image = base64Encode(widget.decodedImage);
+                             base64Image = widget.decodedImage!=null?base64Encode(widget.decodedImage):'none';
                            }
 
                             print("url is $url");
