@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -16,12 +17,25 @@ class _MyApplicationState extends State<MyApplication> {
   DatabaseReference myAppRef;
   FirebaseUser currentUser;
   FirebaseAuth _auth = FirebaseAuth.instance;
-
+   bool connected =false;
   void getUser() async {
     print(_auth);
 
       currentUser = await _auth.currentUser();
-
+    var connectivityResult =
+    await (Connectivity()
+        .checkConnectivity());
+    print(connectivityResult);
+    if ((connectivityResult ==
+        ConnectivityResult.wifi) ||
+        connectivityResult ==
+            ConnectivityResult.mobile) {
+      connected = true;
+      print('connected');
+      setState(() {});
+    } else {
+      print('not connected');
+    }
 
 
   }
@@ -37,9 +51,45 @@ class _MyApplicationState extends State<MyApplication> {
         title:Text('My Application')
             ,backgroundColor: Colors.black,
       ),
-        body: StreamBuilder(
+        body: !connected ?Center(child:Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.wifi_off,
+              size: 40,
+            ),
+            FlatButton(
+                shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                        color: Colors.black,
+                        width: 1,
+                        style: BorderStyle.solid),
+                    borderRadius:
+                    BorderRadius.circular(50)),
+                onPressed: () async {
+                  var connectivityResult =
+                  await (Connectivity()
+                      .checkConnectivity());
+                  print(connectivityResult);
+                  if ((connectivityResult ==
+                      ConnectivityResult.wifi) ||
+                      connectivityResult ==
+                          ConnectivityResult.mobile) {
+                    connected = true;
+                    print('connected');
+                    setState(() {});
+                  } else {
+                    print('not connected');
+                  }
+                },
+                child: Text('Retry',
+                    style:
+                    TextStyle(color: Colors.black)))
+          ],
+        )):StreamBuilder(
           stream:FirebaseDatabase.instance.reference().child('application').orderByChild('ApplierEmail').equalTo(widget.name).onValue,
           builder: (BuildContext context, snapshot) {
+
             if (snapshot.hasData) {
               print(currentUser!=null?currentUser.email:'no user');
           if(snapshot.data.snapshot.value!=null){
@@ -52,8 +102,8 @@ class _MyApplicationState extends State<MyApplication> {
                   scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {
                     return Dismissible(
-
-                      key:Key(map.values.toList()[index].toString()),
+//              background: Container(color:Colors.red,child:Text('Delete')),
+                      key:Key(map.keys.toList()[index].toString()),
                       confirmDismiss:(direction){
 
                         return showDialog(context: context,builder: (context){
@@ -89,7 +139,7 @@ class _MyApplicationState extends State<MyApplication> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: ListTile(
+                          child: ExpansionTile(
                             leading: Icon(
                               Icons.work,
                               color: Colors.red,
@@ -97,10 +147,11 @@ class _MyApplicationState extends State<MyApplication> {
                             ),
                             title: Padding(
                                 padding: EdgeInsets.all(8.0),
-                                child: Row(
+                                child: Column(
                                   children: <Widget>[
                                     Text('Applied Position : ',style: TextStyle(
                                   color: myColor.myWhite,)),
+                                    SizedBox(height: 10,),
                                     Text(
                                       map.values.toList()[index]['jobTitle'],
                                       style: TextStyle(
@@ -109,21 +160,26 @@ class _MyApplicationState extends State<MyApplication> {
                                     ),
                                   ],
                                 )),
-                            subtitle: Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: <Widget>[
-                                    Text('Application Sent To :',style: TextStyle(
-                                  color: myColor.myWhite,)),
-                                    Text(
-                                      map.values.toList()[index]['AppliedTo'],
-                                      style: TextStyle(
-                                          color: myColor.myWhite,
-                                          fontStyle: FontStyle.italic),
-                                    ),
-                                  ],
-                                )),
-                            trailing: Icon(Icons.check,size:35,color: Colors.red,)
+                                trailing: Icon(
+                                    Icons.arrow_drop_down,
+                                    color:Colors.pink,
+                                size: 40,),
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text('Application Sent To :',style: TextStyle(
+                                        color: myColor.myWhite,)),
+                                      Text(
+                                        map.values.toList()[index]['AppliedTo'],
+                                        style: TextStyle(
+                                            color: myColor.myWhite,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                    ],
+                                  ))
+                            ],
                           ),
                         ),
                       ),

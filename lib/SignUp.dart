@@ -30,6 +30,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isObscure = true;
   void initState(){
     super.initState();
     print(widget.fullName);
@@ -151,7 +152,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
-                  obscureText: true,
+                  obscureText: isObscure,
                   validator: (value){
                     if(value.length<8){
                       return 'password must be at least 8 characters';
@@ -175,6 +176,23 @@ class _SignUpPageState extends State<SignUpPage> {
                           color: Colors.purple,
                         ),
                       ),
+                      suffixIcon: isObscure
+                          ? IconButton(
+                        icon: Icon(Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = false;
+                          });
+                        },
+                      )
+                          : IconButton(
+                        icon: Icon(Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = true;
+                          });
+                        },
+                      ),
                       border: InputBorder.none,
                       contentPadding:
                       EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
@@ -190,9 +208,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
-                  obscureText: true,
+                  obscureText: isObscure,
                   validator: (value){
-                    if(value!=widget.password){
+                    if(value.toString()!=widget.password){
+                      print("password is ${widget.password} and confirm is $value");
                       return 'Confirm Password';
                     }
                     return null;
@@ -213,6 +232,23 @@ class _SignUpPageState extends State<SignUpPage> {
                           Icons.lock,
                           color: Colors.purple,
                         ),
+                      ),
+                      suffixIcon: isObscure
+                          ? IconButton(
+                        icon: Icon(Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = false;
+                          });
+                        },
+                      )
+                          : IconButton(
+                        icon: Icon(Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = true;
+                          });
+                        },
                       ),
                       border: InputBorder.none,
                       contentPadding:
@@ -255,7 +291,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           var db = new DatabaseHelper();
 
                           // Add user
-                          int savedUser = await db.saveUser(User(widget.privelege,widget.email,widget.fullName,widget.furtherInfo));
+                          int savedUser = await db.saveUser(User(widget.privelege,widget.email,widget.fullName,widget.furtherInfo,"none"));
                           await userRef
                               .push()
                               .set(<dynamic, dynamic>{
@@ -275,7 +311,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         } catch (e) {
                           print(e);
                           if (e.toString() ==
-                              "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null)") {
+                              "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
                             Flushbar(duration: Duration(seconds: 3),
                               backgroundColor: Colors.red,
                               icon: Icon(Icons.error),
@@ -285,7 +321,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           }
 
                           else if (e.toString() ==
-                              'PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null)') {
+                              "PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null, null)") {
                             Flushbar(duration: Duration(seconds: 3),
                               backgroundColor: Colors.red,
                               icon: Icon(Icons.error),

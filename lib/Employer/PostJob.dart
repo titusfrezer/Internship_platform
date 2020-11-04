@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/main.dart';
 import 'package:intl/intl.dart';
 List<String> _getdata = List();
@@ -27,41 +28,54 @@ class _PostJobState extends State<PostJob> {
   DatabaseReference catRef;
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
-  PosttoFirebase(String title,String description,String howLong,String companyName,String allowance,String category)async{
-     await postRef.push().set(<dynamic, dynamic> {
-       'jobTitle':title.substring(0,1).toUpperCase()+title.substring(1,title.length),
+  var client;
+  var identity;
+  var companyName;
+  var email;
+  var furtherInfo;
 
-       'firstLetter':title.substring(0,1).toUpperCase(),
 
-       'jobDescription':description,
-
-       'howLong' :howLong,
-
-       'companyName':companyName,
-
-       'allowance':allowance,
-
-       'category':widget.category,
-
-       'postedBy':user.email,
-
-       'postedAt':DateFormat('yyyy-MM-dd').format(DateTime.now()),
-
-       'status':'open'
-     });
-     setState(() {
-       isloading = false;
-     });
-  }
   void getUser() async{
     user = await _auth.currentUser();
+    client = await db.getUser(user.email);
+
+    identity = client[0]['identity'];
+    companyName = client[0]['fullName'];
+    email = client[0]['email'];
+    furtherInfo = client[0]['furtherInfo'];
   }
   void initState(){
 
     super.initState();
    getUser();
   }
+  PosttoFirebase(String title,String description,String howLong,String allowance,String category)async{
+    await postRef.push().set(<dynamic, dynamic> {
 
+      'jobTitle':title.substring(0,1).toUpperCase()+title.substring(1,title.length),
+
+      'firstLetter':title.substring(0,1).toUpperCase(),
+
+      'jobDescription':description,
+
+      'howLong' :howLong,
+
+      'companyName':companyName,
+
+      'allowance':allowance,
+
+      'category':widget.category,
+
+      'postedBy':user.email,
+
+      'postedAt':DateFormat('yyyy-MM-dd').format(DateTime.now()),
+
+      'status':'open'
+    });
+    setState(() {
+      isloading = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,8 +87,7 @@ class _PostJobState extends State<PostJob> {
       ),
       body: ListView(
         children: <Widget>[
-           ReusableRow('Company Name', companyNameController),
-           SizedBox(height: 10,),
+
            ReusableRow('Job Title',jobTitleController),
            SizedBox(height: 10,),
            ReusableRow('Job Description', jobDescriptionController),
@@ -93,7 +106,7 @@ class _PostJobState extends State<PostJob> {
                || jobTitleController.text.isNotEmpty || companyNameController.text.isNotEmpty){
                  await PosttoFirebase(
                      jobTitleController.text, jobDescriptionController.text,
-                     forhowLong.text, companyNameController.text,
+                     forhowLong.text,
                      AllowanceController.text,initdata);
                  Flushbar(
                    icon: Icon(Icons.check,color: Colors.green,),

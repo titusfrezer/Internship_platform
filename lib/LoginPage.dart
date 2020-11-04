@@ -8,16 +8,20 @@ import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/main.dart';
 
 bool _autoValidate = false;
-bool isValid= true;
+bool isValid = true;
+
 class LoginSevenPage extends StatefulWidget {
-String email;
-String password;
+  String email;
+  String password;
+
   @override
   _LoginSevenPageState createState() => _LoginSevenPageState();
 }
 
 class _LoginSevenPageState extends State<LoginSevenPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,8 +40,10 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.purple.shade100,  Colors.purple.shade100])),
+                        gradient: LinearGradient(colors: [
+                      Colors.purple.shade100,
+                      Colors.purple.shade100
+                    ])),
                   ),
                 ),
                 ClipPath(
@@ -94,7 +100,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
-                  validator: (value){
+                  validator: (value) {
                     Pattern pattern =
                         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                     RegExp regex = new RegExp(pattern);
@@ -103,10 +109,10 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     else
                       return null;
                   },
-                  onSaved: (value){
+                  onSaved: (value) {
                     widget.email = value;
                   },
-                  onChanged: (String value){},
+                  onChanged: (String value) {},
                   cursorColor: Colors.deepOrange,
                   decoration: InputDecoration(
                       hintText: "Email",
@@ -120,7 +126,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       ),
                       border: InputBorder.none,
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
                 ),
               ),
             ),
@@ -133,17 +139,17 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
-                  obscureText: true,
-                  validator: (value){
-                    if(value.isEmpty){
+                  obscureText: isObscure,
+                  validator: (value) {
+                    if (value.isEmpty) {
                       return 'Enter valid password';
                     }
                     return null;
                   },
-                  onSaved: (value){
-                 widget.password = value;
+                  onSaved: (value) {
+                    widget.password = value;
                   },
-                  onChanged: (String value){},
+                  onChanged: (String value) {},
                   cursorColor: Colors.deepOrange,
                   decoration: InputDecoration(
                       hintText: "Password",
@@ -155,9 +161,26 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                           color: Colors.purple,
                         ),
                       ),
+                      suffixIcon: isObscure
+                          ? IconButton(
+                              icon: Icon(Icons.visibility),
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = false;
+                                });
+                              },
+                            )
+                          : IconButton(
+                              icon: Icon(Icons.visibility_off),
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = true;
+                                });
+                              },
+                            ),
                       border: InputBorder.none,
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
                 ),
               ),
             ),
@@ -171,22 +194,23 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.purple),
                   child: FlatButton(
-                    child: isLoading==true?SpinKitWave(color:Colors.white,size: 12,):Text(
-                      "Login",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18),
-                    ),
-                    onPressed: () async{
+                    child: isLoading == true
+                        ? SpinKitWave(color: Colors.pink)
+                        : Text(
+                            "Login",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18),
+                          ),
+                    onPressed: () async {
                       setState(() {
                         isLoading = true;
-
                       });
                       print('Login pressed');
                       _validateInputs();
                       try {
-                        name=widget.email;
+                        name = widget.email;
                         await FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: widget.email, password: widget.password);
 //                        setState(() {
@@ -197,14 +221,16 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       } catch (Exception) {
                         print(Exception.toString());
                         if (Exception.toString() ==
-                            "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null)") {
-
-                          Flushbar(duration: Duration(seconds: 3),
+                            "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
+                        print("true");
+                          Flushbar(
+                            duration: Duration(seconds: 3),
                             backgroundColor: Colors.red,
                             icon: Icon(Icons.error),
                             message: 'Connection error',
                           )..show(context);
-                        }else if(Exception.toString() == 'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null)'){
+                        } else if (Exception.toString() ==
+                            'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null, null)') {
                           Flushbar(
                             duration: Duration(seconds: 3),
                             backgroundColor: Colors.red,
@@ -212,18 +238,17 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                             message: 'Email Doesnt exist',
                           )..show(context);
                         }
-
                       }
-                      finally{
-                       setState(() {
-                         isLoading=false;
-                       });
-                      }
+                        setState(() {
+                          isLoading = false;
+                        });
 
                     },
                   ),
                 )),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
 //          Center(
 //            child: Text("FORGOT PASSWORD ?", style: TextStyle(color:Colors.red,fontSize: 12 ,fontWeight: FontWeight.w700),),
 //          ),
@@ -231,14 +256,24 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Don't have an Account ? ", style: TextStyle(color:Colors.black,fontSize: 16 ,fontWeight: FontWeight.normal),),
+                Text(
+                  "Don't have an Account ? ",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal),
+                ),
                 GestureDetector(
-                    onTap: (){
-
-                   Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ChoosePrivelege()));
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ChoosePrivelege()));
                     },
-                    child: Text("Sign Up ", style: TextStyle(color:Colors.purple, fontWeight: FontWeight.w500,fontSize: 16, decoration: TextDecoration.underline ))),
-
+                    child: Text("Sign Up ",
+                        style: TextStyle(
+                            color: Colors.purple,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            decoration: TextDecoration.underline))),
               ],
             )
           ],
@@ -246,13 +281,14 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
       ),
     );
   }
+
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
 //    If all data are correct then save data to out variables
       _formKey.currentState.save();
-      isValid= true;
+      isValid = true;
     } else {
-      isValid=false;
+      isValid = false;
 //    If all data are not valid then start auto validation.
       setState(() {
         _autoValidate = true;
@@ -260,4 +296,3 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
     }
   }
 }
-
