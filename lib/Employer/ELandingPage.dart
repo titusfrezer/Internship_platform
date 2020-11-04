@@ -123,7 +123,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.post_add),
+                leading: Icon(Icons.assignment_ind),
                 title: Text('My Posted Jobs'),
               ),
               onTap: () {

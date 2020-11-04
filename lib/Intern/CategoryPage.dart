@@ -338,7 +338,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
-                                    Icons.wifi_off,
+                                    Icons.signal_wifi_off,
                                     size: 40,
                                   ),
                                   FlatButton(
@@ -536,7 +536,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                           MainAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          Icons.wifi_off,
+                                          Icons.signal_wifi_off,
                                           size: 40,
                                         ),
                                         FlatButton(
