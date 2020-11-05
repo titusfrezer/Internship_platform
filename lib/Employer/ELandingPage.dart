@@ -209,7 +209,7 @@ class _LandingPageState extends State<LandingPage> {
                                       .toString())));
                         },
                         child: Card(
-                            color: myColor.myPurple,
+                            color: Colors.purple,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),

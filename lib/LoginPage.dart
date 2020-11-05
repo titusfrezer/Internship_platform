@@ -85,8 +85,14 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [myColor.myBlack, myColor.myBlack])),
+                        gradient: SweepGradient(colors: [
+                      myColor.myDarkGrey,
+                      myColor.myBackground,
+                      myColor.myDarkGrey,
+                      myColor.myBlack,
+                      myColor.myBlack,
+                      myColor.myDarkGrey
+                    ])),
                   ),
                 ),
               ],
@@ -195,7 +201,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       color: Colors.purple),
                   child: FlatButton(
                     child: isLoading == true
-                        ? SpinKitWave(color: Colors.pink)
+                        ? SpinKitWave(color: myColor.myWhite)
                         : Text(
                             "Login",
                             style: TextStyle(
@@ -222,7 +228,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                         print(Exception.toString());
                         if (Exception.toString() ==
                             "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
-                        print("true");
+                          print("true");
                           Flushbar(
                             duration: Duration(seconds: 3),
                             backgroundColor: Colors.red,
@@ -239,10 +245,9 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                           )..show(context);
                         }
                       }
-                        setState(() {
-                          isLoading = false;
-                        });
-
+                      setState(() {
+                        isLoading = false;
+                      });
                     },
                   ),
                 )),
