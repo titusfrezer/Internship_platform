@@ -17,6 +17,10 @@ class MyPostedJob extends StatefulWidget {
 }
 
 class _MyPostedJobState extends State<MyPostedJob> {
+  TextEditingController jobTitle = TextEditingController();
+  TextEditingController jobDescription = TextEditingController();
+  TextEditingController howLong = TextEditingController();
+  TextEditingController allowance=TextEditingController();
   DatabaseReference myAppRef;
   @override
   Widget build(BuildContext context) {
@@ -38,9 +42,13 @@ print("hello ${map.keys}");
                   itemCount: map.values.toList().length,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {
+                    jobTitle.text = map.values.toList()[index]['jobTitle'];
+                    jobDescription.text = "${map.values.toList()[index]['jobDescription']}";
+                    howLong.text = map.values.toList()[index]['howLong'];
+                    allowance.text = map.values.toList()[index]['allowance'];
                     return Dismissible(
 
-                      key:Key(map.values.toList()[index].toString()),
+                      key:Key(map.keys.toList()[index].toString()),
                       confirmDismiss:(direction){
 
                         return showDialog(context: context,builder: (context){
@@ -76,7 +84,7 @@ print("hello ${map.keys}");
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
-                          child: ListTile(
+                          child: ExpansionTile(
                               leading: Icon(
                                 Icons.work,
                                 color: Colors.red,
@@ -86,7 +94,7 @@ print("hello ${map.keys}");
                                   padding: EdgeInsets.all(8.0),
                                   child: Row(
                                     children: <Widget>[
-                                      Text('Position : ',style: TextStyle(
+                                      Text('Job Title : ',style: TextStyle(
                                         color: myColor.myWhite,)),
                                       Text(
                                         map.values.toList()[index]['jobTitle'],
@@ -96,6 +104,7 @@ print("hello ${map.keys}");
                                       ),
                                     ],
                                   )),
+                              trailing: Icon(Icons.arrow_drop_down,color: Colors.pink,size: 40,),
                               subtitle: Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: Row(
@@ -110,45 +119,168 @@ print("hello ${map.keys}");
                                       ),
                                     ],
                                   )),
-                              trailing: map.values.toList()[index]['status'] == 'open'?RaisedButton(
-                                child: Text('Close'),
-                                onPressed: (){
+                              children: [
+                          Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              map.values.toList()[index]['status'] == 'open'?
+                              RaisedButton(
+                                child: Text('Close Job'),
+                                onPressed: () {
                                   setState(() {
-                                  print(map.values.toList()[index]);
-                                  FirebaseDatabase.instance.reference().child("posts").child(map.keys.toList()[index])
-                                      .update({
+                                    print(map.values.toList()[index]);
+                                    FirebaseDatabase.instance.reference().child(
+                                        "posts")
+                                        .child(map.keys.toList()[index])
+                                        .update({
 
-                                    'jobTitle':map.values.toList()[index]['jobTitle'],
-
-                                    'jobDescription':map.values.toList()[index]['jobDescription'],
-
-                                    'howLong' :map.values.toList()[index]['howLong'],
-
-                                    'companyName':map.values.toList()[index]['companyName'],
-
-                                    'allowance':map.values.toList()[index]['allowance'],
-
-                                    'category':map.values.toList()[index]['category'],
-
-                                    'postedBy':map.values.toList()[index]['postedBy'],
-
-                                    'postedAt':DateFormat('yyyy-MM-dd').format(DateTime.now()),
-
-                                    'status': 'closed'
-                                  }).then((_){
-                                    print('done');
-                                  });
+                                      'status': 'closed'
+                                    })
+                                        .then((_) {
+                                      print('done');
+                                    });
                                   });
                                   Flushbar(
-                                    icon: Icon(Icons.check,color: Colors.green,),
+                                    icon: Icon(Icons.check, color: Colors.green,),
                                     backgroundColor: Colors.green,
 
-                                    title:  "Sucess",
-                                    message:  "Job Closed",
-                                    duration:  Duration(seconds: 3),
-                                  )..show(context);
+                                    title: "Sucess",
+                                    message: "Job Closed",
+                                    duration: Duration(seconds: 3),
+                                  )
+                                    ..show(context);
                                 },
-                              ):Text('Already Closed')
+                              ):RaisedButton(child:Text('Post Job'),
+                              onPressed: (){
+                                setState(() {
+                                  print(map.values.toList()[index]);
+                                  FirebaseDatabase.instance.reference().child(
+                                      "posts")
+                                      .child(map.keys.toList()[index])
+                                      .update({
+
+                                    'status': 'open'
+                                  })
+                                      .then((_) {
+                                    print('done');
+                                  });
+                                });
+                                Flushbar(
+                                  icon: Icon(Icons.check, color: Colors.green,),
+                                  backgroundColor: Colors.green,
+
+                                  title: "Sucess",
+                                  message: "Job Opened",
+                                  duration: Duration(seconds: 3),
+                                )
+                                  ..show(context);
+                              },),
+                              SizedBox(width:20),
+                              RaisedButton(
+                                child: Text('Edit',),
+                                onPressed: () {
+                                  return showDialog(
+                                      context: context, builder: (context) {
+                                    return AlertDialog(
+                                      title:Text('Edit Post'),
+                                      content: Container(
+                                        height: 250,
+                                        width:350,
+                                        child:SingleChildScrollView (
+
+                                            child:Column(
+                                              children: [
+                                                TextField(
+                                                  controller:jobTitle ,
+                                                  decoration: InputDecoration(
+                                                      labelText: 'Job Title'
+                                                  ),
+                                                ),
+                                                TextField(
+                                                  minLines: 2,
+                                                  maxLines: 4,
+                                                  controller:jobDescription ,
+                                                  decoration: InputDecoration(
+                                                      labelText: 'Job Description'
+                                                  ),
+
+                                                ),
+                                                TextField(
+                                                  controller:howLong ,
+                                                  decoration: InputDecoration(
+                                                      labelText: 'For How Long '
+                                                  ),
+                                                ),
+                                                TextField(
+                                                  controller:allowance ,
+                                                  decoration: InputDecoration(
+                                                      labelText: 'Allowance(In Birr)'
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                        ),
+                                      ),
+                                      actions: [
+
+                                        Row(
+                                          children: [
+                                            FlatButton(
+                                              child:Text('Cancel'),
+                                              onPressed: (){
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            FlatButton(
+                                              child:Text('Update'),
+                                              onPressed: () async{
+                                                FirebaseDatabase.instance.reference().child(
+                                                    "posts")
+                                                    .child(map.keys.toList()[index])
+                                                    .update({
+
+                                                  'jobTitle': jobTitle.text,
+
+                                                  'jobDescription': jobDescription.text,
+
+                                                  'howLong': howLong.text,
+
+                                                  'allowance': allowance.text,
+
+
+                                                  'postedAt': DateFormat('yyyy-MM-dd').format(
+                                                      DateTime.now()),
+
+
+                                                })
+                                                    .then((_) {
+                                                  print('done');
+                                                });
+                                                Navigator.of(context).pop();
+                                                Flushbar(
+                                                  icon: Icon(Icons.check, color: Colors.green,),
+                                                  backgroundColor: Colors.green,
+
+                                                  title: "Sucess",
+                                                  message: "Post Updated",
+                                                  duration: Duration(seconds: 3),
+                                                )
+                                                  ..show(context);
+                                              },
+                                            )
+                                          ],
+                                        )
+                                      ],
+                                    );
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        )
+                          ]
                           ),
                         ),
                       ),

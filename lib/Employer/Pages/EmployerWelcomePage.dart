@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../Utilities/variables.dart';
+import '../../Intern/Utilities/variables.dart';
 
 class EmployerWelcomePage extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _EmployerWelcomePageState extends State<EmployerWelcomePage> {
         backgroundColor: myColor.myBlack,
         actions: [
           CircleAvatar(
-            backgroundColor: myColor.myGrey,
+            backgroundColor: myColor.myLightGrey,
             child: Icon(Icons.person),
           )
         ],
@@ -76,7 +76,7 @@ crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.center,
 
                                 children: [
-                                  CircleAvatar(backgroundColor: myColor.myGrey,radius: 30,
+                                  CircleAvatar(backgroundColor: myColor.myLightGrey,radius: 30,
                                   child: Text("S",style: TextStyle(color: Colors.purple),),),
                                  SizedBox(
                                 height: 20,

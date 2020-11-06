@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:internship_platform/Utilities/variables.dart';
+import '../../Intern/Utilities/variables.dart';
 
 class InternWelcomePage extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _InternWelcomePageState extends State<InternWelcomePage> {
         backgroundColor: myColor.myBlack,
         actions: [
           CircleAvatar(
-            backgroundColor: myColor.myGrey,
+            backgroundColor: myColor.myLightGrey,
             child: Icon(Icons.person),
           )
         ],
@@ -65,7 +65,7 @@ class _InternWelcomePageState extends State<InternWelcomePage> {
               margin: EdgeInsets.symmetric(horizontal: 20),
               padding: EdgeInsets.symmetric(horizontal: 20),
               decoration: BoxDecoration(
-                  color: myColor.myGrey,
+                  color: myColor.myLightGrey,
                   borderRadius: BorderRadius.circular(20)),
               child: TextFormField(
                 decoration: InputDecoration(
