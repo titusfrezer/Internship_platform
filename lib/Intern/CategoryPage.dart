@@ -528,6 +528,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                     itemBuilder: (BuildContext context,
                                         int index) {
                                       return Container(
+                                        margin: EdgeInsets.only(bottom:20),
                                         decoration: BoxDecoration(
                                           color: myColor.myWhite,
                                           borderRadius: BorderRadius.circular(15)

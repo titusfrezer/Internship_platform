@@ -180,7 +180,7 @@ class _chooseJobState extends State<chooseJob> {
                                 ):Container(
                                   width: 120,
                                   height: 100,
-                                  margin: EdgeInsets.symmetric(horizontal: 15),
+                                  margin: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
                                   child: Card(
                                     color: myColor.myWhite,
                                     shape: RoundedRectangleBorder(

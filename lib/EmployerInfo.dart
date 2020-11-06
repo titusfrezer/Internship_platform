@@ -37,8 +37,14 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.purple.shade100,  Colors.purple.shade100])),
+                        gradient:    SweepGradient(colors: [
+                        myColor.myDarkGrey,
+                        myColor.myBackground,
+                        myColor.myDarkGrey,
+                        myColor.myBlack,
+                        myColor.myBlack,
+                        myColor.myDarkGrey
+                        ])),
                   ),
                 ),
                 ClipPath(

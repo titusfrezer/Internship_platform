@@ -25,7 +25,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: myColor.myBackground,
       body: Form(
         key: _formKey,
         autovalidate: _autoValidate,
@@ -40,9 +40,9 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                      Colors.purple.shade100,
-                      Colors.purple.shade100
+                        gradient: SweepGradient(colors: [
+                      myColor.myDarkGrey,
+                      myColor.myWhite,
                     ])),
                   ),
                 ),
@@ -53,8 +53,12 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.purple, Colors.purple])),
+                        gradient: SweepGradient(colors: [
+                          myColor.myWhite,
+                      myColor.myLightGrey,
+                      myColor.myWhite,
+                          myColor.myLightGrey,
+                    ])),
                   ),
                 ),
                 ClipPath(
@@ -66,7 +70,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                           height: 40,
                         ),
                         Icon(
-                          Icons.work,
+                          Icons.school,
                           color: Colors.white,
                           size: 60,
                         ),
@@ -87,11 +91,10 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     decoration: BoxDecoration(
                         gradient: SweepGradient(colors: [
                       myColor.myDarkGrey,
-                      myColor.myBackground,
+                      myColor.myBlack,
                       myColor.myDarkGrey,
                       myColor.myBlack,
-                      myColor.myBlack,
-                      myColor.myDarkGrey
+                      myColor.myDarkGrey,
                     ])),
                   ),
                 ),
@@ -127,7 +130,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.email,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       border: InputBorder.none,
@@ -164,7 +167,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.lock,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       suffixIcon: isObscure
@@ -198,7 +201,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
-                      color: Colors.purple),
+                      color:  myColor.myBlack,),
                   child: FlatButton(
                     child: isLoading == true
                         ? SpinKitWave(color: myColor.myWhite)
@@ -275,7 +278,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     },
                     child: Text("Sign Up ",
                         style: TextStyle(
-                            color: Colors.purple,
+                            color: myColor.myDarkGrey,
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                             decoration: TextDecoration.underline))),
