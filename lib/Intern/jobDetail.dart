@@ -5,6 +5,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/util/dbclient.dart';
@@ -23,7 +24,9 @@ class jobDetail extends StatefulWidget {
   String allowance;
   String howLong;
   String companyName;
-  jobDetail(this.jobTitle, this.jobDescription, this.postedBy, this.category,this.postedAt,this.allowance,this.howLong,this.companyName);
+
+  jobDetail(this.jobTitle, this.jobDescription, this.postedBy, this.category,
+      this.postedAt, this.allowance, this.howLong, this.companyName);
 }
 
 class _jobDetailState extends State<jobDetail> {
@@ -37,7 +40,8 @@ class _jobDetailState extends State<jobDetail> {
       FirebaseDatabase.instance.reference().child('application');
   var file;
   var isloading = false;
-var image;
+  var image;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -84,203 +88,298 @@ var image;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Apply'),
-        backgroundColor: Colors.black,
-      ),
-      body: ListView(
-        children: [
-          ClipPath(
-            clipper: WaveClipper1(),
-            child: Container(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
+      backgroundColor: myColor.myBackground,
+      // appBar: AppBar(
+      //   title: Text('Apply'),
+      //   backgroundColor: Colors.black,
+      // ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            ClipPath(
+              // clipper: WaveClipper1(),
+
+              child: Container(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          color: myColor.myWhite,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: IconButton(
+                          icon: Icon(
+                            Icons.arrow_back,
+                            color: myColor.myBlack,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                    ),
                   ),
-                  Icon(
-                    Icons.work,
-                    color: Colors.pink,
-                    size: 60,
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text(
-                   "Job Title : ${ widget.jobTitle}",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 30),
-                  ),
-                ],
-              ),
-              width: double.infinity,
-              height: 300,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                      colors: [myColor.myBlack, myColor.myBlack])),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                  style: BorderStyle.solid,
-                  width: 1.0,
                 ),
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(20),
+                // child: Column(
+                //   children: <Widget>[
+                //     SizedBox(
+                //       height: 40,
+                //     ),
+                //     Icon(
+                //       Icons.work,
+                //       color: Colors.pink,
+                //       size: 60,
+                //     ),
+                //     SizedBox(
+                //       height: 20,
+                //     ),
+                //     Text(
+                //      "Job Title : ${ widget.jobTitle}",
+                //       style: TextStyle(
+                //           color: Colors.white,
+                //           fontWeight: FontWeight.w700,
+                //           fontSize: 30),
+                //     ),
+                //   ],
+                // ),
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.3,
+                decoration: BoxDecoration(
+                    color: myColor.myWhite,
+                    image: DecorationImage(
+                        image: AssetImage("image/internship.jpg"),
+                        fit: BoxFit.cover)),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(
+                      15,
+                    ),
+                    bottomRight: Radius.circular(15)),
                 color: Colors.white,
               ),
               height: 150,
-              child: Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Row(
-                  children: [
-                    Text('Description :  ',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20)),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Container(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    title: Text(
+                      widget.jobTitle,
+                      style: GoogleFonts.cabinCondensed(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500,
+                          color: myColor.myBlack),
+                    ),
+                    contentPadding: EdgeInsets.all(0),
+                    subtitle: Row(
+                      children: [
+                        Text(
+                          '${DateFormat('yMMMMd').format(DateTime.parse(widget.postedAt))}',
+                          style: GoogleFonts.scada(
+                              fontSize: 16, color: myColor.myDarkGrey),
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 3, horizontal: 4),
                           child: Text(
-                              "${widget.jobDescription}",style: TextStyle(fontSize: 20),),
-                          width: MediaQuery.of(context).size.width / 2),
-                    )
-                  ],
-                ),
+                            widget.allowance,
+                            style: GoogleFonts.scada(
+                                fontSize: 16, color: myColor.myBlack),
+                          ),
+                          decoration: BoxDecoration(
+                              color: myColor.myBackground,
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(10)),
+                        )
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.companyName,
+                        style: GoogleFonts.scada(
+                            fontSize: 18, color: myColor.myBlack),
+                      ),
+                      Text(
+                        'For ${widget.howLong}',
+                        style: GoogleFonts.scada(
+                            fontSize: 16, color: myColor.myLightGrey),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(26.0),
-            child: Row(
-              children: [
-                Text('Company Name : ',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                Text(widget.companyName, style: TextStyle(fontSize: 20))
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left:26.0),
-            child: Row(
-              children: [
-                Text('Allowance : ',
-                    style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                Text("${widget.allowance} br", style: TextStyle(fontSize: 20))
-              ],
-            ),
-          ),
-          SizedBox(height: 20,),
-          Padding(
-            padding: const EdgeInsets.only(left:26.0),
-            child: Row(
-              children: [
-                Text('Duration : ',
-                    style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                Text("${widget.howLong} ", style: TextStyle(fontSize: 20))
-              ],
-            ),
-          ),
-          SizedBox(height: 20,),
-          Padding(
-            padding: const EdgeInsets.only(left:26.0),
-            child: Row(
-              children: [
-                Text('Post Date : ',
-                    style:
-                    TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
-                Text("${DateFormat('yMMMMd').format(DateTime.parse(widget.postedAt))} ", style: TextStyle(fontSize: 20))
-              ],
-            ),
-          ),
-          SizedBox(height: 20,),
-          Container(
-            padding: EdgeInsets.only(left: 26),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                    child: Text('Select File : ',
-                        maxLines: 1,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold))),
-                FlatButton(
-                  shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          color: Colors.black,
-                          width: 1,
-                          style: BorderStyle.solid),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: Text("Upload CV"),
-                  onPressed: () async {
-                    file = await FilePicker.getFile(
-                        type: FileType.CUSTOM, fileExtension: 'pdf');
+            Expanded(child:         Container(
+              margin: EdgeInsets.symmetric( horizontal: 20,vertical: 10),
+
+              decoration: BoxDecoration(
+                color: myColor.myWhite,
+                shape: BoxShape.rectangle,
+
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(
+                      15,
+                    ),
+                    bottomRight: Radius.circular(15)),
+
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding:
+                    EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                    child: Text(
+                      'Description',
+                      style: GoogleFonts.delius(
+                          fontSize: 20,
+                          color: myColor.myBlack,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: ListView(
+                          scrollDirection: Axis.vertical,
+                          children: [
+                            Text(
+                              widget.jobDescription,
+                              style: GoogleFonts.scada(
+                                fontSize: 16,
+                                color: myColor.myDarkGrey,
+                              ),
+                            ),
+                          ]),
+                    ),
+                  ),
+                ],
+              ),
+            ),),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child:Container(
+
+                decoration: BoxDecoration(
+                  color: myColor.myWhite,
+                  borderRadius: BorderRadius.only(
+                     topLeft: Radius.circular(
+                        15,
+                      ),
+                    topRight: Radius.circular(15)),
+                ),
+
+                padding: EdgeInsets.symmetric(horizontal:20,vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                  children: <Widget>[
+                    Container(
+                      height: 50,
+                      width:125,
+                      child: RaisedButton(
+                        color: myColor.myWhite,
+                        shape: RoundedRectangleBorder(
+                            side: BorderSide(
+                                color: myColor.myDarkGrey,
+                                width: 0.25,
+                                style: BorderStyle.solid),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Upload CV",style:GoogleFonts.delius(
+
+                            fontWeight: FontWeight.w600,
+                            color: myColor.myBlack),),
+                            Icon(Icons.file_upload)
+                          ],
+                        ),
+                        onPressed: () async {
+                          file = await FilePicker.getFile(
+                              type: FileType.CUSTOM, fileExtension: 'pdf');
 
 //                    String fileName = '${applierName.text}.pdf';
 //                    print(fileName);
-                  },
-                ),
-              ],
-            ),
-          ),
-          SizedBox(height: 10,),
-          Center(
-              child: FlatButton(
-            shape: RoundedRectangleBorder(
-                side: BorderSide(
-                    color: Colors.black, width: 1, style: BorderStyle.solid),
-                borderRadius: BorderRadius.circular(20)),
-            onPressed: () async {
-              setState(() {
-                isloading = true;
-              });
-              if (file != null) {
-                await postToFirebase();
-                Flushbar(
-                  icon: Icon(
-                    Icons.check,
-                    color: Colors.green,
-                  ),
-                  backgroundColor: Colors.green,
-                  title: "Success",
-                  message: "Application posted successfully",
-                  duration: Duration(seconds: 3),
-                )..show(context);
-                file=null;
-              } else {
-                setState(() {
-                  isloading = false;
+                        },
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Expanded(
 
-                });
-                Flushbar(
-                  icon: Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
-                  backgroundColor: Colors.red,
-                  title: "Wrong",
-                  message: "Upload Cv",
-                  duration: Duration(seconds: 3),
-                )..show(context);
-              }
-            },
-            child: isloading
-                ? SpinKitWave(
-                    color: Colors.pinkAccent,
-                  )
-                : Text('Apply',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-          ))
-        ],
+                      child: SizedBox(
+                        height: 50,
+                        child: RaisedButton(
+                          color: myColor.myBlack,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          onPressed: () async {
+                            setState(() {
+                              isloading = true;
+                            });
+                            if (file != null) {
+                              await postToFirebase();
+                              Flushbar(
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                ),
+                                backgroundColor: Colors.green,
+                                title: "Success",
+                                message: "Application posted successfully",
+                                duration: Duration(seconds: 3),
+                              )..show(context);
+                              file = null;
+                            } else {
+                              setState(() {
+                                isloading = false;
+                              });
+                              Flushbar(
+                                icon: Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
+                                backgroundColor: Colors.red,
+                                title: "Wrong",
+                                message: "Upload Cv",
+                                duration: Duration(seconds: 3),
+                              )..show(context);
+                            }
+                          },
+                          child: isloading
+                              ? SpinKitWave(
+                            color: Colors.pinkAccent,
+                          )
+                              : Text(
+                            'Apply',
+                            style: GoogleFonts.delius(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: myColor.myWhite),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
