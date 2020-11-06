@@ -172,8 +172,7 @@ class _chooseJobState extends State<chooseJob> {
                                           },
                                           child: Text(
                                             'See more',
-                                            style: TextStyle(
-                                                color: myColor.myWhite),
+                                            style: GoogleFonts.delius(color: myColor.myWhite,fontWeight: FontWeight.w500),
                                           )),
                                     ),
                                   ),
@@ -236,8 +235,7 @@ class _chooseJobState extends State<chooseJob> {
                                           },
                                           child: Text(
                                             'See more',
-                                            style: TextStyle(
-                                                color: myColor.myBlack),
+                                            style: GoogleFonts.delius(color: myColor.myBlack,fontWeight: FontWeight.w500),
                                           )),
                                     ),
                                   ),
