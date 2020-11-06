@@ -7,9 +7,11 @@ import 'package:internship_platform/ChoosePrivelege.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/LoginPage.dart';
 import 'package:internship_platform/WaveClipper.dart';
+import 'package:internship_platform/util/dbclient.dart';
 
 import 'main.dart';
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+import 'model/eventItem.dart';
+
 bool _autoValidate = false;
 bool isValid;
 DatabaseReference userRef =
@@ -20,13 +22,19 @@ class SignUpPage extends StatefulWidget {
   _SignUpPageState createState() => _SignUpPageState();
   String privelege;
   String fullName;
-  String fieldOfStudy;
+  String furtherInfo;
   String email;
   String password;
-  SignUpPage(this.privelege,this.fullName,this.fieldOfStudy);
+  SignUpPage(this.privelege,this.fullName,this.furtherInfo);
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool isObscure = true;
+  void initState(){
+    super.initState();
+    print(widget.fullName);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,8 +96,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [myColor.myBlack, myColor.myBlack])),
+                        gradient: SweepGradient(colors: [
+                          myColor.myDarkGrey,
+                          myColor.myBackground,
+                          myColor.myDarkGrey,
+                          myColor.myBlack,
+                          myColor.myBlack,
+                          myColor.myDarkGrey
+                        ])),
                   ),
                 ),
               ],
@@ -144,7 +158,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
-                  obscureText: true,
+                  obscureText: isObscure,
                   validator: (value){
                     if(value.length<8){
                       return 'password must be at least 8 characters';
@@ -168,6 +182,23 @@ class _SignUpPageState extends State<SignUpPage> {
                           color: Colors.purple,
                         ),
                       ),
+                      suffixIcon: isObscure
+                          ? IconButton(
+                        icon: Icon(Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = false;
+                          });
+                        },
+                      )
+                          : IconButton(
+                        icon: Icon(Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = true;
+                          });
+                        },
+                      ),
                       border: InputBorder.none,
                       contentPadding:
                       EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
@@ -183,9 +214,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
-                  obscureText: true,
+                  obscureText: isObscure,
                   validator: (value){
-                    if(value!=widget.password){
+                    if(value.toString()!=widget.password){
+                      print("password is ${widget.password} and confirm is $value");
                       return 'Confirm Password';
                     }
                     return null;
@@ -207,6 +239,23 @@ class _SignUpPageState extends State<SignUpPage> {
                           color: Colors.purple,
                         ),
                       ),
+                      suffixIcon: isObscure
+                          ? IconButton(
+                        icon: Icon(Icons.visibility),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = false;
+                          });
+                        },
+                      )
+                          : IconButton(
+                        icon: Icon(Icons.visibility_off),
+                        onPressed: () {
+                          setState(() {
+                            isObscure = true;
+                          });
+                        },
+                      ),
                       border: InputBorder.none,
                       contentPadding:
                       EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
@@ -221,7 +270,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       borderRadius: BorderRadius.all(Radius.circular(100)),
                       color: Colors.purple),
                   child: FlatButton(
-                    child: isLoading?SpinKitWave(color: Colors.pink,):Text(
+                    child: isLoading?SpinKitWave(color: Colors.white,size: 12,):Text(
                       "SignUp",
                       style: TextStyle(
                           color: Colors.white,
@@ -229,52 +278,68 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontSize: 18),
                     ),
                     onPressed: () async{
-                      setState(() {
-                        isLoading=true;
-                      });
-                      print('email is ${widget.email}');
+
+                      print('email is ${widget.email} and full name is ${widget.fullName}');
                       _validateInputs();
-                      await userRef
-                          .push()
-                          .set(<dynamic, dynamic>{'email': widget.email, 'identity':widget.privelege,'userName':widget.fullName });
+                      if(isValid) {
 
-                      try {
-                        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                          email: widget.email,
-                          password: widget.password,
-                        );
+                        setState(() {
+                          isLoading=true;
+                        });
+                        try {
+                          await FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                            email: widget.email,
+                            password: widget.password,
+                          );
 
-                        name = widget.email;
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomeController()),
-                              (Route<dynamic> route) => false,
-                        );
-//                        Navigator.of(context).push(MaterialPageRoute(builder:(context)=>HomeController()));
-                        //return 'Valid phone Number Required';
 
-                      } catch (e) {
-                        print(e);
-                        if (e.toString() ==
-                            "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null)") {
-                          Flushbar(duration: Duration(seconds: 3),
-                            backgroundColor: Colors.red,
-                            icon: Icon(Icons.error),
-                            message: 'Connection error',
-                          )..show(context);
+                          var db = new DatabaseHelper();
+
+                          // Add user
+                          int savedUser = await db.saveUser(User(widget.privelege,widget.email,widget.fullName,widget.furtherInfo,"none"));
+                          await userRef
+                              .push()
+                              .set(<dynamic, dynamic>{
+                            'email': widget.email,
+                            'identity': widget.privelege,
+                            'userName': widget.fullName,
+                            'furtherInfo':widget.furtherInfo,  // fieldofStudy for intern and location for comapany
+
+                              });
+                          name = widget.email;
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(builder: (context) =>
+                                HomeController()),
+                                (Route<dynamic> route) => false,
+                          );
+                        } catch (e) {
+                          print(e);
+                          if (e.toString() ==
+                              "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
+                            Flushbar(duration: Duration(seconds: 3),
+                              backgroundColor: Colors.red,
+                              icon: Icon(Icons.error),
+                              message: 'Connection error',
+                            )
+                              ..show(context);
+                          }
+
+                          else if (e.toString() ==
+                              "PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null, null)") {
+                            Flushbar(duration: Duration(seconds: 3),
+                              backgroundColor: Colors.red,
+                              icon: Icon(Icons.error),
+                              message: 'Email already exists',
+                            )
+                              ..show(context);
+                          }
                         }
-                        Flushbar(
-                          duration: Duration(seconds: 3),
-                          backgroundColor: Colors.red,
-                          icon: Icon(Icons.error),
-                          message: 'Email Already exist',
-                        )..show(context);
-
-
+                        setState(() {
+                          isLoading = false;
+                        });
                       }
-                      setState(() {
-                        isLoading=false;
-                      });
                     },
                   ),
                 )),
@@ -287,7 +352,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 GestureDetector(
 
                     onTap: (){
-
+Navigator.of(context).push(MaterialPageRoute(builder:(context)=>LoginSevenPage()));
                     },
                     child: Text("Login ", style: TextStyle(color:Colors.purple, fontWeight: FontWeight.w500,fontSize: 16, decoration: TextDecoration.underline ))),
 
