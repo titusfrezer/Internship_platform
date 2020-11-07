@@ -5,7 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/ChoosePrivelege.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/WaveClipper.dart';
-import 'package:internship_platform/main.dart';
+
 
 bool _autoValidate = false;
 bool isValid = true;
@@ -24,6 +24,11 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
 
   @override
   Widget build(BuildContext context) {
+    initState(){
+      super.initState();
+      isLoading = false;
+    }
+
     return Scaffold(
       backgroundColor: myColor.myBackground,
       body: Form(
@@ -40,18 +45,14 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-<<<<<<< HEAD
-                        gradient: LinearGradient(colors: [
-                      Colors.purple.shade100,
-                      Colors.purple.shade100
-=======
-                        gradient: SweepGradient(colors: [
-                      myColor.myDarkGrey,
-                      myColor.myWhite,
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f
-                    ])),
+
+                       gradient: SweepGradient(colors: [
+                          myColor.myDarkGrey,
+                          myColor.myWhite,
+                        ])
                   ),
                 ),
+      ),
                 ClipPath(
                   clipper: WaveClipper3(),
                   child: Container(
@@ -61,10 +62,10 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     decoration: BoxDecoration(
                         gradient: SweepGradient(colors: [
                           myColor.myWhite,
-                      myColor.myLightGrey,
-                      myColor.myWhite,
                           myColor.myLightGrey,
-                    ])),
+                          myColor.myWhite,
+                          myColor.myLightGrey,
+                        ])),
                   ),
                 ),
                 ClipPath(
@@ -105,7 +106,8 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                   ),
                 ),
               ],
-            ),
+        ),
+
             SizedBox(
               height: 30,
             ),
@@ -210,11 +212,9 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       color:  myColor.myBlack,),
                   child: FlatButton(
                     child: isLoading == true
-<<<<<<< HEAD
-                        ? SpinKitWave(color: Colors.pink)
-=======
+
                         ? SpinKitWave(color: myColor.myWhite)
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f
+
                         : Text(
                             "Login",
                             style: TextStyle(
@@ -230,22 +230,21 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       _validateInputs();
                       try {
                         name = widget.email;
+
+                        var client =await db.getUser(widget.email);
+                        fullName = client[0]['fullName'];
                         await FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: widget.email, password: widget.password);
-//                        setState(() {
-//                          isLoading=false;
-//                        });
 
-//                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>HomeController(widget.email)));
                       } catch (Exception) {
                         print(Exception.toString());
                         if (Exception.toString() ==
                             "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
-<<<<<<< HEAD
+
                         print("true");
-=======
+
                           print("true");
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f
+
                           Flushbar(
                             duration: Duration(seconds: 3),
                             backgroundColor: Colors.red,
@@ -262,16 +261,11 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                           )..show(context);
                         }
                       }
-<<<<<<< HEAD
+
                         setState(() {
                           isLoading = false;
                         });
 
-=======
-                      setState(() {
-                        isLoading = false;
-                      });
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f
                     },
                   ),
                 )),
@@ -299,11 +293,9 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     },
                     child: Text("Sign Up ",
                         style: TextStyle(
-<<<<<<< HEAD
-                            color: Colors.purple,
-=======
+
                             color: myColor.myDarkGrey,
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f
+
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                             decoration: TextDecoration.underline))),

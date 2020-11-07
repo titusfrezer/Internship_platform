@@ -309,18 +309,7 @@ packages:
       name: meta
       url: "https://pub.dartlang.org"
     source: hosted
-<<<<<<< HEAD
     version: "1.3.0-nullsafety.3"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.4"
-=======
-    version: "1.1.8"
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f
   numberpicker:
     dependency: transitive
     description:
@@ -514,18 +503,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-<<<<<<< HEAD
     version: "0.2.19-nullsafety.2"
-  transformer_page_view:
-    dependency: transitive
-    description:
-      name: transformer_page_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.6"
-=======
-    version: "0.2.17"
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f
   typed_data:
     dependency: transitive
     description:
@@ -597,10 +575,5 @@ packages:
     source: hosted
     version: "3.5.0"
 sdks:
-<<<<<<< HEAD
   dart: ">=2.10.0-110 <2.11.0"
-  flutter: ">=1.12.13+hotfix.5 <2.0.0"
-=======
-  dart: ">=2.9.0-14.0.dev <3.0.0"
   flutter: ">=1.17.0 <2.0.0"
->>>>>>> 59580b1e13a293a082ae0e48413e50ceb483589f

@@ -7,14 +7,12 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/Employer/MyProfile.dart';
-import 'package:internship_platform/Employer/PostJob.dart';
 import 'package:internship_platform/Employer/PostedByCategory.dart';
 import 'package:internship_platform/Employer/createCategory.dart';
 import 'package:internship_platform/Employer/mypostedJobs.dart';
 import 'package:internship_platform/Employer/sentApplications.dart';
-import 'package:internship_platform/Intern/ApplyforJob.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
-import 'package:internship_platform/authService.dart';
+
 
 class LandingPage extends StatefulWidget {
   @override
@@ -39,7 +37,7 @@ class _LandingPageState extends State<LandingPage> {
   var client;
   var imageurl;
   var decodedImage;
-
+  var fullName;
   getUser() async {
     user = await firebaseAuth.currentUser();
     client = await db.getUser(widget.name);
@@ -157,8 +155,8 @@ class _LandingPageState extends State<LandingPage> {
             InkWell(
               child: ListTile(
                   leading: Icon(Icons.visibility_off), title: Text('Log out')),
-              onTap: () {
-                AuthService().signOut();
+              onTap: () async{
+                await firebaseAuth.signOut();
                 Navigator.of(context).pop();
               },
             )

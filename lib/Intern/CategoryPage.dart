@@ -48,6 +48,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
   getUser() async {
     user = await firebaseAuth.currentUser();
     client = await db.getUser(widget.name);
+    print("client is $client");
     fullName = client[0]['fullName'];
     imageurl = client[0]['image'];
     decodedImage =
@@ -135,81 +136,78 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
       child: Scaffold(
         backgroundColor: myColor.myBackground,
         resizeToAvoidBottomInset: false,
-        // appBar: AppBar(
-        //   title: Text("Intern Platform"),
-        //   elevation: 0.0,
-        //   backgroundColor: myColor.myBlack,
-        // ),
-        // drawer: Drawer(
-        //   child: SafeArea(
-        //     child: Column(
-        //       children: [
-        //         ClipRect(
-        //           child: Container(
-        //               width: 300,
-        //               decoration: BoxDecoration(
-        //                   image: DecorationImage(
-        //                       image: ExactAssetImage('image/internship.jpg'),
-        //                       fit: BoxFit.cover)),
-        //               child: BackdropFilter(
-        //                 filter: ImageFilter.blur(sigmaY: 1.9, sigmaX: 2.5),
-        //                 child: UserAccountsDrawerHeader(
-        //                   decoration: BoxDecoration(color: Colors.transparent),
-        //                   accountName: CircleAvatar(
-        //                       radius: 60,
-        //                       backgroundColor: Colors.black,
-        //                       foregroundColor: Colors.pink,
-        //                       child: Text(
-        //                         widget.name.substring(0, 1).toUpperCase(),
-        //                         style: TextStyle(fontWeight: FontWeight.bold),
-        //                       )),
-        //                   accountEmail: Text(
-        //                     widget.name,
-        //                     style: TextStyle(
-        //                         color: Colors.black,
-        //                         fontWeight: FontWeight.bold,
-        //                         fontSize: 20),
-        //                   ),
-        //                 ),
-        //               )),
-        //         ),
-        //         InkWell(
-        //           child: ListTile(
-        //             leading: Icon(Icons.person),
-        //             title: Text("My Profile"),
-        //           ),
-        //           onTap: () {
-        //             Navigator.of(context).pop();
-        //             Navigator.of(context).push(MaterialPageRoute(
-        //                 builder: (context) =>
-        //                     MyProfile(user.email, decodedImage)));
-        //           },
-        //         ),
-        //         InkWell(
-        //           child: ListTile(
-        //             leading: Icon(Icons.description),
-        //             title: Text("My Applications"),
-        //           ),
-        //           onTap: () {
-        //             Navigator.of(context).pop();
-        //             Navigator.of(context).push(MaterialPageRoute(
-        //                 builder: (context) => MyApplication(widget.name)));
-        //           },
-        //         ),
-        //         InkWell(
-        //           child: ListTile(
-        //             leading: Icon(Icons.visibility_off),
-        //             title: Text('log out'),
-        //           ),
-        //           onTap: () async {
-        //             print('out');
-        //             await firebaseAuth.signOut();
-        //           },
-        //         )
-        //       ],
-        //     ),
-        //   ),
-        // ),
+
+        drawer: Drawer(
+          child: SafeArea(
+            child: Column(
+              children: [
+                ClipRect(
+                  child: Container(
+                      width: 300,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: ExactAssetImage('image/internship.jpg'),
+                              fit: BoxFit.cover)),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaY: 1.9, sigmaX: 2.5),
+                        child: UserAccountsDrawerHeader(
+                          decoration: BoxDecoration(color: Colors.transparent),
+                          accountName: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.pink,
+                              child: Text(
+                                widget.name.substring(0, 1).toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                          accountEmail: Text(
+                            widget.name,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
+                        ),
+                      )),
+                ),
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text("My Profile"),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            MyProfile(user.email, decodedImage)));
+                  },
+                ),
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(Icons.description),
+                    title: Text("My Applications"),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MyApplication(widget.name)));
+                  },
+                ),
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(Icons.visibility_off),
+                    title: Text('log out'),
+                  ),
+                  onTap: () async {
+                    print('out');
+                    await firebaseAuth.signOut();
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
         body: SafeArea(
           child: Container(
             child: Column(
@@ -220,14 +218,20 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+
                       Container(
                         height: 50,
                         width: 50,
                         decoration: BoxDecoration(
                             color: myColor.myWhite,
                             borderRadius: BorderRadius.circular(20)),
-                        child: IconButton(
-                            icon: Icon(Icons.list,color: Colors.purple,), onPressed: () {}),
+                        child: Builder(
+                          builder: (context)=> IconButton(
+                              icon: Icon(Icons.list,color: Colors.purple,), onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          }),
+
+                        ),
                       ),
                       Container(
                         alignment: Alignment.center,
@@ -240,10 +244,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                       Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                            color: myColor.myWhite,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Icon(Icons.person),
+
                       )
                     ],
                   ),

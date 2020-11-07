@@ -297,7 +297,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           var db = new DatabaseHelper();
 
                           // Add user
-                          int savedUser = await db.saveUser(User(widget.privelege,widget.email,widget.fullName,widget.furtherInfo,"none"));
+                         await db.saveUser(User(widget.privelege,widget.email,widget.fullName,widget.furtherInfo,"none"));
                           await userRef
                               .push()
                               .set(<dynamic, dynamic>{
@@ -308,6 +308,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
                               });
                           name = widget.email;
+                          fullName = widget.fullName;
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(builder: (context) =>

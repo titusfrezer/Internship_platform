@@ -1,15 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flushbar/flushbar.dart';
+
 import 'package:flutter/material.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/Employer/ELandingPage.dart';
 import 'package:internship_platform/Intern/CategoryPage.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/LoginPage.dart';
 import 'package:internship_platform/util/dbclient.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'authService.dart';
 
 
@@ -49,7 +46,6 @@ class _HomeControllerState extends State<HomeController> {
   }
   var db = new DatabaseHelper();
   var client;
-  var identity;
   bool connected=false;
   getUser() async {
     user = await firebaseAuth.currentUser();
@@ -72,13 +68,6 @@ if(user!=null || name!=null) {
     final AuthService auth = Provider
         .of(context)
         .auth;
-
-//    return FutureBuilder(
-//        future:db.getEvent(name != null ? name : user.email),
-//        builder: (context,snasphot){
-//
-//
-//    });
     return StreamBuilder(
       stream: auth.onAuthStateChanged,
 
@@ -108,41 +97,11 @@ if(user!=null || name!=null) {
                       }
                       return SpinKitWave(color: Colors.purple,);
                     })
-//              ? StreamBuilder(
-//            stream: FirebaseDatabase.instance
-//                .reference()
-//                .child("Users")
-//                .orderByChild('email')
-//                .equalTo(name != null ? name : user.email)    // if name!=null means the user is not logged in previously(trying to login)
-//                .onValue,
-//            builder: (context, snapshot) {
-//              if (snapshot.data!=null) {
-//
-//                Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-//                print(snapshot.data.snapshot.value);
-//
-//
-//                  if (map.values.toList()[0]['identity'] == 'Intern') {
-//
-//                    print("your are intern");
-//                    return InternCategoryPage(
-//                        name != null ? name : user.email);
-//                  } else if (map.values.toList()[0]['identity'] ==
-//                      'Employer') {
-//                    print("your are employer");
-//                    return LandingPage(name != null ? name : user.email);
-//                  }
-//                }
-//
-//              return SpinKitWave(color: Colors.pink);
-//            },
-//          )
                     : LoginSevenPage();
               }else{
               return SpinKitWave(color: Colors.purple,);}
 
-//        }
-//
+
       },
     );
   }
