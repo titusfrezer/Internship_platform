@@ -14,12 +14,11 @@ import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/model/eventItem.dart';
 
-
 class MyProfile extends StatefulWidget {
   String email;
   var decodedImage;
 
-  MyProfile(this.email, this.decodedImage);
+  MyProfile(this.email,this.decodedImage);
 
   @override
   _MyProfileState createState() => _MyProfileState();
@@ -35,8 +34,7 @@ class _MyProfileState extends State<MyProfile> {
   var isLoading = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController furtherController = TextEditingController();
-
-  bool connected = false;
+  bool checkConnection;
 
   void initState() {
     super.initState();
@@ -45,24 +43,14 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   getInfo() async {
-
-
     var client = await db.getUser(widget.email);
     imageurl = client[0]['image'];
-//    decodedImage = Base64Decoder().convert(imageurl);
-    print(client);
+   // decodedImage = Base64Decoder().convert(imageurl);
+
     var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile) {
-      print('connected via cellular');
-      connected = true;
-    } else if (connectivityResult == ConnectivityResult.wifi) {
-      print('connected via wifi');
-      connected = true;
-    } else if (connectivityResult == ConnectivityResult.none) {
-      print('not connected');
-      connected = false;
-    }
-    print("identit is ${client[0]['identity']}");
+    checkConnection = ((connectivityResult == ConnectivityResult.wifi) ||
+        (connectivityResult == ConnectivityResult.mobile));
+
     fullName = client[0]['fullName'];
 
     furtherInfo = client[0]['furtherInfo'];
@@ -80,14 +68,13 @@ class _MyProfileState extends State<MyProfile> {
       values.forEach((key, values) {
         print("value is ${values['url']}");
         individualKey = key;
-        imageUrl = values['url'];
       });
     });
     nameController.text = fullName;
     furtherController.text = furtherInfo;
   }
 
-  Uint8List _bytesImage;
+  // Uint8List _bytesImage;
   File _image;
   String base64Image;
   var url;
@@ -95,17 +82,11 @@ class _MyProfileState extends State<MyProfile> {
 
   Future getImage() async {
     var image2 = await ImagePicker.pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 30
-    );
+        source: ImageSource.gallery, imageQuality: 30);
     List<int> imageBytes = image2.readAsBytesSync();
-    print(imageBytes);
     base64Image = base64Encode(imageBytes);
-    print('string is');
     print(base64Image);
-    print("You selected gallery image : " + image2.path);
-
-    _bytesImage = Base64Decoder().convert(base64Image);
+    // _bytesImage = Base64Decoder().convert(base64Image);
 
     setState(() {
       _image = image2;
@@ -114,7 +95,6 @@ class _MyProfileState extends State<MyProfile> {
 
   @override
   Widget build(BuildContext context) {
-    print("image is ${imageurl != null}");
     return Scaffold(
         resizeToAvoidBottomPadding: true,
         appBar: AppBar(
@@ -153,50 +133,65 @@ class _MyProfileState extends State<MyProfile> {
 //                          print("url is $downloadUrl");
                           },
                           child: _image != null
-                              ? CircleAvatar(child: Row(
-
-                            children: [
-
-                              SizedBox(width: 62),
-                              IconButton(icon:Icon(Icons.edit,size: 25,),onPressed: () async{
-                                await getImage();
-                              },),
-                            ],
-                          ),
+                              ? CircleAvatar(
+                                  child: Row(
+                                    children: [
+                                      SizedBox(width: 62),
+                                      IconButton(
+                                        icon: Icon(
+                                          Icons.edit,
+                                          size: 25,
+                                        ),
+                                        onPressed: () async {
+                                          await getImage();
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                   backgroundColor: myColor.myBlack,
                                   radius: 55,
                                   backgroundImage: FileImage(_image),
                                 )
                               : widget.decodedImage != null
                                   ? CircleAvatar(
-                            backgroundColor: Colors.black,
-                              child: Row(
-
-                                children: [
-
-                                  SizedBox(width: 62),
-                                  IconButton(icon:Icon(Icons.edit,size: 25,),onPressed: () async{
-                                    await getImage();
-                                  },),
-                                ],
-                              ),
+                                      backgroundColor: Colors.black,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(width: 62),
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.edit,
+                                              size: 25,
+                                            ),
+                                            onPressed: () async {
+                                              await getImage();
+                                            },
+                                          ),
+                                        ],
+                                      ),
                                       radius: 55,
-                                      backgroundImage: MemoryImage(
+                                      backgroundImage: NetworkImage(
                                         widget.decodedImage,
                                       ))
                                   : CircleAvatar(
-
                                       radius: 55,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
                                           Center(
                                             child: Icon(Icons.person,
                                                 size: 45, color: Colors.purple),
                                           ),
-                                          IconButton(icon:Icon(Icons.edit,size: 25,),onPressed: () async{
-                                            await getImage();
-                                          },)
+                                          IconButton(
+                                            icon: Icon(
+                                              Icons.edit,
+                                              size: 25,
+                                            ),
+                                            onPressed: () async {
+                                              await getImage();
+                                            },
+                                          )
                                         ],
                                       ),
                                       backgroundColor: Colors.black,
@@ -284,7 +279,7 @@ class _MyProfileState extends State<MyProfile> {
                           setState(() {
                             isLoading = true;
                           });
-                          if (!connected) {
+                          if (!checkConnection) {
                             setState(() {
                               isLoading = false;
                             });
@@ -301,20 +296,23 @@ class _MyProfileState extends State<MyProfile> {
                           }
                           if (furtherController.text.isNotEmpty &&
                               nameController.text.isNotEmpty) {
-                           if(_image!=null){
-                             StorageReference ref = FirebaseStorage.instance
-                                 .ref()
-                                 .child("profile,${widget.email}");
-                             StorageUploadTask uploadTask = ref.putFile(_image);
+                            if (_image != null) {
+                              // if image is selected using image picker
+                              StorageReference ref = FirebaseStorage.instance
+                                  .ref()
+                                  .child("profile,${widget.email}");
+                              StorageUploadTask uploadTask =
+                                  ref.putFile(_image);
 
-                             url = await (await uploadTask.onComplete)
-                                 .ref
-                                 .getDownloadURL();
-                           }else{
-
-                             url = imageUrl;
-                             base64Image = widget.decodedImage!=null?base64Encode(widget.decodedImage):'none';
-                           }
+                              url = await (await uploadTask.onComplete)
+                                  .ref
+                                  .getDownloadURL();
+                            } else {
+                              url = imageUrl;
+                              base64Image = widget.decodedImage != null
+                                  ? base64Encode(widget.decodedImage)
+                                  : 'none';
+                            }
 
                             print("url is $url");
                             print("identity is $identity");
@@ -327,7 +325,8 @@ class _MyProfileState extends State<MyProfile> {
                               'furtherInfo': furtherController.text,
                               'identity': identity,
                               'userName': nameController.text,
-                              'url': url
+                              'url': url,
+                              // 'decodedImage':base64Image
                             }).then((_) {
                               db.updateUser(
                                   User(

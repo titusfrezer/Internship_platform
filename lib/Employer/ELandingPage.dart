@@ -13,6 +13,8 @@ import 'package:internship_platform/Employer/mypostedJobs.dart';
 import 'package:internship_platform/Employer/sentApplications.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 
+import '../LoginPage.dart';
+
 
 class LandingPage extends StatefulWidget {
   @override
@@ -158,6 +160,11 @@ class _LandingPageState extends State<LandingPage> {
               onTap: () async{
                 await firebaseAuth.signOut();
                 Navigator.of(context).pop();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context)=>LoginSevenPage()),
+                      (Route<dynamic> route) => false,
+                );
               },
             )
           ],

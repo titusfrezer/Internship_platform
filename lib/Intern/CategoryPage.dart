@@ -13,6 +13,7 @@ import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/Intern/chooseJob.dart';
 import 'package:internship_platform/authService.dart';
 
+import '../LoginPage.dart';
 import 'ApplyforJob.dart';
 import 'MyProifle.dart';
 import 'jobDetail.dart';
@@ -51,8 +52,8 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     print("client is $client");
     fullName = client[0]['fullName'];
     imageurl = client[0]['image'];
-    decodedImage =
-        imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
+    // decodedImage =
+    //     imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');
@@ -73,6 +74,20 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
 //    }).then((value) => print(value.body));
 //    List fromApi = jsonDecode(response.body);
 //    print("from api ${fromApi[0]}");
+    FirebaseDatabase.instance
+        .reference()
+        .child('Users')
+        .orderByChild("email")
+        .equalTo(user.email)
+        .once()
+        .then((snapshot) {
+      Map<dynamic, dynamic> values = snapshot.value;
+      values.forEach((key, values) {
+        print("value is ${values['url']}");
+        imageurl=values['url'];
+      // decodedImage = Base64Decoder().convert(values['decodedImage']);
+      });
+    });
   }
 
   var queryResultSet = [];
@@ -179,7 +194,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) =>
-                            MyProfile(user.email, decodedImage)));
+                            MyProfile(user.email,imageurl)));
                   },
                 ),
                 InkWell(
@@ -201,7 +216,15 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                   onTap: () async {
                     print('out');
                     await firebaseAuth.signOut();
+                    var user = await firebaseAuth.currentUser();
+                    print(user);
                     Navigator.of(context).pop();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context)=>LoginSevenPage()),
+                          (Route<dynamic> route) => false,
+                    );
+
                   },
                 )
               ],

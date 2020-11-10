@@ -1,11 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/ChoosePrivelege.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/WaveClipper.dart';
+import 'package:internship_platform/main.dart';
+import 'package:internship_platform/util/dbclient.dart';
 
+import 'model/eventItem.dart';
 
 bool _autoValidate = false;
 bool isValid = true;
@@ -24,7 +28,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
 
   @override
   Widget build(BuildContext context) {
-    initState(){
+    initState() {
       super.initState();
       isLoading = false;
     }
@@ -45,14 +49,12 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-
-                       gradient: SweepGradient(colors: [
-                          myColor.myDarkGrey,
-                          myColor.myWhite,
-                        ])
+                        gradient: SweepGradient(colors: [
+                      myColor.myDarkGrey,
+                      myColor.myWhite,
+                    ])),
                   ),
                 ),
-      ),
                 ClipPath(
                   clipper: WaveClipper3(),
                   child: Container(
@@ -61,11 +63,11 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     height: 300,
                     decoration: BoxDecoration(
                         gradient: SweepGradient(colors: [
-                          myColor.myWhite,
-                          myColor.myLightGrey,
-                          myColor.myWhite,
-                          myColor.myLightGrey,
-                        ])),
+                      myColor.myWhite,
+                      myColor.myLightGrey,
+                      myColor.myWhite,
+                      myColor.myLightGrey,
+                    ])),
                   ),
                 ),
                 ClipPath(
@@ -106,7 +108,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                   ),
                 ),
               ],
-        ),
+            ),
 
             SizedBox(
               height: 30,
@@ -208,13 +210,12 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(100)),
-                      color:  myColor.myBlack,),
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    color: myColor.myBlack,
+                  ),
                   child: FlatButton(
                     child: isLoading == true
-
                         ? SpinKitWave(color: myColor.myWhite)
-
                         : Text(
                             "Login",
                             style: TextStyle(
@@ -231,20 +232,57 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       try {
                         name = widget.email;
 
-                        var client =await db.getUser(widget.email);
-                        fullName = client[0]['fullName'];
+
+                        // The below code uses to register the User incase he uses another device(i.e user must logged in first)
+
+                        // db = new DatabaseHelper();
+                        var client = await db.getUser(widget.email);
+                        print(client);
+
+
+                        if (client.toString() == '[]') {
+                          Query checkUser = FirebaseDatabase.instance
+                              .reference()
+                              .child("Users")
+                              .orderByChild("email")
+                              .equalTo(widget.email);
+                          checkUser.once().then((DataSnapshot snapshot) {
+                            var KEYS = snapshot.value.keys;
+                            var DATA = snapshot.value;
+                            for (var individualKey in KEYS) {
+
+                              identity = DATA[individualKey]['identity'];
+                              fullName = DATA[individualKey]['userName'];
+                              furtherInfo = DATA[individualKey]['furtherInfo'];
+                            }
+                            // saving to local database
+                          }).then((x) {
+                            db.saveUser(User(identity, widget.email, fullName,
+                                furtherInfo, "none"));
+
+                          });
+                          // client =await db.getUser(widget.email);
+                          //  fullName = client[0]['fullName'];
+                          // print("my client is $client");
+
+                        }
+                        isLoading = false;
                         await FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: widget.email, password: widget.password);
+
+
+
+                       await Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context)=>HomeController()),
+                              (Route<dynamic> route) => false,
+                        );
 
                       } catch (Exception) {
                         print(Exception.toString());
                         if (Exception.toString() ==
                             "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
-
-                        print("true");
-
                           print("true");
-
                           Flushbar(
                             duration: Duration(seconds: 3),
                             backgroundColor: Colors.red,
@@ -262,20 +300,16 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                         }
                       }
 
-                        setState(() {
-                          isLoading = false;
-                        });
-
+                      setState(() {
+                        isLoading = false;
+                      });
                     },
                   ),
                 )),
             SizedBox(
               height: 20,
             ),
-//          Center(
-//            child: Text("FORGOT PASSWORD ?", style: TextStyle(color:Colors.red,fontSize: 12 ,fontWeight: FontWeight.w700),),
-//          ),
-//          SizedBox(height: 40,),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -293,9 +327,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     },
                     child: Text("Sign Up ",
                         style: TextStyle(
-
                             color: myColor.myDarkGrey,
-
                             fontWeight: FontWeight.w500,
                             fontSize: 16,
                             decoration: TextDecoration.underline))),
