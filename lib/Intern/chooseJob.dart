@@ -144,7 +144,7 @@ class _chooseJobState extends State<chooseJob> {
                                             map.values.toList()[index]
                                                 ['companyName'],
                                             style: GoogleFonts.scada(
-                                                color: myColor.myLightGrey,
+                                                color: myColor.myWhite,
                                                 fontStyle: FontStyle.italic),
                                           )),
                                       trailing: GestureDetector(

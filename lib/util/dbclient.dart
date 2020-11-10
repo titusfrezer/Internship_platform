@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'dart:async';
 import 'package:path_provider/path_provider.dart';
@@ -19,7 +18,7 @@ class DatabaseHelper {
   final String image = "image";
   Future<Database> get db async{
     if(_db != null){
-print('db is not null');
+
       return _db;
     }
     _db = await initDb();
@@ -85,4 +84,12 @@ return result;
     print(result);
   }
 // Get users
+  Future<int> deleteUser(int id) async{
+    var dbClient = await db;
+    var result= await dbClient.delete(tablename,
+        where: "id = ?", whereArgs: [id]);
+    print(result);
+    return result;
+
+  }
   }

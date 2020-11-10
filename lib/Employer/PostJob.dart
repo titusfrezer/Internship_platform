@@ -4,9 +4,8 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
-import 'package:internship_platform/main.dart';
 import 'package:intl/intl.dart';
-List<String> _getdata = List();
+
 String initdata= "Mechanical Engineering";
 class PostJob extends StatefulWidget {
   @override
@@ -22,17 +21,16 @@ class _PostJobState extends State<PostJob> {
   TextEditingController jobDescriptionController = TextEditingController();
   TextEditingController forhowLong = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
-  TextEditingController AllowanceController = TextEditingController();
+  TextEditingController allowanceController = TextEditingController();
   var isloading = false;
   DatabaseReference postRef = FirebaseDatabase.instance.reference().child('posts');
   DatabaseReference catRef;
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser user;
   var client;
-  var identity;
   var companyName;
   var email;
-  var furtherInfo;
+
 
 
   void getUser() async{
@@ -49,7 +47,7 @@ class _PostJobState extends State<PostJob> {
     super.initState();
    getUser();
   }
-  PosttoFirebase(String title,String description,String howLong,String allowance,String category)async{
+  posttoFirebase(String title,String description,String howLong,String allowance,String category)async{
     await postRef.push().set(<dynamic, dynamic> {
 
       'jobTitle':title.substring(0,1).toUpperCase()+title.substring(1,title.length),
@@ -88,13 +86,13 @@ class _PostJobState extends State<PostJob> {
       body: ListView(
         children: <Widget>[
 
-           ReusableRow('Job Title',jobTitleController),
+           reusableRow('Job Title',jobTitleController),
            SizedBox(height: 10,),
-           ReusableRow('Job Description', jobDescriptionController),
+           reusableRow('Job Description', jobDescriptionController),
            SizedBox(height: 10,),
-           ReusableRow('How long it take', forhowLong),
+           reusableRow('How long it take', forhowLong),
            SizedBox(height: 10,),
-           ReusableRow('Allowance', AllowanceController),
+           reusableRow('Allowance', allowanceController),
 
            RaisedButton(
              child: isloading?SpinKitWave(color: Colors.pinkAccent,):Text('Post'),
@@ -102,12 +100,12 @@ class _PostJobState extends State<PostJob> {
                setState(() {
                  isloading = true;
                });
-               if(AllowanceController.text.isNotEmpty || forhowLong.text.isNotEmpty || jobDescriptionController.text.isNotEmpty
+               if(allowanceController.text.isNotEmpty || forhowLong.text.isNotEmpty || jobDescriptionController.text.isNotEmpty
                || jobTitleController.text.isNotEmpty || companyNameController.text.isNotEmpty){
-                 await PosttoFirebase(
+                 await posttoFirebase(
                      jobTitleController.text, jobDescriptionController.text,
                      forhowLong.text,
-                     AllowanceController.text,initdata);
+                     allowanceController.text,initdata);
                  Flushbar(
                    icon: Icon(Icons.check,color: Colors.green,),
                    backgroundColor: Colors.green,
@@ -147,7 +145,7 @@ class _PostJobState extends State<PostJob> {
     );
   }
 }
-Widget ReusableRow(name,controller){
+Widget reusableRow(name,controller){
   return Row(
     children: <Widget>[
       Padding(

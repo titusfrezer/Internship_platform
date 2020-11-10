@@ -147,10 +147,10 @@ class _jobDetailState extends State<jobDetail> {
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.3,
                 decoration: BoxDecoration(
-                    color: myColor.myWhite,
+                    color: myColor.myBlack,
                     image: DecorationImage(
                         image: AssetImage("image/internship.jpg"),
-                        fit: BoxFit.cover)),
+                        fit: BoxFit.fill)),
               ),
             ),
             Container(
@@ -212,7 +212,7 @@ class _jobDetailState extends State<jobDetail> {
                             fontSize: 18, color: myColor.myBlack),
                       ),
                       Text(
-                        'For ${widget.howLong}',
+                        'Duration : ${widget.howLong}',
                         style: GoogleFonts.scada(
                             fontSize: 16, color: myColor.myLightGrey),
                       ),

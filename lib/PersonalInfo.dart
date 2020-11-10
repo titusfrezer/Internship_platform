@@ -1,10 +1,9 @@
+
 import 'package:flutter/material.dart';
-import 'package:internship_platform/ChoosePrivelege.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/SignUp.dart';
 import 'package:internship_platform/WaveClipper.dart';
 
-import 'LoginPage.dart';
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 bool _autoValidate = false;

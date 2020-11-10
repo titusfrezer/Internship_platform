@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:internship_platform/Employer/ELandingPage.dart';
-import 'package:internship_platform/Intern/CategoryPage.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/model/eventItem.dart';
@@ -30,8 +29,6 @@ class _MyProfileState extends State<MyProfile> {
   Query userRef;
   var imageUrl;
   var imageurl;
-
-  var identity;
   var individualKey;
   var isLoading = false;
   TextEditingController companyNameController = TextEditingController();

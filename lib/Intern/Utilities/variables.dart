@@ -25,4 +25,4 @@ var db = new DatabaseHelper();
 var fullName;
 var furtherInfo;
 var connectivityResult;
-
+var identity;

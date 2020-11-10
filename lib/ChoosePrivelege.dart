@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:internship_platform/EmployerInfo.dart';
 import 'package:internship_platform/PersonalInfo.dart';
-import 'package:internship_platform/PersonalInfo.dart';
-
 import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 class ChoosePrivelege extends StatefulWidget {

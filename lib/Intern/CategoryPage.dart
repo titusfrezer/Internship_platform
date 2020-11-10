@@ -13,6 +13,7 @@ import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/Intern/chooseJob.dart';
 import 'package:internship_platform/authService.dart';
 
+import '../LoginPage.dart';
 import 'ApplyforJob.dart';
 import 'MyProifle.dart';
 import 'jobDetail.dart';
@@ -48,10 +49,11 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
   getUser() async {
     user = await firebaseAuth.currentUser();
     client = await db.getUser(widget.name);
+    print("client is $client");
     fullName = client[0]['fullName'];
     imageurl = client[0]['image'];
-    decodedImage =
-        imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
+    // decodedImage =
+    //     imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');
@@ -72,6 +74,20 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
 //    }).then((value) => print(value.body));
 //    List fromApi = jsonDecode(response.body);
 //    print("from api ${fromApi[0]}");
+    FirebaseDatabase.instance
+        .reference()
+        .child('Users')
+        .orderByChild("email")
+        .equalTo(user.email)
+        .once()
+        .then((snapshot) {
+      Map<dynamic, dynamic> values = snapshot.value;
+      values.forEach((key, values) {
+        print("value is ${values['url']}");
+        imageurl=values['url'];
+      // decodedImage = Base64Decoder().convert(values['decodedImage']);
+      });
+    });
   }
 
   var queryResultSet = [];
@@ -135,81 +151,86 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
       child: Scaffold(
         backgroundColor: myColor.myBackground,
         resizeToAvoidBottomInset: false,
-        // appBar: AppBar(
-        //   title: Text("Intern Platform"),
-        //   elevation: 0.0,
-        //   backgroundColor: myColor.myBlack,
-        // ),
-        // drawer: Drawer(
-        //   child: SafeArea(
-        //     child: Column(
-        //       children: [
-        //         ClipRect(
-        //           child: Container(
-        //               width: 300,
-        //               decoration: BoxDecoration(
-        //                   image: DecorationImage(
-        //                       image: ExactAssetImage('image/internship.jpg'),
-        //                       fit: BoxFit.cover)),
-        //               child: BackdropFilter(
-        //                 filter: ImageFilter.blur(sigmaY: 1.9, sigmaX: 2.5),
-        //                 child: UserAccountsDrawerHeader(
-        //                   decoration: BoxDecoration(color: Colors.transparent),
-        //                   accountName: CircleAvatar(
-        //                       radius: 60,
-        //                       backgroundColor: Colors.black,
-        //                       foregroundColor: Colors.pink,
-        //                       child: Text(
-        //                         widget.name.substring(0, 1).toUpperCase(),
-        //                         style: TextStyle(fontWeight: FontWeight.bold),
-        //                       )),
-        //                   accountEmail: Text(
-        //                     widget.name,
-        //                     style: TextStyle(
-        //                         color: Colors.black,
-        //                         fontWeight: FontWeight.bold,
-        //                         fontSize: 20),
-        //                   ),
-        //                 ),
-        //               )),
-        //         ),
-        //         InkWell(
-        //           child: ListTile(
-        //             leading: Icon(Icons.person),
-        //             title: Text("My Profile"),
-        //           ),
-        //           onTap: () {
-        //             Navigator.of(context).pop();
-        //             Navigator.of(context).push(MaterialPageRoute(
-        //                 builder: (context) =>
-        //                     MyProfile(user.email, decodedImage)));
-        //           },
-        //         ),
-        //         InkWell(
-        //           child: ListTile(
-        //             leading: Icon(Icons.description),
-        //             title: Text("My Applications"),
-        //           ),
-        //           onTap: () {
-        //             Navigator.of(context).pop();
-        //             Navigator.of(context).push(MaterialPageRoute(
-        //                 builder: (context) => MyApplication(widget.name)));
-        //           },
-        //         ),
-        //         InkWell(
-        //           child: ListTile(
-        //             leading: Icon(Icons.visibility_off),
-        //             title: Text('log out'),
-        //           ),
-        //           onTap: () async {
-        //             print('out');
-        //             await firebaseAuth.signOut();
-        //           },
-        //         )
-        //       ],
-        //     ),
-        //   ),
-        // ),
+
+        drawer: Drawer(
+          child: SafeArea(
+            child: Column(
+              children: [
+                ClipRect(
+                  child: Container(
+                      width: 300,
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: ExactAssetImage('image/internship.jpg'),
+                              fit: BoxFit.cover)),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaY: 1.9, sigmaX: 2.5),
+                        child: UserAccountsDrawerHeader(
+                          decoration: BoxDecoration(color: Colors.transparent),
+                          accountName: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.pink,
+                              child: Text(
+                                widget.name.substring(0, 1).toUpperCase(),
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )),
+                          accountEmail: Text(
+                            widget.name,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20),
+                          ),
+                        ),
+                      )),
+                ),
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(Icons.person),
+                    title: Text("My Profile"),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            MyProfile(user.email,imageurl)));
+                  },
+                ),
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(Icons.description),
+                    title: Text("My Applications"),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => MyApplication(widget.name)));
+                  },
+                ),
+                InkWell(
+                  child: ListTile(
+                    leading: Icon(Icons.visibility_off),
+                    title: Text('log out'),
+                  ),
+                  onTap: () async {
+                    print('out');
+                    await firebaseAuth.signOut();
+                    var user = await firebaseAuth.currentUser();
+                    print(user);
+                    Navigator.of(context).pop();
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context)=>LoginSevenPage()),
+                          (Route<dynamic> route) => false,
+                    );
+
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
         body: SafeArea(
           child: Container(
             child: Column(
@@ -220,18 +241,20 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+
                       Container(
                         height: 50,
                         width: 50,
                         decoration: BoxDecoration(
                             color: myColor.myWhite,
                             borderRadius: BorderRadius.circular(20)),
-                        child: IconButton(
-                            icon: Icon(
-                              Icons.list,
-                              color: myColor.myBlack,
-                            ),
-                            onPressed: () {}),
+                        child: Builder(
+                          builder: (context)=> IconButton(
+                              icon: Icon(Icons.list,color: Colors.purple,), onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          }),
+
+                        ),
                       ),
                       Container(
                         alignment: Alignment.center,
@@ -244,10 +267,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                       Container(
                         height: 50,
                         width: 50,
-                        decoration: BoxDecoration(
-                            color: myColor.myWhite,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Icon(Icons.person),
+
                       )
                     ],
                   ),
@@ -426,8 +446,8 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                           }
                                         },
                                         child: Text('Retry',
-                                            style: TextStyle(
-                                                color: myColor.myBlack)))
+                                            style:
+                                                TextStyle(color: myColor.myBlack)))
                                   ],
                                 ),
                               );
@@ -458,7 +478,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                 ),
                 Expanded(
                   child: Padding(
-                      padding: EdgeInsets.only(left: 10, top: 10, right: 10),
+                      padding: EdgeInsets.only(left: 10, top: 10,right: 10),
                       child: StreamBuilder(
                           stream: FirebaseDatabase.instance
                               .reference()
@@ -471,46 +491,49 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                               RecentPost.clear();
                               var counter = 0;
                               for (var i = 0;
-                                  i < map.values.toList().length;
-                                  i++) {
+                              i < map.values.toList().length;
+                              i++) {
                                 if (map.values.toList()[i]['status'] ==
                                     'open') {
                                   if (int.parse(map.values
-                                          .toList()[i]['postedAt']
-                                          .toString()
-                                          .split("-")[0]) ==
+                                      .toList()[i]['postedAt']
+                                      .toString()
+                                      .split("-")[0]) ==
                                       DateTime.now().year) {
                                     if (int.parse(map.values
-                                            .toList()[i]['postedAt']
-                                            .toString()
-                                            .split("-")[1]) ==
+                                        .toList()[i]['postedAt']
+                                        .toString()
+                                        .split("-")[1]) ==
                                         DateTime.now().month) {
                                       if (DateTime.now().day -
-                                              (int.parse(map.values
-                                                  .toList()[i]['postedAt']
-                                                  .toString()
-                                                  .split("-")[2])) <=
+                                          (int.parse(map.values
+                                              .toList()[i]['postedAt']
+                                              .toString()
+                                              .split("-")[2])) <=
                                           5) {
                                         print("month is equal");
-                                        RecentPost.add(map.values.toList()[i]);
+                                        RecentPost.add(
+                                            map.values.toList()[i]);
                                         counter++;
                                       }
                                     } else if ((DateTime.now().month -
-                                            int.parse(map.values
-                                                .toList()[i]['postedAt']
-                                                .toString()
-                                                .split("-")[1])) ==
+                                        int.parse(map.values
+                                            .toList()[i]['postedAt']
+                                            .toString()
+                                            .split("-")[1])) ==
                                         1) {
                                       // if the month difference is 1 like Nov and Oct
                                       if ((30 -
-                                                  int.parse(map.values
-                                                      .toList()[i]['postedAt']
-                                                      .toString()
-                                                      .split("-")[2])) +
-                                              DateTime.now().day <=
+                                          int.parse(map.values
+                                              .toList()[i]
+                                          ['postedAt']
+                                              .toString()
+                                              .split("-")[2])) +
+                                          DateTime.now().day <=
                                           5) {
                                         print("less month");
-                                        RecentPost.add(map.values.toList()[i]);
+                                        RecentPost.add(
+                                            map.values.toList()[i]);
                                         counter++;
                                       }
                                     }
@@ -526,23 +549,24 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                 return ListView.builder(
                                     scrollDirection: Axis.vertical,
                                     itemCount: RecentPost.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
+                                    itemBuilder: (BuildContext context,
+                                        int index) {
                                       return Container(
-                                        margin: EdgeInsets.only(bottom: 20),
+                                        margin: EdgeInsets.only(bottom:20),
                                         decoration: BoxDecoration(
-                                            color: myColor.myWhite,
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
+                                          color: myColor.myWhite,
+                                          borderRadius: BorderRadius.circular(15)
+                                        ),
                                         child: ListTile(
                                           leading: Icon(
                                             Icons.access_time,
-                                            color: myColor.myBlack,
+                                            color: Colors.purple,
                                           ),
                                           title: Text(
                                               "${RecentPost[index]['jobTitle']}",
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.bold)),
+                                                  fontWeight:
+                                                  FontWeight.bold)),
                                           subtitle: Row(
 //                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                             children: <Widget>[
@@ -550,41 +574,34 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                   width: 100,
                                                   child: Text(
                                                     "${RecentPost[index]['companyName']}",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
+                                                    overflow: TextOverflow
+                                                        .ellipsis,
                                                   )),
 //
                                             ],
                                           ),
                                           trailing: FlatButton(
                                               onPressed: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) => jobDetail(
-                                                            RecentPost[index]
-                                                                ['jobTitle'],
-                                                            RecentPost[index][
-                                                                'jobDescription'],
-                                                            RecentPost[index]
-                                                                ['postedBy'],
-                                                            RecentPost[index]
-                                                                ['category'],
-                                                            RecentPost[index]
-                                                                ['postedAt'],
-                                                            RecentPost[index]
-                                                                ['allowance'],
-                                                            RecentPost[index]
-                                                                ['howLong'],
-                                                            RecentPost[index][
-                                                                'companyName'])));
+                                                Navigator.of(context).push(MaterialPageRoute(
+                                                    builder: (context) => jobDetail(
+                                                        RecentPost[index]
+                                                        ['jobTitle'],
+                                                        RecentPost[index][
+                                                        'jobDescription'],
+                                                        RecentPost[index]
+                                                        ['postedBy'],
+                                                        RecentPost[index]
+                                                        ['category'],
+                                                        RecentPost[index]
+                                                        ['postedAt'],
+                                                        RecentPost[index]
+                                                        ['allowance'],
+                                                        RecentPost[index]
+                                                        ['howLong'],
+                                                        RecentPost[index][
+                                                        'companyName'])));
                                               },
-                                              child: Text(
-                                                "Detail",
-                                                style: GoogleFonts.delius(
-                                                    color: myColor.myDarkGrey,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              )),
+                                              child: Text("Detail")),
                                         ),
                                       );
                                     });
@@ -593,7 +610,8 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                             if (!connected) {
                               return Center(
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
                                   children: [
                                     Icon(
                                       Icons.signal_wifi_off,
@@ -606,16 +624,19 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                 width: 1,
                                                 style: BorderStyle.solid),
                                             borderRadius:
-                                                BorderRadius.circular(50)),
+                                            BorderRadius.circular(
+                                                50)),
                                         onPressed: () async {
                                           var connectivityResult =
-                                              await (Connectivity()
-                                                  .checkConnectivity());
+                                          await (Connectivity()
+                                              .checkConnectivity());
                                           print(connectivityResult);
                                           if ((connectivityResult ==
-                                                  ConnectivityResult.wifi) ||
+                                              ConnectivityResult
+                                                  .wifi) ||
                                               connectivityResult ==
-                                                  ConnectivityResult.mobile) {
+                                                  ConnectivityResult
+                                                      .mobile) {
                                             connected = true;
                                             print('connected');
                                             setState(() {});
