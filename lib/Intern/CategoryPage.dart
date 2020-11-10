@@ -41,7 +41,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     RecentPost.clear();
   }
 
-  bool connected = false;
+  bool connected = true;
   var client;
   var imageurl;
   var decodedImage;
@@ -51,9 +51,6 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     client = await db.getUser(widget.name);
     print("client is $client");
     fullName = client[0]['fullName'];
-    imageurl = client[0]['image'];
-    // decodedImage =
-    //     imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');
@@ -442,6 +439,9 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                             print('connected');
                                             setState(() {});
                                           } else {
+                                            setState(() {
+                                              connected = false;
+                                            });
                                             print('not connected');
                                           }
                                         },
