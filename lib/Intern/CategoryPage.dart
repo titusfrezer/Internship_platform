@@ -39,6 +39,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     getUser();
     print('hi');
     RecentPost.clear();
+
   }
 
   bool connected = false;
@@ -46,20 +47,15 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
   var imageurl;
   var decodedImage;
 
-  getUser() async {
+   getUser() async {
     user = await firebaseAuth.currentUser();
-    client = await db.getUser(widget.name);
-    print("client is $client");
-    fullName = client[0]['fullName'];
-    imageurl = client[0]['image'];
-    // decodedImage =
-    //     imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
+
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
-      print('connected via cellular');
+      print('${user.email} is connected via cellular');
       connected = true;
     } else if (connectivityResult == ConnectivityResult.wifi) {
-      print('connected via wifi');
+      print('${user.email} is connected via wifi');
       connected = true;
     } else if (connectivityResult == ConnectivityResult.none) {
       print('not connected');
@@ -74,20 +70,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
 //    }).then((value) => print(value.body));
 //    List fromApi = jsonDecode(response.body);
 //    print("from api ${fromApi[0]}");
-    FirebaseDatabase.instance
-        .reference()
-        .child('Users')
-        .orderByChild("email")
-        .equalTo(user.email)
-        .once()
-        .then((snapshot) {
-      Map<dynamic, dynamic> values = snapshot.value;
-      values.forEach((key, values) {
-        print("value is ${values['url']}");
-        imageurl=values['url'];
-      // decodedImage = Base64Decoder().convert(values['decodedImage']);
-      });
-    });
+
   }
 
   var queryResultSet = [];
@@ -277,14 +260,33 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: 20),
-                  child: Text(
-                    'Hi $fullName',
-                    style: TextStyle(
-                        color: myColor.myDarkGrey,
-                        fontFamily: 'Oswald',
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16),
-                  ),
+                  child: StreamBuilder(
+                    stream:  FirebaseDatabase.instance
+                        .reference()
+                        .child('Users')
+                        .orderByChild("email")
+                        .equalTo(widget.name)
+                        .onValue,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        Map map = snapshot.data.snapshot.value;
+                        imageurl=map.values.toList()[0]['url'];
+                        return Text(
+                          'Hi ${map.values.toList()[0]['userName']}',
+                          style: TextStyle(
+                              color: myColor.myDarkGrey,
+                              fontFamily: 'Oswald',
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        );
+                      }
+                      return Text('Hi', style: TextStyle(
+                          color: myColor.myDarkGrey,
+                          fontFamily: 'Oswald',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),);
+                    }
+                  )
                 ),
                 SizedBox(
                   height: 15,
@@ -442,6 +444,9 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                             print('connected');
                                             setState(() {});
                                           } else {
+                                            setState(() {
+                                              connected = false;
+                                            });
                                             print('not connected');
                                           }
                                         },
