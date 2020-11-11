@@ -49,23 +49,25 @@ class _HomeControllerState extends State<HomeController> {
   var client;
   bool connected=false;
   getUser() async {
-    user = await firebaseAuth.currentUser();
-// db.deleteUser(3);
-if(user!=null || name!=null) {
-  client = await db.getUser(name != null ? name : user.email);
 
-  identity = client[0]['identity'];
-  fullName = client[0]['fullName'];
-  print("$name is trying to log in and identity is$identity");
-  print("user iss $client");
-}
+    Query User = FirebaseDatabase.instance.reference().child("Users").orderByChild("email");
+    User.once().then((DataSnapshot snapshot){
+      Map<dynamic, dynamic> values = snapshot.value;
+      values.forEach((key, values) {
+        fullName=values['userName'];
+        // decodedImage = Base64Decoder().convert(values['decodedImage']);
+      });
+    });
+    user = await firebaseAuth.currentUser();
+
+
   }
 
 
 
   @override
   Widget build(BuildContext context) {
-Query User = FirebaseDatabase.instance.reference().child("Users").orderByChild("email");
+
 
     final AuthService auth = Provider
         .of(context)

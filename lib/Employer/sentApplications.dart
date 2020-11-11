@@ -220,7 +220,7 @@ var client;
                       return Center(
                         child: Text(
                           'No Sent Application Yet',
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+                          style: TextStyle(color: Colors.black, fontSize: 20),
                         ),
                       );
                     }

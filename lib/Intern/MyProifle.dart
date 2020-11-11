@@ -16,9 +16,9 @@ import 'package:internship_platform/model/eventItem.dart';
 
 class MyProfile extends StatefulWidget {
   String email;
-  var decodedImage;
+  var imageUrl;
 
-  MyProfile(this.email, this.decodedImage);
+  MyProfile(this.email, this.imageUrl);
 
   @override
   _MyProfileState createState() => _MyProfileState();
@@ -26,14 +26,12 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   Query userRef;
-  var imageUrl;
-  var imageurl;
 
   var identity;
   var isLoading = false;
   TextEditingController nameController = TextEditingController();
   TextEditingController furtherController = TextEditingController();
-  bool checkConnection=false;
+  bool checkConnection = false;
   Query checkUser;
 
   void initState() {
@@ -43,11 +41,10 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   getInfo() async {
-   
     var connectivityResult = await (Connectivity().checkConnectivity());
     checkConnection = ((connectivityResult == ConnectivityResult.wifi) ||
         (connectivityResult == ConnectivityResult.mobile));
-print("connected $checkConnection");
+    print("connected $checkConnection");
   }
 
   // Uint8List _bytesImage;
@@ -140,27 +137,35 @@ print("connected $checkConnection");
                                           radius: 55,
                                           backgroundImage: FileImage(_image),
                                         )
-                                      : widget.decodedImage != null
-                                          ? CircleAvatar(
-                                              backgroundColor: Colors.black,
-                                              child: Row(
-                                                children: [
-                                                  SizedBox(width: 62),
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      Icons.edit,
-                                                      size: 25,
-                                                    ),
-                                                    onPressed: () async {
-                                                      await getImage();
-                                                    },
+                                      : widget.imageUrl != null
+                                          ? ClipOval(
+
+                                            child: Stack(
+                                              // mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                // SizedBox(width: 62),
+
+                                                FadeInImage(
+                                                  width: 100,
+                                                  height: 100,
+                                                  fit:BoxFit.cover,
+                                                    placeholder: AssetImage(
+                                                        'image/internship.jpg'),
+                                                    image: NetworkImage(map.values.toList()[0]['url'])),
+                                              SizedBox(height: 40,),
+                                                IconButton(color: Colors.white,
+                                                  icon: Icon(
+
+                                                    Icons.edit,
+                                                    size: 25,
                                                   ),
-                                                ],
-                                              ),
-                                              radius: 55,
-                                              backgroundImage: NetworkImage(
-                                                map.values.toList()[0]['url'],
-                                              ))
+                                                  onPressed: () async {
+                                                    await getImage();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          )
                                           : CircleAvatar(
                                               radius: 55,
                                               child: Column(
@@ -218,11 +223,9 @@ print("connected $checkConnection");
                             focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Colors.purple, width: 2.0),
-
                             ),
                             icon: Icon(Icons.person, color: Colors.black),
-                            border: OutlineInputBorder()
-                            ),
+                            border: OutlineInputBorder()),
                         controller: nameController,
                       ),
                     ),
@@ -235,13 +238,10 @@ print("connected $checkConnection");
                             focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                   color: Colors.purple, width: 2.0),
-
                             ),
                             focusColor: myColor.myBlack,
                             border: OutlineInputBorder(),
-                            icon: Icon(Icons.work, color: Colors.black)
-
-                            ),
+                            icon: Icon(Icons.work, color: Colors.black)),
                         controller: furtherController,
                       ),
                     ),
@@ -282,6 +282,8 @@ print("connected $checkConnection");
                                   }
                                   if (furtherController.text.isNotEmpty &&
                                       nameController.text.isNotEmpty) {
+                                    var updatedfurther = furtherController.text;
+                                    var updatedName = nameController.text;
                                     if (_image != null) {
                                       // if image is selected using image picker
                                       StorageReference ref = FirebaseStorage
@@ -298,29 +300,28 @@ print("connected $checkConnection");
                                       url = map.values.toList()[0]['url'];
                                     }
 
-                                    print("url is $url");
-                                    print("identity is $identity");
                                     FirebaseDatabase.instance
                                         .reference()
                                         .child("Users")
                                         .child(map.keys.toList()[0])
                                         .update({
-                                      'furtherInfo': furtherController.text,
-                                      'userName': nameController.text,
+                                      'furtherInfo': updatedfurther,
+                                      'userName': updatedName,
                                       'url': url,
                                       // 'decodedImage':base64Image
                                     }).then((_) {
                                       db.updateUser(
                                           User(
-                                              identity,
+                                              map.values.toList()[0]['identity'],
                                               widget.email.toString(),
-                                              nameController.text,
-                                              furtherController.text,
+                                              updatedName,
+                                              updatedfurther,
                                               'none'),
                                           widget.email);
 
                                       setState(() {
                                         isLoading = false;
+
                                       });
                                       Flushbar(
                                         icon: Icon(
@@ -334,7 +335,6 @@ print("connected $checkConnection");
                                       )..show(context);
                                       print('done');
                                     });
-
                                   } else {
                                     setState(() {
                                       isLoading = false;
@@ -386,7 +386,7 @@ print("connected $checkConnection");
                               });
                             } else {
                               setState(() {
-                                checkConnection=false;
+                                checkConnection = false;
                               });
                               print('not connected');
                             }

@@ -231,7 +231,8 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       _validateInputs();
                       try {
                         name = widget.email;
-
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: widget.email, password: widget.password);
 
                         // The below code uses to register the User incase he uses another device(i.e user must logged in first)
 
@@ -257,6 +258,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                             }
                             // saving to local database
                           }).then((x) {
+                            print("idenityi is $identity");
                             db.saveUser(User(identity, widget.email, fullName,
                                 furtherInfo, "none"));
 
@@ -266,11 +268,9 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                           // print("my client is $client");
 
                         }
-                        isLoading = false;
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: widget.email, password: widget.password);
-
-
+                       setState(() {
+                         isLoading = false;
+                       });
 
                        await Navigator.pushAndRemoveUntil(
                           context,
@@ -300,9 +300,9 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                         }
                       }
 
-                      setState(() {
+
                         isLoading = false;
-                      });
+
                     },
                   ),
                 )),
