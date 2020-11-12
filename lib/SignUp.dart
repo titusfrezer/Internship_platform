@@ -15,9 +15,9 @@ import 'model/eventItem.dart';
 bool _autoValidate = false;
 bool isValid;
 DatabaseReference userRef =
-FirebaseDatabase.instance.reference().child("Users");
-class SignUpPage extends StatefulWidget {
+    FirebaseDatabase.instance.reference().child("Users");
 
+class SignUpPage extends StatefulWidget {
   @override
   _SignUpPageState createState() => _SignUpPageState();
   String privelege;
@@ -25,16 +25,19 @@ class SignUpPage extends StatefulWidget {
   String furtherInfo;
   String email;
   String password;
-  SignUpPage(this.privelege,this.fullName,this.furtherInfo);
+
+  SignUpPage(this.privelege, this.fullName, this.furtherInfo);
 }
 
 class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isObscure = true;
-  void initState(){
+
+  void initState() {
     super.initState();
     print(widget.fullName);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,8 +56,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.purple.shade100,  Colors.purple.shade100])),
+                        gradient: SweepGradient(colors: [
+                      myColor.myDarkGrey,
+                      myColor.myWhite,
+                    ])),
                   ),
                 ),
                 ClipPath(
@@ -64,8 +69,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.purple, Colors.purple])),
+                        gradient: SweepGradient(colors: [
+                      myColor.myWhite,
+                      myColor.myLightGrey,
+                      myColor.myWhite,
+                      myColor.myLightGrey,
+                    ])),
                   ),
                 ),
                 ClipPath(
@@ -97,13 +106,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 300,
                     decoration: BoxDecoration(
                         gradient: SweepGradient(colors: [
-                          myColor.myDarkGrey,
-                          myColor.myBackground,
-                          myColor.myDarkGrey,
-                          myColor.myBlack,
-                          myColor.myBlack,
-                          myColor.myDarkGrey
-                        ])),
+                      myColor.myDarkGrey,
+                      myColor.myBlack,
+                      myColor.myDarkGrey,
+                      myColor.myBlack,
+                      myColor.myDarkGrey,
+                    ])),
                   ),
                 ),
               ],
@@ -117,7 +125,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 elevation: 2.0,
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
-                  validator: (value){
+                  validator: (value) {
                     Pattern pattern =
                         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
                     RegExp regex = new RegExp(pattern);
@@ -126,13 +134,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     else
                       return null;
                   },
-                    onSaved: (value){
+                  onSaved: (value) {
                     widget.email = value;
                     print('emailis ${widget.email}');
-                    },
-
-                  onChanged: (String value){},
-                  cursorColor: Colors.deepOrange,
+                  },
+                  onChanged: (String value) {},
+                  cursorColor: myColor.myBlack,
                   decoration: InputDecoration(
                       hintText: "Email",
                       prefixIcon: Material(
@@ -140,12 +147,12 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.email,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       border: InputBorder.none,
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
                 ),
               ),
             ),
@@ -159,19 +166,17 @@ class _SignUpPageState extends State<SignUpPage> {
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
                   obscureText: isObscure,
-                  validator: (value){
-                    if(value.length<8){
+                  validator: (value) {
+                    if (value.length < 8) {
                       return 'password must be at least 8 characters';
                     }
                     return null;
                   },
-                  onSaved: (value){
+                  onSaved: (value) {},
+                  onChanged: (String value) {
+                    widget.password = value;
                   },
-
-                  onChanged: (String value){
-                   widget.password=value;
-                  },
-                  cursorColor: Colors.deepOrange,
+                  cursorColor: myColor.myBlack,
                   decoration: InputDecoration(
                       hintText: "Password",
                       prefixIcon: Material(
@@ -179,29 +184,29 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.lock,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       suffixIcon: isObscure
                           ? IconButton(
-                        icon: Icon(Icons.visibility),
-                        onPressed: () {
-                          setState(() {
-                            isObscure = false;
-                          });
-                        },
-                      )
+                              icon: Icon(Icons.visibility,color: myColor.myBlack,),
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = false;
+                                });
+                              },
+                            )
                           : IconButton(
-                        icon: Icon(Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            isObscure = true;
-                          });
-                        },
-                      ),
+                              icon: Icon(Icons.visibility_off,color: myColor.myDarkGrey,),
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = true;
+                                });
+                              },
+                            ),
                       border: InputBorder.none,
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
                 ),
               ),
             ),
@@ -215,20 +220,21 @@ class _SignUpPageState extends State<SignUpPage> {
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
                   obscureText: isObscure,
-                  validator: (value){
-                    if(value.toString()!=widget.password){
-                      print("password is ${widget.password} and confirm is $value");
+                  validator: (value) {
+                    if (value.toString() != widget.password) {
+                      print(
+                          "password is ${widget.password} and confirm is $value");
                       return 'Confirm Password';
                     }
                     return null;
                   },
-                  onSaved: (value){
-                    if(value!=widget.password){
+                  onSaved: (value) {
+                    if (value != widget.password) {
                       print('wrong password');
                     }
                   },
-                  onChanged: (String value){},
-                  cursorColor: Colors.deepOrange,
+                  onChanged: (String value) {},
+                  cursorColor: myColor.myBlack,
                   decoration: InputDecoration(
                       hintText: "Confirm Password",
                       prefixIcon: Material(
@@ -236,55 +242,58 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.lock,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       suffixIcon: isObscure
                           ? IconButton(
-                        icon: Icon(Icons.visibility),
-                        onPressed: () {
-                          setState(() {
-                            isObscure = false;
-                          });
-                        },
-                      )
+                              icon: Icon(Icons.visibility,color: myColor.myBlack,),
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = false;
+                                });
+                              },
+                            )
                           : IconButton(
-                        icon: Icon(Icons.visibility_off),
-                        onPressed: () {
-                          setState(() {
-                            isObscure = true;
-                          });
-                        },
-                      ),
+                              icon: Icon(Icons.visibility_off,color: myColor.myDarkGrey,),
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = true;
+                                });
+                              },
+                            ),
                       border: InputBorder.none,
                       contentPadding:
-                      EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
+                          EdgeInsets.symmetric(horizontal: 25, vertical: 13)),
                 ),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(
+              height: 20,
+            ),
             Padding(
                 padding: EdgeInsets.symmetric(horizontal: 32),
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
-                      color: Colors.purple),
+                      color: myColor.myBlack),
                   child: FlatButton(
-                    child: isLoading?SpinKitWave(color: Colors.white):Text(
-                      "SignUp",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18),
-                    ),
-                    onPressed: () async{
-
-                      print('email is ${widget.email} and full name is ${widget.fullName}');
+                    child: isLoading
+                        ? SpinKitWave(color: Colors.white,size: 16,)
+                        : Text(
+                            "SignUp",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 18),
+                          ),
+                    onPressed: () async {
+                      print(
+                          'email is ${widget.email} and full name is ${widget.fullName}');
                       _validateInputs();
-                      if(isValid) {
-
+                      if (isValid) {
                         setState(() {
-                          isLoading=true;
+                          isLoading = true;
                         });
                         try {
                           await FirebaseAuth.instance
@@ -293,48 +302,46 @@ class _SignUpPageState extends State<SignUpPage> {
                             password: widget.password,
                           );
 
-
                           var db = new DatabaseHelper();
 
                           // Add user
-                         await db.saveUser(User(widget.privelege,widget.email,widget.fullName,widget.furtherInfo,"none"));
-                          await userRef
-                              .push()
-                              .set(<dynamic, dynamic>{
+                          await db.saveUser(User(widget.privelege, widget.email,
+                              widget.fullName, widget.furtherInfo, "none"));
+                          await userRef.push().set(<dynamic, dynamic>{
                             'email': widget.email,
                             'identity': widget.privelege,
                             'userName': widget.fullName,
-                            'furtherInfo':widget.furtherInfo,  // fieldofStudy for intern and location for comapany
-
-                              });
+                            'furtherInfo': widget.furtherInfo,
+                            // fieldofStudy for intern and location for comapany
+                          });
                           name = widget.email;
                           fullName = widget.fullName;
                           Navigator.pushAndRemoveUntil(
                             context,
-                            MaterialPageRoute(builder: (context) =>
-                                HomeController()),
-                                (Route<dynamic> route) => false,
+                            MaterialPageRoute(
+                                builder: (context) => HomeController()),
+                            (Route<dynamic> route) => false,
                           );
                         } catch (e) {
                           print(e);
                           if (e.toString() ==
                               "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
-                            Flushbar(duration: Duration(seconds: 3),
+                            Flushbar(
+                              duration: Duration(seconds: 3),
                               backgroundColor: Colors.red,
                               icon: Icon(Icons.error),
                               message: 'Connection error',
-                            )
-                              ..show(context);
-                          }
+                            )..show(context);
 
-                          else if (e.toString() ==
+                          } else if (e.toString() ==
                               "PlatformException(ERROR_EMAIL_ALREADY_IN_USE, The email address is already in use by another account., null, null)") {
-                            Flushbar(duration: Duration(seconds: 3),
+                            Flushbar(
+                              duration: Duration(seconds: 3),
                               backgroundColor: Colors.red,
                               icon: Icon(Icons.error),
                               message: 'Email already exists',
-                            )
-                              ..show(context);
+                            )..show(context);
+
                           }
                         }
                         setState(() {
@@ -344,34 +351,45 @@ class _SignUpPageState extends State<SignUpPage> {
                     },
                   ),
                 )),
-            SizedBox(height: 20,),
-
+            SizedBox(
+              height: 20,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("Already have an Account ? ", style: TextStyle(color:Colors.black,fontSize: 16 ,fontWeight: FontWeight.normal),),
+                Text(
+                  "Already have an Account ? ",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal),
+                ),
                 GestureDetector(
-
-                    onTap: (){
-Navigator.of(context).push(MaterialPageRoute(builder:(context)=>LoginSevenPage()));
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => LoginSevenPage()));
                     },
-                    child: Text("Login ", style: TextStyle(color:Colors.purple, fontWeight: FontWeight.w500,fontSize: 16, decoration: TextDecoration.underline ))),
-
+                    child: Text("Login ",
+                        style: TextStyle(
+                            color: myColor.myDarkGrey,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            decoration: TextDecoration.underline))),
               ],
             )
           ],
         ),
       ),
     );
-
   }
+
   void _validateInputs() {
     if (_formKey.currentState.validate()) {
 //    If all data are correct then save data to out variables
       _formKey.currentState.save();
-      isValid= true;
+      isValid = true;
     } else {
-      isValid=false;
+      isValid = false;
 //    If all data are not valid then start auto validation.
       setState(() {
         _autoValidate = true;
@@ -379,4 +397,3 @@ Navigator.of(context).push(MaterialPageRoute(builder:(context)=>LoginSevenPage()
     }
   }
 }
-

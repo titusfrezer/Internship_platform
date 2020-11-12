@@ -36,14 +36,11 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient:    SweepGradient(colors: [
-                        myColor.myDarkGrey,
-                        myColor.myBackground,
-                        myColor.myDarkGrey,
-                        myColor.myBlack,
-                        myColor.myBlack,
-                        myColor.myDarkGrey
-                        ])),
+
+                          gradient: SweepGradient(colors: [
+                            myColor.myDarkGrey,
+                            myColor.myWhite,
+                          ])),
                   ),
                 ),
                 ClipPath(
@@ -53,8 +50,12 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.purple, Colors.purple])),
+                        gradient:  SweepGradient(colors: [
+                        myColor.myWhite,
+                        myColor.myLightGrey,
+                        myColor.myWhite,
+                        myColor.myLightGrey,
+                        ])),
                   ),
                 ),
                 ClipPath(
@@ -85,8 +86,13 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [myColor.myBlack, myColor.myBlack])),
+                        gradient: SweepGradient(colors: [
+                          myColor.myDarkGrey,
+                          myColor.myBlack,
+                          myColor.myDarkGrey,
+                          myColor.myBlack,
+                          myColor.myDarkGrey,
+                        ])),
                   ),
                 ),
               ],
@@ -110,7 +116,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                     widget.employerName = value;
                   },
                   onChanged: (String value){},
-                  cursorColor: Colors.deepOrange,
+                  cursorColor: myColor.myBlack,
                   decoration: InputDecoration(
                       hintText: "Employer(Company) Name",
                       prefixIcon: Material(
@@ -118,7 +124,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.person,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       border: InputBorder.none,
@@ -146,7 +152,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                     widget.employerLocation = value;
                   },
                   onChanged: (String value){},
-                  cursorColor: Colors.deepOrange,
+                  cursorColor:myColor.myBlack,
                   decoration: InputDecoration(
                       hintText: "Location e.g Kazanchis",
                       prefixIcon: Material(
@@ -154,7 +160,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.lock,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       border: InputBorder.none,
@@ -171,7 +177,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
-                      color: Colors.purple),
+                      color: myColor.myBlack),
                   child: FlatButton(
                     child: Text(
                       "Next",
