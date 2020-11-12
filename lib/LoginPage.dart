@@ -109,6 +109,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                 ),
               ],
             ),
+
             SizedBox(
               height: 30,
             ),
@@ -131,7 +132,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     widget.email = value;
                   },
                   onChanged: (String value) {},
-                  cursorColor: myColor.myBlack,
+                  cursorColor: Colors.deepOrange,
                   decoration: InputDecoration(
                       hintText: "Email",
                       prefixIcon: Material(
@@ -168,7 +169,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                     widget.password = value;
                   },
                   onChanged: (String value) {},
-                  cursorColor: myColor.myBlack,
+                  cursorColor: Colors.deepOrange,
                   decoration: InputDecoration(
                       hintText: "Password",
                       prefixIcon: Material(
@@ -181,10 +182,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       ),
                       suffixIcon: isObscure
                           ? IconButton(
-                              icon: Icon(
-                                Icons.visibility,
-                                color: myColor.myBlack,
-                              ),
+                              icon: Icon(Icons.visibility),
                               onPressed: () {
                                 setState(() {
                                   isObscure = false;
@@ -192,10 +190,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                               },
                             )
                           : IconButton(
-                              icon: Icon(
-                                Icons.visibility_off,
-                                color: myColor.myDarkGrey,
-                              ),
+                              icon: Icon(Icons.visibility_off),
                               onPressed: () {
                                 setState(() {
                                   isObscure = true;
@@ -220,10 +215,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                   ),
                   child: FlatButton(
                     child: isLoading == true
-                        ? SpinKitWave(
-                            color: myColor.myWhite,
-                            size: 16,
-                          )
+                        ? SpinKitWave(color: myColor.myWhite)
                         : Text(
                             "Login",
                             style: TextStyle(
@@ -239,14 +231,13 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       _validateInputs();
                       try {
                         name = widget.email;
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: widget.email, password: widget.password);
 
                         // The below code uses to register the User incase he uses another device(i.e user must logged in first)
 
                         // db = new DatabaseHelper();
                         var client = await db.getUser(widget.email);
                         print(client);
+
 
                         if (client.toString() == '[]') {
                           Query checkUser = FirebaseDatabase.instance
@@ -258,6 +249,7 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                             var KEYS = snapshot.value.keys;
                             var DATA = snapshot.value;
                             for (var individualKey in KEYS) {
+
                               identity = DATA[individualKey]['identity'];
                               fullName = DATA[individualKey]['userName'];
                               furtherInfo = DATA[individualKey]['furtherInfo'];
@@ -267,22 +259,22 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                             print("idenityi is $identity");
                             db.saveUser(User(identity, widget.email, fullName,
                                 furtherInfo, "none"));
+
                           });
-                          // client =await db.getUser(widget.email);
-                          //  fullName = client[0]['fullName'];
-                          // print("my client is $client");
 
                         }
-                        setState(() {
-                          isLoading = false;
-                        });
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: widget.email, password: widget.password);
+                       setState(() {
+                         isLoading = false;
+                       });
 
-                        await Navigator.pushAndRemoveUntil(
+                       await Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeController()),
-                          (Route<dynamic> route) => false,
+                          MaterialPageRoute(builder: (context)=>HomeController()),
+                              (Route<dynamic> route) => false,
                         );
+
                       } catch (Exception) {
                         print(Exception.toString());
                         if (Exception.toString() ==
@@ -305,15 +297,18 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                         }
                       }
 
-                      setState(() {
-                        isLoading = false;
-                      });
+
+                        setState(() {
+                          isLoading = false;
+                        });
+
                     },
                   ),
                 )),
             SizedBox(
               height: 20,
             ),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
