@@ -31,7 +31,6 @@ class jobDetail extends StatefulWidget {
 
 class _jobDetailState extends State<jobDetail> {
   var client;
-  var identity;
   var fullName;
   var email;
   var furtherInfo;
@@ -40,7 +39,7 @@ class _jobDetailState extends State<jobDetail> {
       FirebaseDatabase.instance.reference().child('application');
   var file;
   var isloading = false;
-  var image;
+
 
   @override
   void initState() {
@@ -54,13 +53,20 @@ class _jobDetailState extends State<jobDetail> {
   getInfo() async {
     user = await firebaseAuth.currentUser();
 
-    client = await db.getUser(user.email);
+    FirebaseDatabase.instance
+        .reference()
+        .child("Users")
+        .orderByChild('email')
+        .equalTo(user.email)
+        .once()
+        .then((DataSnapshot snapshot) {
+      Map map = snapshot.value;
+      print("map is ${map.values.toList()}");
+      fullName = map.values.toList()[0]['userName'];
+      furtherInfo = map.values.toList()[0]['furtherInfo'];
 
-    identity = client[0]['identity'];
-    fullName = client[0]['fullName'];
-    email = client[0]['email'];
-    image = client[0]['image'];
-    furtherInfo = client[0]['furtherInfo'];
+    });
+
   }
 
   postToFirebase() async {
@@ -73,7 +79,7 @@ class _jobDetailState extends State<jobDetail> {
 
     applyRef.push().set(<dynamic, dynamic>{
       'ApplierName': fullName,
-      'ApplierEmail': email,
+      'ApplierEmail': user.email,
       'ApplierExpertise': furtherInfo,
       'cvUrl': url,
       'category': widget.category,
