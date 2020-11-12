@@ -12,5 +12,9 @@ class AuthService {
   signOut() async {
   await  _firebaseAuth.signOut();
   }
+  currentUser(){
+
+    _firebaseAuth.currentUser();
+  }
 
 }

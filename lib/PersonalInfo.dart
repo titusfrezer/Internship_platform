@@ -37,10 +37,10 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                      Colors.purple.shade100,
-                      Colors.purple.shade100
-                    ])),
+                        gradient: SweepGradient(colors: [
+                          myColor.myDarkGrey,
+                          myColor.myWhite,
+                        ])),
                   ),
                 ),
                 ClipPath(
@@ -50,8 +50,12 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [Colors.purple, Colors.purple])),
+                        gradient: SweepGradient(colors: [
+                          myColor.myWhite,
+                          myColor.myLightGrey,
+                          myColor.myWhite,
+                          myColor.myLightGrey,
+                        ])),
                   ),
                 ),
                 ClipPath(
@@ -82,8 +86,13 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     width: double.infinity,
                     height: 300,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: [myColor.myBlack, myColor.myBlack])),
+                        gradient: SweepGradient(colors: [
+                          myColor.myDarkGrey,
+                          myColor.myBlack,
+                          myColor.myDarkGrey,
+                          myColor.myBlack,
+                          myColor.myDarkGrey,
+                        ])),
                   ),
                 ),
               ],
@@ -107,7 +116,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     return null;
                   },
                   onChanged: (String value) {},
-                  cursorColor: Colors.deepOrange,
+                  cursorColor: myColor.myBlack,
                   decoration: InputDecoration(
                       hintText: "Full Name",
                       prefixIcon: Material(
@@ -115,7 +124,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.person,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       border: InputBorder.none,
@@ -143,7 +152,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                     return null;
                   },
                   onChanged: (String value) {},
-                  cursorColor: Colors.deepOrange,
+                  cursorColor: myColor.myBlack,
                   decoration: InputDecoration(
                       hintText: "Field of Study",
                       prefixIcon: Material(
@@ -151,7 +160,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
                           Icons.school,
-                          color: Colors.purple,
+                          color: myColor.myBlack,
                         ),
                       ),
                       border: InputBorder.none,
@@ -168,7 +177,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(100)),
-                      color: Colors.purple),
+                      color: myColor.myBlack),
                   child: FlatButton(
                     child: Text(
                       "Next",
