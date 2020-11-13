@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 class MyApplication extends StatefulWidget {
 
@@ -101,8 +102,8 @@ class _MyApplicationState extends State<MyApplication> {
                   itemCount: map.values.toList().length,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (BuildContext context, int index) {
-                    return Dismissible(
-//              background: Container(color:Colors.red,child:Text('Delete')),
+                    return index % 2 == 0 ?Dismissible(
+
                       key:Key(map.keys.toList()[index].toString()),
                       confirmDismiss:(direction){
 
@@ -142,7 +143,7 @@ class _MyApplicationState extends State<MyApplication> {
                           child: ExpansionTile(
                             leading: Icon(
                               Icons.work,
-                              color: Colors.red,
+                              color: Colors.white,
                               size: 40,
                             ),
                             title: Padding(
@@ -154,15 +155,15 @@ class _MyApplicationState extends State<MyApplication> {
                                     SizedBox(height: 10,),
                                     Text(
                                       map.values.toList()[index]['jobTitle'],
-                                      style: TextStyle(
+                                      style: GoogleFonts.alice(
                                           color: myColor.myWhite,
-                                          fontStyle: FontStyle.italic),
+                                          fontSize: 15),
                                     ),
                                   ],
                                 )),
                                 trailing: Icon(
                                     Icons.arrow_drop_down,
-                                    color:Colors.pink,
+                                    color:Colors.white,
                                 size: 40,),
                             children: [
                               Padding(
@@ -183,6 +184,89 @@ class _MyApplicationState extends State<MyApplication> {
                           ),
                         ),
                       ),
+
+                    ):Dismissible(
+//              background: Container(color:Colors.red,child:Text('Delete')),
+                      key:Key(map.keys.toList()[index].toString()),
+                      confirmDismiss:(direction){
+
+                        return showDialog(context: context,builder: (context){
+                          return AlertDialog(
+                            title: Text(
+                                'Are you sure you want to delete!!'),
+                            actions: <Widget>[
+                              FlatButton(
+                                  child: Text('Yes'),
+                                  onPressed: () {
+                                    setState(() {
+                                      FirebaseDatabase.instance.reference().child("application").child(map.keys.toList()[index]).remove();
+                                    });
+
+
+                                    Navigator.of(context).pop();
+                                  }),
+                              FlatButton(
+                                child: Text('No'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+
+                            ],
+                          );
+                        });},
+                      child: Container(
+                        width: 120,
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        child: Card(
+                          color: myColor.myWhite,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: ExpansionTile(
+                            leading: Icon(
+                              Icons.work,
+                              color: Colors.black,
+                              size: 40,
+                            ),
+                            title: Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text('Applied Position : ',style: TextStyle(
+                                      color: myColor.myBlack,)),
+                                    SizedBox(height: 10,),
+                                    Text(
+                                      map.values.toList()[index]['jobTitle'],
+                                      style: GoogleFonts.alice(
+                                          color: myColor.myBlack,
+                                          fontSize: 15),
+                                    ),
+                                  ],
+                                )),
+                            trailing: Icon(
+                              Icons.arrow_drop_down,
+                              color:Colors.black,
+                              size: 40,),
+                            children: [
+                              Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text('Application Sent To :',style: TextStyle(
+                                        color: myColor.myBlack,)),
+                                      Text(
+                                        map.values.toList()[index]['AppliedTo'],
+                                        style: TextStyle(
+                                            color: myColor.myBlack,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                    ],
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ),
                     );
                   },
                 );}
@@ -193,7 +277,8 @@ class _MyApplicationState extends State<MyApplication> {
             }
 
             return SpinKitWave(
-              color: Colors.pink,
+              color: Colors.black,
+              size:24
             );
           },
         )

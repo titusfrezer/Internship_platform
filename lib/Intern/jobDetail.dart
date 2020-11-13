@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -39,8 +40,7 @@ class _jobDetailState extends State<jobDetail> {
       FirebaseDatabase.instance.reference().child('application');
   var file;
   var isloading = false;
-
-
+bool connected;
   @override
   void initState() {
     // TODO: implement initState
@@ -64,9 +64,11 @@ class _jobDetailState extends State<jobDetail> {
       print("map is ${map.values.toList()}");
       fullName = map.values.toList()[0]['userName'];
       furtherInfo = map.values.toList()[0]['furtherInfo'];
-
     });
-
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    connected = ((connectivityResult == ConnectivityResult.wifi) ||
+        (connectivityResult == ConnectivityResult.mobile));
+    print("connected $connected");
   }
 
   postToFirebase() async {
@@ -227,74 +229,69 @@ class _jobDetailState extends State<jobDetail> {
                 ],
               ),
             ),
-            Expanded(child:         Container(
-              margin: EdgeInsets.symmetric( horizontal: 20,vertical: 10),
-
-              decoration: BoxDecoration(
-                color: myColor.myWhite,
-                shape: BoxShape.rectangle,
-
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(
-                      15,
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  color: myColor.myWhite,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(
+                        15,
+                      ),
+                      bottomRight: Radius.circular(15)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                      child: Text(
+                        'Description',
+                        style: GoogleFonts.delius(
+                            fontSize: 20,
+                            color: myColor.myBlack,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
-                    bottomRight: Radius.circular(15)),
-
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                    EdgeInsets.symmetric(vertical: 15, horizontal: 15),
-                    child: Text(
-                      'Description',
-                      style: GoogleFonts.delius(
-                          fontSize: 20,
-                          color: myColor.myBlack,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: ListView(
-                          scrollDirection: Axis.vertical,
-                          children: [
-                            Text(
-                              widget.jobDescription,
-                              style: GoogleFonts.scada(
-                                fontSize: 16,
-                                color: myColor.myDarkGrey,
-                              ),
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 20),
+                        child:
+                            ListView(scrollDirection: Axis.vertical, children: [
+                          Text(
+                            widget.jobDescription,
+                            style: GoogleFonts.scada(
+                              fontSize: 16,
+                              color: myColor.myDarkGrey,
                             ),
-                          ]),
+                          ),
+                        ]),
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),),
+            ),
             Align(
               alignment: Alignment.bottomCenter,
-              child:Container(
-
+              child: Container(
                 decoration: BoxDecoration(
                   color: myColor.myWhite,
                   borderRadius: BorderRadius.only(
-                     topLeft: Radius.circular(
+                      topLeft: Radius.circular(
                         15,
                       ),
-                    topRight: Radius.circular(15)),
+                      topRight: Radius.circular(15)),
                 ),
-
-                padding: EdgeInsets.symmetric(horizontal:20,vertical: 15),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
                   children: <Widget>[
                     Container(
                       height: 50,
-                      width:125,
+                      width: 125,
                       child: RaisedButton(
                         color: myColor.myWhite,
                         shape: RoundedRectangleBorder(
@@ -306,17 +303,33 @@ class _jobDetailState extends State<jobDetail> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Upload CV",style:GoogleFonts.delius(
-
-                            fontWeight: FontWeight.w600,
-                            color: myColor.myBlack),),
+                            file != null
+                                ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("$fullName",
+                                        style: GoogleFonts.delius(
+                                            fontWeight: FontWeight.w600,
+                                            color: myColor.myBlack,fontSize: 13)),
+                                    Text(".pdf")
+                                  ],
+                                )
+                                : Text(
+                                    "Upload CV",
+                                    style: GoogleFonts.delius(
+                                        fontWeight: FontWeight.w600,
+                                        color: myColor.myBlack),
+                                  ),
                             Icon(Icons.file_upload)
                           ],
                         ),
                         onPressed: () async {
+
                           file = await FilePicker.getFile(
                               type: FileType.CUSTOM, fileExtension: 'pdf');
+                          setState(() {
 
+                          });
 //                    String fileName = '${applierName.text}.pdf';
 //                    print(fileName);
                         },
@@ -326,7 +339,6 @@ class _jobDetailState extends State<jobDetail> {
                       width: 15,
                     ),
                     Expanded(
-
                       child: SizedBox(
                         height: 50,
                         child: RaisedButton(
@@ -334,23 +346,48 @@ class _jobDetailState extends State<jobDetail> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)),
                           onPressed: () async {
+                            var connectivityResult = await (Connectivity().checkConnectivity());
+                            connected = ((connectivityResult == ConnectivityResult.wifi) ||
+                                (connectivityResult == ConnectivityResult.mobile));
+                            print("connected $connected");
                             setState(() {
                               isloading = true;
                             });
+
                             if (file != null) {
-                              await postToFirebase();
-                              Flushbar(
-                                icon: Icon(
-                                  Icons.check,
-                                  color: Colors.green,
-                                ),
-                                backgroundColor: Colors.green,
-                                title: "Success",
-                                message: "Application posted successfully",
-                                duration: Duration(seconds: 3),
-                              )..show(context);
-                              file = null;
-                            } else {
+                              if (connected) {
+                                await postToFirebase();
+                                Flushbar(
+                                  icon: Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  ),
+                                  backgroundColor: Colors.green,
+                                  title: "Success",
+                                  message: "Application posted successfully",
+                                  duration: Duration(seconds: 3),
+                                )
+                                  ..show(context);
+                                file = null;
+                              } else {
+                                Flushbar(
+                                  icon: Icon(
+                                    Icons.error,
+                                    color: Colors.red,
+                                  ),
+                                  backgroundColor: Colors.red,
+                                  title: "Error",
+                                  message: "No Internet Connection",
+                                  duration: Duration(seconds: 3),
+                                )
+                                  ..show(context);
+                                setState(() {
+                                  isloading = false;
+                                  file = null;
+                                });
+                              }
+                            }
+                            else {
                               setState(() {
                                 isloading = false;
                               });
@@ -368,15 +405,16 @@ class _jobDetailState extends State<jobDetail> {
                           },
                           child: isloading
                               ? SpinKitWave(
-                            color: Colors.pinkAccent,
-                          )
+                                  color: myColor.myWhite,
+                            size:20
+                                )
                               : Text(
-                            'Apply',
-                            style: GoogleFonts.delius(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: myColor.myWhite),
-                          ),
+                                  'Apply',
+                                  style: GoogleFonts.delius(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: myColor.myWhite),
+                                ),
                         ),
                       ),
                     ),

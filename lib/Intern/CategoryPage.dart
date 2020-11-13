@@ -158,7 +158,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                           accountEmail: Text(
                             widget.name,
                             style: TextStyle(
-                                color: myColor.myWhite,
+                                color: myColor.myBlack,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18),
                           ),
@@ -461,11 +461,12 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                       }
 
                                       return SpinKitWave(
-                                        color: myColor.myWhite,
-                                        size: 16,
+                                        color: myColor.myBlack,
+                                        size: 20,
                                       );
                                     },
                                   )),
+
                             ],
                           ),
                           Container(
@@ -664,7 +665,8 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                               );
                             } else {
                               return SpinKitWave(
-                                color: Colors.purple,
+                                color: myColor.myBlack,
+                                size:20
                               );
                             }
                           })),
@@ -692,15 +694,19 @@ Widget buildResultCard(data, BuildContext context) {
               data['howLong'],
               data['companyName'])));
     },
-    child: Container(
-      child: ListTile(
-        leading: Icon(
-          Icons.work,
-          color: myColor.myBlack,
+    child: Column(
+      children: [
+        ListTile(
+          leading: Icon(
+            Icons.work,
+            color: myColor.myBlack,
+          ),
+          title: Text(data['jobTitle'],
+              style: GoogleFonts.delius(color: myColor.myBlack, fontSize: 20)),
         ),
-        title: Text(data['jobTitle'],
-            style: GoogleFonts.delius(color: myColor.myBlack, fontSize: 20)),
-      ),
+        Divider(thickness: 0.2,color:myColor.myBlack)
+      ],
+
     ),
   );
 }
