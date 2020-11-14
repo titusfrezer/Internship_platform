@@ -62,7 +62,7 @@ SizedBox(height: 30,),
                   backgroundColor: Colors.green,
 
                   title:  "Success",
-                  message:  "Category posted successfully",
+                  message:  "Category Created successfully",
                   duration:  Duration(seconds: 3),
                 )..show(context);
 

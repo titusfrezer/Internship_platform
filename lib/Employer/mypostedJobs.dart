@@ -696,7 +696,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                             backgroundColor:
                                                                                 Colors.green,
                                                                             title:
-                                                                                "Sucess",
+                                                                                "Success",
                                                                             message:
                                                                                 "Post Updated",
                                                                             duration:
