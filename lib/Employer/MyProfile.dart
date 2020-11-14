@@ -248,7 +248,7 @@ Query checkUser;
                           ),
                           focusColor: myColor.myBlack,
                           border: OutlineInputBorder(),
-                          icon: Icon(Icons.work, color: Colors.black)
+                          icon: Icon(Icons.add_location, color: Colors.black)
 //                labelText: 'FullName',
 //                      hintText: furtherInfo
                       ),

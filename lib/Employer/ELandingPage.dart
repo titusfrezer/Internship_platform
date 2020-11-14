@@ -35,19 +35,12 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   bool connected = false;
-  var client;
   var imageurl;
-  var decodedImage;
-  var fullName;
+
 
   getUser() async {
     user = await firebaseAuth.currentUser();
-    client = await db.getUser(widget.name);
-    fullName = client[0]['fullName'];
-    imageurl = client[0]['image'];
-    print(imageurl);
-    decodedImage =
-        imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
+
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');
@@ -87,6 +80,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       backgroundColor: myColor.myBackground,
       drawer: Drawer(
         child: ListView(
@@ -270,13 +264,13 @@ class _LandingPageState extends State<LandingPage> {
                                   child: Text(
                                       map.values.toList()[index]['type'].toString().substring(0,1).toUpperCase(),
                                     style: TextStyle(
-                                      color: myColor.myBlack,
+                                      color: myColor.myBackground,
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700
                                     ),
                                   ),
                                   decoration: BoxDecoration(
-                                      color: myColor.myWhite,
+                                      color: myColor.myBlack,
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(50))),
                                 ),

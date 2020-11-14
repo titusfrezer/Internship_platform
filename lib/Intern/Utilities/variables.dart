@@ -7,7 +7,7 @@ class myColor{
   static final  Color myWhite = Colors.white;
   static final  Color myLightGrey = Color(0xffA4A4A6);
   static final  Color myDarkGrey = Color(0xff6B6C70);
-  static final Color myBackground = Color(0xffE1E1E2);
+  static final Color myBackground = Color(0xffe1e2e2);
 
 
 

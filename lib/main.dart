@@ -93,7 +93,7 @@ class _HomeControllerState extends State<HomeController> {
                         // print("map is ${map.values.toList()}");
                         print("identity from future is ${snapshot
                             .data}");
-                        if (snapshot.data[0]['identity'] == 'Intern') {
+                        if (snapshot.data[0]['identity'] == null) {
                           print("your are intern");
                           return InternCategoryPage(
                               name != null ? name : snapshot.data[0]['email']);
