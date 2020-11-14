@@ -180,6 +180,11 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                 ['status'] ==
                                                             'open'
                                                         ? RaisedButton(
+                                                      color: myColor.myWhite,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50.0),
+                                                      ),
                                                             child: Text(
                                                                 'Close Job'),
                                                             onPressed: () {
@@ -224,6 +229,11 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                             },
                                                           )
                                                         : RaisedButton(
+                                                      color: myColor.myWhite,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50.0),
+                                                      ),
                                                             child: Text(
                                                                 'Post Job'),
                                                             onPressed: () {
@@ -268,121 +278,124 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                             },
                                                           ),
                                                     SizedBox(width: 20),
-                                                    Container(
-                                                      child: RaisedButton(
-                                                        child: Text(
-                                                          'Edit',
-                                                        ),
-                                                        onPressed: () {
-                                                          return showDialog(
-                                                              context: context,
-                                                              builder: (context) {
-                                                                return AlertDialog(
-                                                                  title: Text(
-                                                                      'Edit Post'),
-                                                                  content:
-                                                                      Container(
-                                                                    height: 250,
-                                                                    width: 350,
-                                                                    child:
-                                                                        SingleChildScrollView(
-                                                                            child:
-                                                                                Column(
-                                                                      children: [
-                                                                        TextField(
-                                                                          controller:
-                                                                              jobTitle,
-                                                                          decoration:
-                                                                              InputDecoration(labelText: 'Job Title'),
-                                                                        ),
-                                                                        TextField(
-                                                                          minLines:
-                                                                              2,
-                                                                          maxLines:
-                                                                              4,
-                                                                          controller:
-                                                                              jobDescription,
-                                                                          decoration:
-                                                                              InputDecoration(labelText: 'Job Description'),
-                                                                        ),
-                                                                        TextField(
-                                                                          controller:
-                                                                              howLong,
-                                                                          decoration:
-                                                                              InputDecoration(labelText: 'For How Long '),
-                                                                        ),
-                                                                        TextField(
-                                                                          controller:
-                                                                              allowance,
-                                                                          decoration:
-                                                                              InputDecoration(labelText: 'Allowance(In Birr)'),
-                                                                        ),
-                                                                      ],
-                                                                    )),
-                                                                  ),
-                                                                  actions: [
-                                                                    Row(
-                                                                      children: [
-                                                                        FlatButton(
-                                                                          child: Text(
-                                                                              'Cancel'),
-                                                                          onPressed:
-                                                                              () {
-                                                                            Navigator.of(context)
-                                                                                .pop();
-                                                                          },
-                                                                        ),
-                                                                        FlatButton(
-                                                                          child: Text(
-                                                                              'Update'),
-                                                                          onPressed:
-                                                                              () async {
-                                                                            FirebaseDatabase
-                                                                                .instance
-                                                                                .reference()
-                                                                                .child("posts")
-                                                                                .child(map.keys.toList()[index])
-                                                                                .update({
-                                                                              'jobTitle':
-                                                                                  jobTitle.text,
-                                                                              'jobDescription':
-                                                                                  jobDescription.text,
-                                                                              'howLong':
-                                                                                  howLong.text,
-                                                                              'allowance':
-                                                                                  allowance.text,
-                                                                              'postedAt':
-                                                                                  DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                                                                            }).then((_) {
-                                                                              print('done');
-                                                                            });
-                                                                            Navigator.of(context)
-                                                                                .pop();
-                                                                            Flushbar(
-                                                                              icon:
-                                                                                  Icon(
-                                                                                Icons.check,
-                                                                                color: Colors.green,
-                                                                              ),
-                                                                              backgroundColor:
-                                                                                  Colors.green,
-                                                                              title:
-                                                                                  "Success",
-                                                                              message:
-                                                                                  "Post Updated",
-                                                                              duration:
-                                                                                  Duration(seconds: 3),
-                                                                            )..show(
-                                                                                context);
-                                                                          },
-                                                                        )
-                                                                      ],
-                                                                    )
-                                                                  ],
-                                                                );
-                                                              });
-                                                        },
+                                                    RaisedButton(
+                                                      color: myColor.myWhite,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50.0),
                                                       ),
+                                                      child: Text(
+                                                        'Edit',
+                                                      ),
+                                                      onPressed: () {
+                                                        return showDialog(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                title: Text(
+                                                                    'Edit Post'),
+                                                                content:
+                                                                    Container(
+                                                                  height: 250,
+                                                                  width: 350,
+                                                                  child:
+                                                                      SingleChildScrollView(
+                                                                          child:
+                                                                              Column(
+                                                                    children: [
+                                                                      TextField(
+                                                                        controller:
+                                                                            jobTitle,
+                                                                        decoration:
+                                                                            InputDecoration(labelText: 'Job Title'),
+                                                                      ),
+                                                                      TextField(
+                                                                        minLines:
+                                                                            2,
+                                                                        maxLines:
+                                                                            4,
+                                                                        controller:
+                                                                            jobDescription,
+                                                                        decoration:
+                                                                            InputDecoration(labelText: 'Job Description'),
+                                                                      ),
+                                                                      TextField(
+                                                                        controller:
+                                                                            howLong,
+                                                                        decoration:
+                                                                            InputDecoration(labelText: 'For How Long '),
+                                                                      ),
+                                                                      TextField(
+                                                                        controller:
+                                                                            allowance,
+                                                                        decoration:
+                                                                            InputDecoration(labelText: 'Allowance(In Birr)'),
+                                                                      ),
+                                                                    ],
+                                                                  )),
+                                                                ),
+                                                                actions: [
+                                                                  Row(
+                                                                    children: [
+                                                                      FlatButton(
+                                                                        child: Text(
+                                                                            'Cancel'),
+                                                                        onPressed:
+                                                                            () {
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                        },
+                                                                      ),
+                                                                      FlatButton(
+                                                                        child: Text(
+                                                                            'Update'),
+                                                                        onPressed:
+                                                                            () async {
+                                                                          FirebaseDatabase
+                                                                              .instance
+                                                                              .reference()
+                                                                              .child("posts")
+                                                                              .child(map.keys.toList()[index])
+                                                                              .update({
+                                                                            'jobTitle':
+                                                                                jobTitle.text,
+                                                                            'jobDescription':
+                                                                                jobDescription.text,
+                                                                            'howLong':
+                                                                                howLong.text,
+                                                                            'allowance':
+                                                                                allowance.text,
+                                                                            'postedAt':
+                                                                                DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                                          }).then((_) {
+                                                                            print('done');
+                                                                          });
+                                                                          Navigator.of(context)
+                                                                              .pop();
+                                                                          Flushbar(
+                                                                            icon:
+                                                                                Icon(
+                                                                              Icons.check,
+                                                                              color: Colors.green,
+                                                                            ),
+                                                                            backgroundColor:
+                                                                                Colors.green,
+                                                                            title:
+                                                                                "Success",
+                                                                            message:
+                                                                                "Post Updated",
+                                                                            duration:
+                                                                                Duration(seconds: 3),
+                                                                          )..show(
+                                                                              context);
+                                                                        },
+                                                                      )
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              );
+                                                            });
+                                                      },
                                                     ),
                                                   ],
                                                 ),
@@ -483,8 +496,13 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                 ['status'] ==
                                                             'open'
                                                         ? RaisedButton(
+                                                      color: myColor.myBlack,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50.0),
+                                                      ),
                                                             child: Text(
-                                                                'Close Job'),
+                                                                'Close Job',style: TextStyle(color: myColor.myWhite),),
                                                             onPressed: () {
                                                               setState(() {
                                                                 print(map.values
@@ -527,8 +545,13 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                             },
                                                           )
                                                         : RaisedButton(
+                                                      color: myColor.myBlack,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50.0),
+                                                      ),
                                                             child: Text(
-                                                                'Post Job'),
+                                                                'Post Job',style: TextStyle(color: myColor.myBlack),),
                                                             onPressed: () {
                                                               setState(() {
                                                                 print(map.values
@@ -571,8 +594,13 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                           ),
                                                     SizedBox(width: 20),
                                                     RaisedButton(
+                                                      color: myColor.myBlack,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                        BorderRadius.circular(50.0),
+                                                      ),
                                                       child: Text(
-                                                        'Edit',
+                                                        'Edit',style: TextStyle(color: myColor.myWhite),
                                                       ),
                                                       onPressed: () {
                                                         return showDialog(
