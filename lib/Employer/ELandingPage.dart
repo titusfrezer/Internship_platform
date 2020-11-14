@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -33,8 +34,11 @@ class _LandingPageState extends State<LandingPage> {
     getUser();
     print('hi');
   }
+  TextEditingController controller = TextEditingController();
+  DatabaseReference catRef=FirebaseDatabase.instance.reference().child('Categories');
 
   bool connected = false;
+  bool isloading = false;
   var imageurl;
 
 
@@ -97,19 +101,19 @@ class _LandingPageState extends State<LandingPage> {
                     child: UserAccountsDrawerHeader(
                       decoration: BoxDecoration(color: Colors.transparent),
                       accountName: CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.pink,
+                          backgroundColor: myColor.myBlack,
+                          foregroundColor: myColor.myWhite,
                           child: Text(
                             widget.name.substring(0, 1).toUpperCase(),
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: GoogleFonts.delius(
+                                fontWeight: FontWeight.bold, fontSize: 20),
                           )),
                       accountEmail: Text(
                         widget.name,
                         style: TextStyle(
-                            color: Colors.black,
+                            color: myColor.myBlack,
                             fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                            fontSize: 18),
                       ),
                     ),
                   )),
@@ -303,6 +307,102 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
+      // bottomNavigationBar: BottomAppBar(
+      //   shape: CircularNotchedRectangle(),
+      //   notchMargin: 6,
+      //   clipBehavior: Clip.antiAlias,
+      //   child: Container(
+      //     color: myColor.myBackground,
+      //     height: 50,
+      //   ),
+      //
+      // ),
+      floatingActionButton:  FloatingActionButton(
+
+        backgroundColor: myColor.myWhite,
+        foregroundColor: myColor.myBlack,
+        child: Icon(Icons.add),
+        onPressed: (){
+    showDialog(
+    context: context,
+    builder: (context) {
+    return AlertDialog(
+      title: Text("Create Category"),
+            content:
+            Expanded(
+
+              child:
+
+                      TextField(
+                        controller:controller
+                        ,
+                        decoration:
+                        InputDecoration(labelText: 'Category Name'),
+
+
+                  ),
+            ),
+            actions: [
+
+              Row(
+                children: [
+                  FlatButton(
+                    child: Text(
+                        'Cancel'),
+                    onPressed:
+                        () {
+                      Navigator.of(context)
+                          .pop();
+                    },
+                  ),
+                  FlatButton(
+                    child: isloading ? SpinKitWave(color: myColor.myBlack,size: 16,):Text('Save'),
+                    onPressed: (){
+                      setState(() {
+                        isloading = true;
+                      });
+                      if(controller.text.isEmpty){
+                        Flushbar(
+                          icon: Icon(Icons.error,color: Colors.red,),
+                          backgroundColor: Colors.red,
+
+                          title:  "Error",
+                          message:  "Fill the Category Name field",
+                          duration:  Duration(seconds: 3),
+                        )..show(context);
+                      }else {
+                        setState(() {
+                          isloading=false;
+                        });
+                        catRef.push().set(<dynamic, dynamic>{
+                          'type': controller.text
+                        }
+
+                        );
+                        Navigator.of(context).pop();
+
+                        Flushbar(
+                          icon: Icon(Icons.check,color: Colors.green,),
+                          backgroundColor: Colors.green,
+
+                          title:  "Success",
+                          message:  "Category posted successfully",
+                          duration:  Duration(seconds: 3),
+                        )..show(context);
+
+
+                      }
+
+                    },
+                  ),
+                ],
+              )
+            ],
+          );
+        },
+      );})
+
+
     );
   }
 }
