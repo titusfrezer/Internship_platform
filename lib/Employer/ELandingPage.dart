@@ -147,20 +147,20 @@ class _LandingPageState extends State<LandingPage> {
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => sentApplications()));
+                    builder: (context) => sentApplications(widget.name)));
               },
             ),
-            InkWell(
-              child: ListTile(
-                leading: Icon(Icons.category,color:myColor.myBlack),
-                title: Text('Create Category'),
-              ),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => createCategory()));
-              },
-            ),
+            // InkWell(
+            //   child: ListTile(
+            //     leading: Icon(Icons.category,color:myColor.myBlack),
+            //     title: Text('Create Category'),
+            //   ),
+            //   onTap: () {
+            //     Navigator.of(context).pop();
+            //     Navigator.of(context).push(
+            //         MaterialPageRoute(builder: (context) => createCategory()));
+            //   },
+            // ),
             InkWell(
               child: ListTile(
                   leading: Icon(Icons.visibility_off,color:myColor.myBlack), title: Text('Log out')),
@@ -348,7 +348,7 @@ class _LandingPageState extends State<LandingPage> {
                 children: [
                   FlatButton(
                     child: Text(
-                        'Cancel'),
+                        'Cancel',style: TextStyle(color:myColor.myBlack),),
                     onPressed:
                         () {
                       Navigator.of(context)
@@ -356,7 +356,7 @@ class _LandingPageState extends State<LandingPage> {
                     },
                   ),
                   FlatButton(
-                    child: isloading ? SpinKitWave(color: myColor.myBlack,size: 16,):Text('Save'),
+                    child: isloading ? SpinKitWave(color: myColor.myBlack,size: 16,):Text('Save',style: TextStyle(color:myColor.myBlack)),
                     onPressed: (){
                       setState(() {
                         isloading = true;
