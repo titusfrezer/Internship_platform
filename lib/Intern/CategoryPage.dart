@@ -341,8 +341,6 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                     cursorColor: myColor.myBlack,
                   ),
                 ),
-
-
                 Expanded(
                   child: ListView(
                     scrollDirection: Axis.vertical,
