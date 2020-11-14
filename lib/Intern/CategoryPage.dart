@@ -144,7 +144,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                               image: ExactAssetImage('image/internship.jpg'),
                               fit: BoxFit.cover)),
                       child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaY: 1.9, sigmaX: 2.5),
+                        filter: ImageFilter.blur(sigmaY: 3.9, sigmaX: 3.9),
                         child: UserAccountsDrawerHeader(
                           decoration: BoxDecoration(color: Colors.transparent),
                           accountName: CircleAvatar(
