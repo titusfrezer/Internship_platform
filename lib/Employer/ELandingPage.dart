@@ -116,7 +116,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.person),
+                leading: Icon(Icons.person,color:myColor.myBlack),
                 title: Text('My Profile'),
               ),
               onTap: () {
@@ -126,7 +126,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.assignment_ind),
+                leading: Icon(Icons.assignment_ind,color:myColor.myBlack),
                 title: Text('My Posted Jobs'),
               ),
               onTap: () {
@@ -137,7 +137,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.send),
+                leading: Icon(Icons.send,color:myColor.myBlack),
                 title: Text('Sent Application'),
               ),
               onTap: () {
@@ -148,7 +148,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.category),
+                leading: Icon(Icons.category,color:myColor.myBlack),
                 title: Text('Create Category'),
               ),
               onTap: () {
@@ -159,7 +159,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                  leading: Icon(Icons.visibility_off), title: Text('Log out')),
+                  leading: Icon(Icons.visibility_off,color:myColor.myBlack), title: Text('Log out')),
               onTap: () async {
                 await firebaseAuth.signOut();
                 Navigator.of(context).pop();
@@ -222,7 +222,7 @@ class _LandingPageState extends State<LandingPage> {
                 style: GoogleFonts.combo(
                     fontSize: 18,
                     color: myColor.myBlack,
-                    fontWeight: FontWeight.w400),
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Flexible(
