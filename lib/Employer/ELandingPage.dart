@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'dart:ui';
 
 import 'package:connectivity/connectivity.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Employer/MyProfile.dart';
 import 'package:internship_platform/Employer/PostedByCategory.dart';
 import 'package:internship_platform/Employer/createCategory.dart';
@@ -85,11 +87,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: myColor.myBlack,
-      appBar: AppBar(
-        backgroundColor: myColor.myBlack,
-        title: Text('Landing Page'),
-      ),
+      backgroundColor: myColor.myBackground,
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
@@ -129,8 +127,7 @@ class _LandingPageState extends State<LandingPage> {
               ),
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        MyProfile(widget.name, imageurl)));
+                    builder: (context) => MyProfile(widget.name, imageurl)));
               },
             ),
             InkWell(
@@ -182,83 +179,135 @@ class _LandingPageState extends State<LandingPage> {
           ],
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Container(
-              height: 160,
-              child: GridView.count(
-                crossAxisCount: 3,
-                shrinkWrap: true,
-              )),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-            child: Text(
-              "Categories",
-              style: TextStyle(color: myColor.myWhite, fontSize: 18),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    height: 50,
+                    width: 50,
+                    decoration: BoxDecoration(
+                        color: myColor.myWhite,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: Builder(
+                      builder: (context) => IconButton(
+                          icon: Icon(
+                            Icons.list,
+                            color: myColor.myBlack,
+                          ),
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          }),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Internship Platform",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Container(
+                    height: 50,
+                    width: 50,
+                  )
+                ],
+              ),
             ),
-          ),
-          Flexible(
-            child: StreamBuilder(
-              stream: FirebaseDatabase.instance
-                  .reference()
-                  .child("Categories")
-                  .onValue,
-              builder: (BuildContext context, snapshot) {
-                if (snapshot.hasData) {
-                  Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
-                  print(map.values.toList());
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1,
-                        mainAxisSpacing: 25,
-                        crossAxisSpacing: 25),
-                    itemCount: map.values.toList().length,
-                    scrollDirection: Axis.vertical,
-                    itemBuilder: (BuildContext context, int index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PostedByCategory(
-                                  widget.name,
-                                  map.values
-                                      .toList()[index]['type']
-                                      .toString())));
-                        },
-                        child: Card(
-                            color: Colors.purple,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              child: Text(
+                "Categories",
+                style: GoogleFonts.combo(
+                    fontSize: 18,
+                    color: myColor.myBlack,
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+            Flexible(
+              child: StreamBuilder(
+                stream: FirebaseDatabase.instance
+                    .reference()
+                    .child("Categories")
+                    .onValue,
+                builder: (BuildContext context, snapshot) {
+                  if (snapshot.hasData) {
+                    Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
+                    print(map.values.toList());
+                    return GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 1,
+                          mainAxisSpacing: 10,
+                          crossAxisSpacing: 10),
+                      itemCount: map.values.toList().length,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => PostedByCategory(
+                                      widget.name,
+                                      map.values
+                                          .toList()[index]['type']
+                                          .toString())));
+                            },
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+
                               children: <Widget>[
-                                Icon(
-                                  Icons.category,
-                                  size: 50,
-                                ),
-                                Center(
-                                    child: Text(
-                                  map.values.toList()[index]['type'],
-                                  style: TextStyle(
-                                    color: myColor.myWhite,
+                                Container(
+                                  alignment: Alignment.center,
+                                  height: 50,
+                                  width: 50,
+                                  child: Text(
+                                      map.values.toList()[index]['type'].toString().substring(0,1).toUpperCase(),
+                                    style: TextStyle(
+                                      color: myColor.myBlack,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700
+                                    ),
                                   ),
+                                  decoration: BoxDecoration(
+                                      color: myColor.myWhite,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(50))),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+
+                                  alignment: Alignment.center,
+                                    child: Text(
+                                  map.values.toList()[index]['type'],textAlign: TextAlign.center,
+                                  overflow: TextOverflow.visible,
+                                  style: GoogleFonts.alice(
+                                      color: myColor.myBlack, fontSize: 16),
                                 )),
                               ],
-                            )),
-                      );
-                    },
-                  );
-                }
+                            ));
+                      },
+                    );
+                  }
 
-                return Center(
-                    child: SpinKitWave(
-                  color: Colors.pink,
-                ));
-              },
+                  return Center(
+                      child: SpinKitWave(
+                    color: myColor.myBlack,
+                    size: 25,
+                  ));
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

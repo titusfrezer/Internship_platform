@@ -34,10 +34,7 @@ class _chooseJobState extends State<chooseJob> {
         .equalTo(widget.Category);
 
     return Scaffold(
-        // appBar: AppBar(
-        //   backgroundColor: Colors.black,
-        //   title: Text(widget.Category),
-        // ),
+
         backgroundColor: myColor.myBackground,
         body: SafeArea(
           child: Column(

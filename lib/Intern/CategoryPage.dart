@@ -481,194 +481,203 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-
-
-                Padding(
-                  padding: EdgeInsets.only(left: 20, bottom: 10),
-                  child: Text(
-                    "Recent Posts",
-                    style: GoogleFonts.combo(
-                        fontSize: 20,
-                        color: myColor.myBlack,
-                        fontWeight: FontWeight.w600),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                      padding: EdgeInsets.only(left: 10, top: 10, right: 10),
-                      child: StreamBuilder(
-                          stream: FirebaseDatabase.instance
-                              .reference()
-                              .child("posts")
-                              .onValue,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              Map<dynamic, dynamic> map =
-                                  snapshot.data.snapshot.value;
-                              RecentPost.clear();
-                              var counter = 0;
-                              for (var i = 0;
-                                  i < map.values.toList().length;
-                                  i++) {
-                                if (map.values.toList()[i]['status'] ==
-                                    'open') {
-                                  if (int.parse(map.values
-                                          .toList()[i]['postedAt']
-                                          .toString()
-                                          .split("-")[0]) ==
-                                      DateTime.now().year) {
-                                    if (int.parse(map.values
-                                            .toList()[i]['postedAt']
-                                            .toString()
-                                            .split("-")[1]) ==
-                                        DateTime.now().month) {
-                                      if (DateTime.now().day -
-                                              (int.parse(map.values
-                                                  .toList()[i]['postedAt']
-                                                  .toString()
-                                                  .split("-")[2])) <=
-                                          5) {
-                                        print("month is equal");
-                                        RecentPost.add(map.values.toList()[i]);
-                                        counter++;
-                                      }
-                                    } else if ((DateTime.now().month -
-                                            int.parse(map.values
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20, bottom: 10),
+                        child: Text(
+                          "Recent Posts",
+                          style: GoogleFonts.combo(
+                              fontSize: 20,
+                              color: myColor.myBlack,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          height:300,
+                          child: Padding(
+                              padding: EdgeInsets.only(left: 10, top: 10, right: 10),
+                              child: StreamBuilder(
+                                  stream: FirebaseDatabase.instance
+                                      .reference()
+                                      .child("posts")
+                                      .onValue,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData) {
+                                      Map<dynamic, dynamic> map =
+                                          snapshot.data.snapshot.value;
+                                      RecentPost.clear();
+                                      var counter = 0;
+                                      for (var i = 0;
+                                      i < map.values.toList().length;
+                                      i++) {
+                                        if (map.values.toList()[i]['status'] ==
+                                            'open') {
+                                          if (int.parse(map.values
+                                              .toList()[i]['postedAt']
+                                              .toString()
+                                              .split("-")[0]) ==
+                                              DateTime.now().year) {
+                                            if (int.parse(map.values
                                                 .toList()[i]['postedAt']
                                                 .toString()
-                                                .split("-")[1])) ==
-                                        1) {
-                                      // if the month difference is 1 like Nov and Oct
-                                      if ((30 -
+                                                .split("-")[1]) ==
+                                                DateTime.now().month) {
+                                              if (DateTime.now().day -
+                                                  (int.parse(map.values
+                                                      .toList()[i]['postedAt']
+                                                      .toString()
+                                                      .split("-")[2])) <=
+                                                  5) {
+                                                print("month is equal");
+                                                RecentPost.add(map.values.toList()[i]);
+                                                counter++;
+                                              }
+                                            } else if ((DateTime.now().month -
+                                                int.parse(map.values
+                                                    .toList()[i]['postedAt']
+                                                    .toString()
+                                                    .split("-")[1])) ==
+                                                1) {
+                                              // if the month difference is 1 like Nov and Oct
+                                              if ((30 -
                                                   int.parse(map.values
                                                       .toList()[i]['postedAt']
                                                       .toString()
                                                       .split("-")[2])) +
-                                              DateTime.now().day <=
-                                          5) {
-                                        print("less month");
-                                        RecentPost.add(map.values.toList()[i]);
-                                        counter++;
+                                                  DateTime.now().day <=
+                                                  5) {
+                                                print("less month");
+                                                RecentPost.add(map.values.toList()[i]);
+                                                counter++;
+                                              }
+                                            }
+                                          }
+                                        }
+                                      } // if there is at least less than 5 days post
+                                      print('$counter is counter');
+                                      if (counter == 0) {
+                                        return Center(
+                                          child: Text('No recent post yet'),
+                                        );
+                                      } else {
+                                        return ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            itemCount: RecentPost.length,
+                                            itemBuilder:
+                                                (BuildContext context, int index) {
+                                              return Container(
+                                                margin: EdgeInsets.only(bottom: 20),
+                                                decoration: BoxDecoration(
+                                                    color: myColor.myWhite,
+                                                    borderRadius:
+                                                    BorderRadius.circular(15)),
+                                                child: ListTile(
+                                                  leading: Icon(
+                                                    Icons.access_time,
+                                                    color: Colors.purple,
+                                                  ),
+                                                  title: Text(
+                                                      "${RecentPost[index]['jobTitle']}",
+                                                      style: TextStyle(
+                                                          fontWeight: FontWeight.bold)),
+                                                  subtitle: Row(
+//                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                    children: <Widget>[
+                                                      Container(
+                                                          width: 100,
+                                                          child: Text(
+                                                            "${RecentPost[index]['companyName']}",
+                                                            overflow:
+                                                            TextOverflow.ellipsis,
+                                                          )),
+//
+                                                    ],
+                                                  ),
+                                                  trailing: FlatButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).push(
+                                                            MaterialPageRoute(
+                                                                builder: (context) => jobDetail(
+                                                                    RecentPost[index]
+                                                                    ['jobTitle'],
+                                                                    RecentPost[index][
+                                                                    'jobDescription'],
+                                                                    RecentPost[index]
+                                                                    ['postedBy'],
+                                                                    RecentPost[index]
+                                                                    ['category'],
+                                                                    RecentPost[index]
+                                                                    ['postedAt'],
+                                                                    RecentPost[index]
+                                                                    ['allowance'],
+                                                                    RecentPost[index]
+                                                                    ['howLong'],
+                                                                    RecentPost[index][
+                                                                    'companyName'])));
+                                                      },
+                                                      child: Text("Detail")),
+                                                ),
+                                              );
+                                            });
                                       }
                                     }
-                                  }
-                                }
-                              } // if there is at least less than 5 days post
-                              print('$counter is counter');
-                              if (counter == 0) {
-                                return Center(
-                                  child: Text('No recent post yet'),
-                                );
-                              } else {
-                                return ListView.builder(
-                                    scrollDirection: Axis.vertical,
-                                    itemCount: RecentPost.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Container(
-                                        margin: EdgeInsets.only(bottom: 20),
-                                        decoration: BoxDecoration(
-                                            color: myColor.myWhite,
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        child: ListTile(
-                                          leading: Icon(
-                                            Icons.access_time,
-                                            color: Colors.purple,
-                                          ),
-                                          title: Text(
-                                              "${RecentPost[index]['jobTitle']}",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                          subtitle: Row(
-//                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                            children: <Widget>[
-                                              Container(
-                                                  width: 100,
-                                                  child: Text(
-                                                    "${RecentPost[index]['companyName']}",
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  )),
-//
-                                            ],
-                                          ),
-                                          trailing: FlatButton(
-                                              onPressed: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) => jobDetail(
-                                                            RecentPost[index]
-                                                                ['jobTitle'],
-                                                            RecentPost[index][
-                                                                'jobDescription'],
-                                                            RecentPost[index]
-                                                                ['postedBy'],
-                                                            RecentPost[index]
-                                                                ['category'],
-                                                            RecentPost[index]
-                                                                ['postedAt'],
-                                                            RecentPost[index]
-                                                                ['allowance'],
-                                                            RecentPost[index]
-                                                                ['howLong'],
-                                                            RecentPost[index][
-                                                                'companyName'])));
-                                              },
-                                              child: Text("Detail")),
+                                    if (!connected) {
+                                      return Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.signal_wifi_off,
+                                              size: 40,
+                                            ),
+                                            FlatButton(
+                                                shape: RoundedRectangleBorder(
+                                                    side: BorderSide(
+                                                        color: Colors.black,
+                                                        width: 1,
+                                                        style: BorderStyle.solid),
+                                                    borderRadius:
+                                                    BorderRadius.circular(50)),
+                                                onPressed: () async {
+                                                  var connectivityResult =
+                                                  await (Connectivity()
+                                                      .checkConnectivity());
+                                                  print(connectivityResult);
+                                                  if ((connectivityResult ==
+                                                      ConnectivityResult.wifi) ||
+                                                      connectivityResult ==
+                                                          ConnectivityResult.mobile) {
+                                                    connected = true;
+                                                    print('connected');
+                                                    setState(() {});
+                                                  } else {
+                                                    print('not connected');
+                                                  }
+                                                },
+                                                child: Text('Retry'))
+                                          ],
                                         ),
                                       );
-                                    });
-                              }
-                            }
-                            if (!connected) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.signal_wifi_off,
-                                      size: 40,
-                                    ),
-                                    FlatButton(
-                                        shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                color: Colors.black,
-                                                width: 1,
-                                                style: BorderStyle.solid),
-                                            borderRadius:
-                                                BorderRadius.circular(50)),
-                                        onPressed: () async {
-                                          var connectivityResult =
-                                              await (Connectivity()
-                                                  .checkConnectivity());
-                                          print(connectivityResult);
-                                          if ((connectivityResult ==
-                                                  ConnectivityResult.wifi) ||
-                                              connectivityResult ==
-                                                  ConnectivityResult.mobile) {
-                                            connected = true;
-                                            print('connected');
-                                            setState(() {});
-                                          } else {
-                                            print('not connected');
-                                          }
-                                        },
-                                        child: Text('Retry'))
-                                  ],
-                                ),
-                              );
-                            } else {
-                              return SpinKitWave(
-                                color: myColor.myBlack,
-                                size:20
-                              );
-                            }
-                          })),
-                )
+                                    } else {
+                                      return SpinKitWave(
+                                          color: myColor.myBlack,
+                                          size:20
+                                      );
+                                    }
+                                  })),
+                        ),
+                      ),
+
+                    ],
+
+                  ),
+                ),
+
+
               ],
             ),
           ),
