@@ -35,19 +35,12 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   bool connected = false;
-  var client;
   var imageurl;
-  var decodedImage;
-  var fullName;
+
 
   getUser() async {
     user = await firebaseAuth.currentUser();
-    client = await db.getUser(widget.name);
-    fullName = client[0]['fullName'];
-    imageurl = client[0]['image'];
-    print(imageurl);
-    decodedImage =
-        imageurl == 'none' ? null : Base64Decoder().convert(imageurl);
+
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');
@@ -87,6 +80,7 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       backgroundColor: myColor.myBackground,
       drawer: Drawer(
         child: ListView(
@@ -122,7 +116,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.person),
+                leading: Icon(Icons.person,color:myColor.myBlack),
                 title: Text('My Profile'),
               ),
               onTap: () {
@@ -132,7 +126,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.assignment_ind),
+                leading: Icon(Icons.assignment_ind,color:myColor.myBlack),
                 title: Text('My Posted Jobs'),
               ),
               onTap: () {
@@ -143,7 +137,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.send),
+                leading: Icon(Icons.send,color:myColor.myBlack),
                 title: Text('Sent Application'),
               ),
               onTap: () {
@@ -154,7 +148,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                leading: Icon(Icons.category),
+                leading: Icon(Icons.category,color:myColor.myBlack),
                 title: Text('Create Category'),
               ),
               onTap: () {
@@ -165,7 +159,7 @@ class _LandingPageState extends State<LandingPage> {
             ),
             InkWell(
               child: ListTile(
-                  leading: Icon(Icons.visibility_off), title: Text('Log out')),
+                  leading: Icon(Icons.visibility_off,color:myColor.myBlack), title: Text('Log out')),
               onTap: () async {
                 await firebaseAuth.signOut();
                 Navigator.of(context).pop();
@@ -228,7 +222,7 @@ class _LandingPageState extends State<LandingPage> {
                 style: GoogleFonts.combo(
                     fontSize: 18,
                     color: myColor.myBlack,
-                    fontWeight: FontWeight.w400),
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Flexible(
@@ -270,13 +264,13 @@ class _LandingPageState extends State<LandingPage> {
                                   child: Text(
                                       map.values.toList()[index]['type'].toString().substring(0,1).toUpperCase(),
                                     style: TextStyle(
-                                      color: myColor.myBlack,
+                                      color: myColor.myBackground,
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700
                                     ),
                                   ),
                                   decoration: BoxDecoration(
-                                      color: myColor.myWhite,
+                                      color: myColor.myBlack,
                                       borderRadius: BorderRadius.all(
                                           Radius.circular(50))),
                                 ),
