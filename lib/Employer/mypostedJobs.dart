@@ -180,11 +180,15 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                 ['status'] ==
                                                             'open'
                                                         ? RaisedButton(
-                                                      color: myColor.myWhite,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(50.0),
-                                                      ),
+                                                            color:
+                                                                myColor.myWhite,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50.0),
+                                                            ),
                                                             child: Text(
                                                                 'Close Job'),
                                                             onPressed: () {
@@ -229,11 +233,15 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                             },
                                                           )
                                                         : RaisedButton(
-                                                      color: myColor.myWhite,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(50.0),
-                                                      ),
+                                                            color:
+                                                                myColor.myWhite,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50.0),
+                                                            ),
                                                             child: Text(
                                                                 'Post Job'),
                                                             onPressed: () {
@@ -280,9 +288,11 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                     SizedBox(width: 20),
                                                     RaisedButton(
                                                       color: myColor.myWhite,
-                                                      shape: RoundedRectangleBorder(
+                                                      shape:
+                                                          RoundedRectangleBorder(
                                                         borderRadius:
-                                                        BorderRadius.circular(50.0),
+                                                            BorderRadius
+                                                                .circular(50.0),
                                                       ),
                                                       child: Text(
                                                         'Edit',
@@ -339,7 +349,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                     children: [
                                                                       FlatButton(
                                                                         child: Text(
-                                                                            'Cancel'),
+                                                                            'Cancel',style:TextStyle(color:Colors.black)),
                                                                         onPressed:
                                                                             () {
                                                                           Navigator.of(context)
@@ -348,7 +358,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                       ),
                                                                       FlatButton(
                                                                         child: Text(
-                                                                            'Update'),
+                                                                            'Update',style:TextStyle(color:Colors.black)),
                                                                         onPressed:
                                                                             () async {
                                                                           FirebaseDatabase
@@ -496,13 +506,21 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                 ['status'] ==
                                                             'open'
                                                         ? RaisedButton(
-                                                      color: myColor.myBlack,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(50.0),
-                                                      ),
+                                                            color:
+                                                                myColor.myBlack,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50.0),
+                                                            ),
                                                             child: Text(
-                                                                'Close Job',style: TextStyle(color: myColor.myWhite),),
+                                                              'Close Job',
+                                                              style: TextStyle(
+                                                                  color: myColor
+                                                                      .myWhite),
+                                                            ),
                                                             onPressed: () {
                                                               setState(() {
                                                                 print(map.values
@@ -545,13 +563,21 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                             },
                                                           )
                                                         : RaisedButton(
-                                                      color: myColor.myBlack,
-                                                      shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                        BorderRadius.circular(50.0),
-                                                      ),
+                                                            color:
+                                                                myColor.myBlack,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50.0),
+                                                            ),
                                                             child: Text(
-                                                                'Post Job',style: TextStyle(color: myColor.myBlack),),
+                                                              'Post Job',
+                                                              style: TextStyle(
+                                                                  color: myColor
+                                                                      .myBlack),
+                                                            ),
                                                             onPressed: () {
                                                               setState(() {
                                                                 print(map.values
@@ -595,12 +621,17 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                     SizedBox(width: 20),
                                                     RaisedButton(
                                                       color: myColor.myBlack,
-                                                      shape: RoundedRectangleBorder(
+                                                      shape:
+                                                          RoundedRectangleBorder(
                                                         borderRadius:
-                                                        BorderRadius.circular(50.0),
+                                                            BorderRadius
+                                                                .circular(50.0),
                                                       ),
                                                       child: Text(
-                                                        'Edit',style: TextStyle(color: myColor.myWhite),
+                                                        'Edit',
+                                                        style: TextStyle(
+                                                            color: myColor
+                                                                .myWhite),
                                                       ),
                                                       onPressed: () {
                                                         return showDialog(
