@@ -41,6 +41,7 @@ class _jobDetailState extends State<jobDetail> {
   var file;
   var isloading = false;
 bool connected;
+var imageUrl;
   @override
   void initState() {
     // TODO: implement initState
@@ -64,6 +65,7 @@ bool connected;
       print("map is ${map.values.toList()}");
       fullName = map.values.toList()[0]['userName'];
       furtherInfo = map.values.toList()[0]['furtherInfo'];
+      imageUrl = map.values.toList()[0]['url'];
     });
     var connectivityResult = await (Connectivity().checkConnectivity());
     connected = ((connectivityResult == ConnectivityResult.wifi) ||
@@ -86,7 +88,8 @@ bool connected;
       'cvUrl': url,
       'category': widget.category,
       'AppliedTo': widget.postedBy,
-      'jobTitle': widget.jobTitle
+      'jobTitle': widget.jobTitle,
+      'imageUrl':imageUrl
     });
     setState(() {
       isloading = false;

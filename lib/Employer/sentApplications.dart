@@ -4,6 +4,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
@@ -63,11 +64,7 @@ var client;
                         itemCount: map.values.toList().length,
 //                      scrollDirection: Axis.horizontal,
                         itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-//                            Navigator.of(context).push(MaterialPageRoute(builder:(context)=>PostJob(map.values.toList()[index]['type'].toString()) ));
-                            },
-                            child: Dismissible(
+                          return index %2 ==0 ?Dismissible(
                               key: Key(map.values.toList()[index].toString()),
                               confirmDismiss: (direction) {
                                 return showDialog(
@@ -112,17 +109,18 @@ var client;
                                   child: ExpansionTile(
                                     leading: Icon(
                                       Icons.person,
-                                      color: Colors.red,
+                                      color: myColor.myWhite,
                                       size: 40,
                                     ),
-                                    trailing: Icon(Icons.arrow_drop_down,color:Colors.pink,size:40),
+                                    trailing: Icon(Icons.arrow_drop_down,color:myColor.myWhite,size:40),
                                     title: Column(
                                       children: [
                                         Row(
                                           children: <Widget>[
                                             Text('Applier Name   - ',
-                                                style: TextStyle(
-                                                    color: myColor.myWhite)),
+                                                style: GoogleFonts.alice(
+                                                    color: myColor.myWhite,
+                                                    fontSize: 15)),
                                             Text(
                                               "${map.values.toList()[index]['ApplierName']} ",
                                               style: TextStyle(
@@ -135,8 +133,9 @@ var client;
                                         Row(
                                           children: [
                                             Text('Applied Position   - ',
-                                                style: TextStyle(
-                                                    color: myColor.myWhite)),
+                                                style: GoogleFonts.alice(
+                                                    color: myColor.myWhite,
+                                                    fontSize: 15)),
                                             Text(
                                               "  ${map.values.toList()[index]['jobTitle']}",
                                               style: TextStyle(
@@ -148,32 +147,184 @@ var client;
                                     ),
 
                                     children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            RaisedButton(
+                                        color: myColor.myWhite,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                          BorderRadius
+                                              .circular(
+                                              50.0),
+                                        ),
+                                              child: Text(
+                                                'Contact Intern',
+                                                style: TextStyle(
+                                                    color: myColor.myBlack),
+                                              ),
+                                              onPressed: () {
+                                                map.values.toList()[index]
+                                                        ['ApplierExpertise'] =
+                                                    'Software Engineer';
+                                                UrlLauncher.launch(
+                                                    'mailto:${map.values.toList()[index]['ApplierEmail']}?subject=Intern Application&body=This is to inform that you are selected to be our intern');
+                                              },
+                                            ),
+                                            SizedBox(width: 20),
+                                            RaisedButton(
+                                              color: myColor.myWhite,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    50.0),
+                                              ),
+                                              child: Text('View Cv online',
+                                                  style: TextStyle(
+                                                      color: myColor.myBlack)),
+                                              onPressed: () async {
+//                                      setState(() {
+//                                        isLoading = true;
+//                                      });
+                                                PDFDocument doc =
+                                                    await PDFDocument.fromURL(
+                                                        map.values.toList()[index]
+                                                            ['cvUrl']);
+                                                print(map.values.toList()[index]
+                                                    ['cvUrl']);
+                                                print("hii");
+                                                await Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            ViewPdf(doc)));
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+
+//
+                                  ),
+                                ),
+                              ),
+                            ):Dismissible(
+                            key: Key(map.values.toList()[index].toString()),
+                            confirmDismiss: (direction) {
+                              return showDialog(
+                                  context: (context),
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          'Are you sure you want to delete!!'),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                            child: Text('Yes'),
+                                            onPressed: () {
+                                              setState(() {
+                                                FirebaseDatabase.instance
+                                                    .reference()
+                                                    .child("application")
+                                                    .child(map.keys
+                                                    .toList()[index])
+                                                    .remove();
+                                              });
+
+                                              Navigator.of(context).pop();
+                                            }),
+                                        FlatButton(
+                                          child: Text('No'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              margin: EdgeInsets.symmetric(horizontal: 15),
+                              child: Card(
+                                color: myColor.myWhite,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: ExpansionTile(
+                                  leading: Icon(
+                                    Icons.person,
+                                    color:myColor.myBlack,
+                                    size: 40,
+                                  ),
+                                  trailing: Icon(Icons.arrow_drop_down,color:myColor.myBlack,size:40),
+                                  title: Column(
+                                    children: [
                                       Row(
+                                        children: <Widget>[
+                                          Text('Applier Name   - ',
+                                              style: GoogleFonts.alice(
+                                                  color: myColor.myBlack,
+                                                  fontSize: 15)),
+                                          Text(
+                                            "${map.values.toList()[index]['ApplierName']} ",
+                                            style: TextStyle(
+                                                color: myColor.myBlack),
+                                          ),
+//
+                                        ],
+                                      ),
+                                      SizedBox(height: 20,),
+                                      Row(
+                                        children: [
+                                          Text('Applied Position   - ',
+                                              style: GoogleFonts.alice(
+                                                  color: myColor.myBlack,
+                                                  fontSize: 15)),
+                                          Text(
+                                            "  ${map.values.toList()[index]['jobTitle']}",
+                                            style: TextStyle(
+                                                color: myColor.myBlack),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
+                                        MainAxisAlignment.start,
                                         children: [
                                           RaisedButton(
-                                            color: Colors.black87,
+                                            color:myColor.myBlack,
                                             shape: RoundedRectangleBorder(
                                                 side: BorderSide(
                                                     color: Colors.black,
                                                     width: 1,
                                                     style: BorderStyle.solid),
                                                 borderRadius:
-                                                    BorderRadius.circular(50)),
+                                                BorderRadius.circular(50)),
                                             child: Text(
                                               'Contact Intern',
                                               style: TextStyle(
-                                                  color: Colors.white),
+                                                  color: myColor.myWhite),
                                             ),
                                             onPressed: () {
                                               map.values.toList()[index]
-                                                      ['ApplierExpertise'] =
-                                                  'Software Engineer';
+                                              ['ApplierExpertise'] =
+                                              'Software Engineer';
                                               UrlLauncher.launch(
                                                   'mailto:${map.values.toList()[index]['ApplierEmail']}?subject=Intern Application&body=This is to inform that you are selected to be our intern');
                                             },
                                           ),
+                                          SizedBox(width: 20,),
                                           RaisedButton(
                                             color: Colors.black87,
                                             shape: RoundedRectangleBorder(
@@ -182,7 +333,7 @@ var client;
                                                     width: 1,
                                                     style: BorderStyle.solid),
                                                 borderRadius:
-                                                    BorderRadius.circular(50)),
+                                                BorderRadius.circular(50)),
                                             child: Text('View Cv online',
                                                 style: TextStyle(
                                                     color: Colors.white)),
@@ -191,25 +342,25 @@ var client;
 //                                        isLoading = true;
 //                                      });
                                               PDFDocument doc =
-                                                  await PDFDocument.fromURL(
-                                                      map.values.toList()[index]
-                                                          ['cvUrl']);
-                                              print(map.values.toList()[index]
+                                              await PDFDocument.fromURL(
+                                                  map.values.toList()[index]
                                                   ['cvUrl']);
+                                              print(map.values.toList()[index]
+                                              ['cvUrl']);
                                               print("hii");
                                               await Navigator.of(context).push(
                                                   MaterialPageRoute(
                                                       builder: (BuildContext
-                                                              context) =>
+                                                      context) =>
                                                           ViewPdf(doc)));
                                             },
                                           ),
                                         ],
-                                      )
-                                    ],
+                                      ),
+                                    )
+                                  ],
 
 //
-                                  ),
                                 ),
                               ),
                             ),
@@ -227,7 +378,7 @@ var client;
                   }
 
                   return SpinKitWave(
-                    color: Colors.purple,
+                    color: myColor.myBlack,
                   );
                 },
               ));

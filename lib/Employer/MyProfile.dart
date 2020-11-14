@@ -369,7 +369,7 @@ Query checkUser;
                 ],
               );
             }
-            return SpinKitWave(color:Colors.purple);
+            return SpinKitWave(color:myColor.myBlack);
           }
         ));
   }

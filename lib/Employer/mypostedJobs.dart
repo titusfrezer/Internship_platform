@@ -727,7 +727,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                             backgroundColor:
                                                                                 Colors.green,
                                                                             title:
-                                                                                "Sucess",
+                                                                                "Success",
                                                                             message:
                                                                                 "Post Updated",
                                                                             duration:
@@ -756,7 +756,6 @@ class _MyPostedJobState extends State<MyPostedJob> {
                     } else {
                       return SpinKitWave(
                         color: myColor.myBlack,
-                        size: 16,
                       );
                     }
                     return Center(
