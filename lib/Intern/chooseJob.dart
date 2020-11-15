@@ -245,7 +245,7 @@ class _chooseJobState extends State<chooseJob> {
                       }
                     } else {
                       return SpinKitWave(
-                        color: Colors.pink,
+                        color: myColor.myBlack,
                       );
                     }
 

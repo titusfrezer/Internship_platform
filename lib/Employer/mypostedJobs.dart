@@ -756,7 +756,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                     } else {
                       return SpinKitWave(
                         color: myColor.myBlack,
-                        size: 25,
+                       
                       );
                     }
                     return Center(

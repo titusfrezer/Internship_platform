@@ -166,10 +166,14 @@ class _MyProfileState extends State<MyProfile> {
                                     ),
                                   ],
                                 ),
+
+
                                 decoration: BoxDecoration(
                                     image: DecorationImage(
+
                                         fit: BoxFit.cover,
-                                        image: FileImage(_image))),
+                                        image:
+                                        FileImage(_image))),
                               )
                             : widget.imageUrl != null
                                 ? Container(
@@ -180,14 +184,17 @@ class _MyProfileState extends State<MyProfile> {
                                       children: [
                                         Align(
                                           alignment: Alignment.center,
-                                          child: FadeInImage(
-                                              height: 300,
-                                              width: double.maxFinite,
-                                              fit: BoxFit.cover,
-                                              placeholder: AssetImage(
-                                                  'image/internship.jpg'),
-                                              image: NetworkImage(map.values
-                                                  .toList()[0]['url'])),
+                                          child: ClipOval(
+
+                                            child: FadeInImage(
+                                                height: 300,
+                                                width: 300,
+                                                fit: BoxFit.cover,
+                                                placeholder: AssetImage(
+                                                    'image/internship.jpg'),
+                                                image: NetworkImage(map.values
+                                                    .toList()[0]['url'])),
+                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
@@ -487,6 +494,48 @@ class _MyProfileState extends State<MyProfile> {
                       ),
 
                     ],
+                  );
+                }else if (!connected) {
+                  print('hi');
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.signal_wifi_off,
+                          size: 40,
+                          color: myColor.myBlack,
+                        ),
+                        FlatButton(
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Colors.black,
+                                    width: 1,
+                                    style: BorderStyle.solid),
+                                borderRadius: BorderRadius.circular(50)),
+                            onPressed: () async {
+                              var connectivityResult =
+                              await (Connectivity().checkConnectivity());
+                              print(connectivityResult);
+                              if ((connectivityResult ==
+                                  ConnectivityResult.wifi) ||
+                                  connectivityResult ==
+                                      ConnectivityResult.mobile) {
+                                print('connected');
+                                setState(() {
+                                  connected = true;
+                                });
+                              } else {
+                                setState(() {
+                                  connected = false;
+                                });
+                                print('not connected');
+                              }
+                            },
+                            child: Text('Retry',
+                                style: TextStyle(color: myColor.myBlack)))
+                      ],
+                    ),
                   );
                 }
                 return SpinKitWave(color: myColor.myBlack);

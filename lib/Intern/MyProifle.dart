@@ -8,6 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:internship_platform/Intern/CategoryPage.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
@@ -99,168 +100,281 @@ class _MyProfileState extends State<MyProfile> {
                 Map map = snapshot.data.snapshot.value;
                 nameController.text = map.values.toList()[0]['userName'];
                 furtherController.text = map.values.toList()[0]['furtherInfo'];
-                return ListView(
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipPath(
-                      clipper: WaveClipper1(),
-                      child: Container(
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(
-                              height: 40,
-                            ),
-                            Center(
-                              child: GestureDetector(
-                                  onTap: () async {
-                                    print('hi');
+                    GestureDetector(
+                      onTap: () async {
+                        print('hi');
 //                          url = await getImage();
-                                    await getImage();
+                        await getImage();
 //                          print("url is $downloadUrl");
+                      },
+                      child: _image != null
+                          ? Container(
+                        height: 300,
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: FloatingActionButton(
+                                  foregroundColor: myColor.myBlack,
+                                  backgroundColor: myColor.myWhite,
+                                  child: Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: 25,
+                                  ),
+                                  onPressed: () async {
+                                    await getImage();
                                   },
-                                  child: _image != null
-                                      ? CircleAvatar(
-                                          child: Row(
-                                            children: [
-                                              SizedBox(width: 62),
-                                              IconButton(
-                                                icon: Icon(
-                                                  Icons.edit,
-                                                  size: 25,
-                                                ),
-                                                onPressed: () async {
-                                                  await getImage();
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                          backgroundColor: myColor.myBlack,
-                                          radius: 55,
-                                          backgroundImage: FileImage(_image),
-                                        )
-                                      : widget.imageUrl != null
-                                          ? ClipOval(
-
-                                            child: Stack(
-                                              // mainAxisAlignment: MainAxisAlignment.center,
-                                              children: [
-                                                // SizedBox(width: 62),
-
-                                                FadeInImage(
-                                                  width: 100,
-                                                  height: 100,
-                                                  fit:BoxFit.cover,
-                                                    placeholder: AssetImage(
-                                                        'image/internship.jpg'),
-                                                    image: NetworkImage(map.values.toList()[0]['url'])),
-                                              SizedBox(height: 40,),
-                                                IconButton(color: Colors.white,
-                                                  icon: Icon(
-
-                                                    Icons.edit,
-                                                    size: 25,
-                                                  ),
-                                                  onPressed: () async {
-                                                    await getImage();
-                                                  },
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                          : CircleAvatar(
-                                              radius: 55,
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Center(
-                                                    child: Icon(Icons.person,
-                                                        size: 45,
-                                                        color: Colors.purple),
-                                                  ),
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      Icons.edit,
-                                                      size: 25,
-                                                    ),
-                                                    onPressed: () async {
-                                                      await getImage();
-                                                    },
-                                                  )
-                                                ],
-                                              ),
-                                              backgroundColor: Colors.black,
-                                            )),
+                                ),
+                              ),
                             ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.mail, color: Colors.black),
-                                SizedBox(width: 10),
-                                Text(widget.email,
-                                    style: TextStyle(color: Colors.white)),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 20,
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: myColor.myWhite,
+                                      borderRadius:
+                                      BorderRadius.circular(20)),
+                                  child: IconButton(
+                                      icon: Icon(Icons.arrow_back),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      }),
+                                ),
+                              ),
                             ),
                           ],
                         ),
-                        width: double.infinity,
-                        height: 300,
                         decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [myColor.myBlack, myColor.myBlack])),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 18.0, right: 8),
-                      child: TextField(
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Colors.purple, width: 2.0),
+                            image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: FileImage(_image))),
+                      )
+                          : widget.imageUrl != null
+                          ? Container(
+                        height: 300,
+                        child: Stack(
+                          alignment: Alignment.topCenter,
+                          fit: StackFit.expand,
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: ClipOval(
+
+                                child: FadeInImage(
+                                    height: 300,
+                                    width: 300,
+                                    fit: BoxFit.cover,
+                                    placeholder: AssetImage(
+                                        'image/internship.jpg'),
+                                    image: NetworkImage(map.values
+                                        .toList()[0]['url'])),
+                              ),
                             ),
-                            icon: Icon(Icons.person, color: Colors.black),
-                            border: OutlineInputBorder()),
-                        controller: nameController,
-                      ),
-                    ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: EdgeInsets.only(left: 18.0, right: 8),
-                      child: TextField(
-                        style: TextStyle(color: Colors.black),
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                  color: Colors.purple, width: 2.0),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: FloatingActionButton(
+                                  foregroundColor: myColor.myBlack,
+                                  backgroundColor: myColor.myWhite,
+                                  child: Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: 25,
+                                  ),
+                                  onPressed: () async {
+                                    await getImage();
+                                  },
+                                ),
+                              ),
                             ),
-                            focusColor: myColor.myBlack,
-                            border: OutlineInputBorder(),
-                            icon: Icon(Icons.work, color: Colors.black)),
-                        controller: furtherController,
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Container(
+                                  height: 50,
+                                  width: 50,
+                                  decoration: BoxDecoration(
+                                      color: myColor.myWhite,
+                                      borderRadius:
+                                      BorderRadius.circular(
+                                          20)),
+                                  child: IconButton(
+                                      icon: Icon(Icons.arrow_back),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      }),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : Container(
+                        height: 300,
+                        color: myColor.myBackground,
+                        child: Column(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                          color: myColor.myWhite,
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              20)),
+                                      child: IconButton(
+                                          icon: Icon(
+                                              Icons.arrow_back),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop();
+                                          }),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                          left:
+                                          MediaQuery.of(context)
+                                              .size
+                                              .width *
+                                              0.15),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "My Profile",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight:
+                                            FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Icon(Icons.person,
+                                  size: 45, color: Colors.purple),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Align(
+                                alignment: Alignment.bottomRight,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.add_a_photo_outlined,
+                                    size: 25,
+                                  ),
+                                  onPressed: () async {
+                                    await getImage();
+                                  },
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                        child: isLoading
-                            ? SpinKitWave(
-                                color: Colors.pink,
-                              )
-                            : FlatButton(
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          SizedBox(
+                            height: 25,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: TextField(
+                              style:  GoogleFonts.delius(
+
+                                  color: myColor.myBlack),
+                              decoration: InputDecoration(
+                                fillColor: myColor.myWhite,
+                                filled: true,
+//                               focusedBorder: OutlineInputBorder(
+//                                 borderSide: const BorderSide(
+//                                     color: Colors.purple, width: 2.0),
+// //                      borderRadius: BorderRadius.circular(25.0),
+//                               ),
+                                icon: Icon(Icons.person, color: myColor.myBlack),
+                                // border: OutlineInputBorder()
+//                labelText: fullName
+//                      hintText: identity
+                              ),
+                              controller: nameController,
+                            ),
+                          ),
+                          SizedBox(height: 20),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 15),
+                            child: TextField(
+                              style: GoogleFonts.delius(
+
+                                  color: myColor.myBlack),
+                              decoration: InputDecoration(
+                                  filled: true,
+                                  fillColor: myColor.myWhite,
+                                  // focusedBorder: OutlineInputBorder(
+                                  //   borderSide: const BorderSide(
+                                  //       color: Colors.purple, width: 2.0),
+//                      borderRadius: BorderRadius.circular(25.0),
+                                  // ),
+                                  // focusColor: Colors.transparent,
+                                  // border: OutlineInputBorder(),
+                                  icon:
+                                  Icon(Icons.add_location, color: myColor.myBlack)
+//                labelText: 'FullName',
+//                      hintText: furtherInfo
+                              ),
+                              controller: furtherController,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 50,
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+
+                            child: isLoading
+                                ? SpinKitWave(
+                              color: myColor.myBlack,
+                              size: 25,
+                            )
+                                :  Container(
+                              margin: EdgeInsets.symmetric(horizontal: 15),
+                              height: 50,
+                              width: double.infinity,
+                              child: RaisedButton(
+                                color: myColor.myBlack,
+
                                 shape: RoundedRectangleBorder(
                                     side: BorderSide(
                                         color: Colors.black,
                                         width: 1,
                                         style: BorderStyle.solid),
                                     borderRadius: BorderRadius.circular(50)),
-                                child: Text('Update'),
+                                child: Text('Update', style: GoogleFonts.delius(
+                                    fontWeight: FontWeight.w600,
+                                    color: myColor.myWhite),),
                                 onPressed: () async {
                                   setState(() {
                                     isLoading = true;
@@ -282,24 +396,28 @@ class _MyProfileState extends State<MyProfile> {
                                   }
                                   if (furtherController.text.isNotEmpty &&
                                       nameController.text.isNotEmpty) {
-                                    var updatedfurther = furtherController.text;
-                                    var updatedName = nameController.text;
+                                    var updatedfurther =
+                                        furtherController.text;
+                                    var updatedName =
+                                        nameController.text;
                                     if (_image != null) {
-                                      // if image is selected using image picker
                                       StorageReference ref = FirebaseStorage
                                           .instance
                                           .ref()
                                           .child("profile,${widget.email}");
                                       StorageUploadTask uploadTask =
-                                          ref.putFile(_image);
+                                      ref.putFile(_image);
 
-                                      url = await (await uploadTask.onComplete)
+                                      url =
+                                      await (await uploadTask.onComplete)
                                           .ref
                                           .getDownloadURL();
                                     } else {
                                       url = map.values.toList()[0]['url'];
                                     }
 
+                                    print("url is $url");
+                                    print("identity is $identity");
                                     FirebaseDatabase.instance
                                         .reference()
                                         .child("Users")
@@ -307,12 +425,11 @@ class _MyProfileState extends State<MyProfile> {
                                         .update({
                                       'furtherInfo': updatedfurther,
                                       'userName': updatedName,
-                                      'url': url,
-                                      // 'decodedImage':base64Image
+                                      'url': url
                                     }).then((_) {
                                       db.updateUser(
                                           User(
-                                              map.values.toList()[0]['identity'],
+                                              identity,
                                               widget.email.toString(),
                                               updatedName,
                                               updatedfurther,
@@ -321,7 +438,6 @@ class _MyProfileState extends State<MyProfile> {
 
                                       setState(() {
                                         isLoading = false;
-
                                       });
                                       Flushbar(
                                         icon: Icon(
@@ -330,11 +446,14 @@ class _MyProfileState extends State<MyProfile> {
                                         ),
                                         backgroundColor: Colors.green,
                                         title: "Success",
-                                        message: "Profile updated successfully",
+                                        message:
+                                        "Profile updated successfully",
                                         duration: Duration(seconds: 3),
                                       )..show(context);
                                       print('done');
                                     });
+
+//                            InternCategoryPage(widget.email);
                                   } else {
                                     setState(() {
                                       isLoading = false;
@@ -346,12 +465,17 @@ class _MyProfileState extends State<MyProfile> {
                                       ),
                                       backgroundColor: Colors.red,
                                       title: "Error",
-                                      message: "Profile updated error",
+                                      message: "Profile updation error",
                                       duration: Duration(seconds: 3),
                                     )..show(context);
                                   }
                                 },
-                              ))
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
                   ],
                 );
               } else if (!checkConnection) {
