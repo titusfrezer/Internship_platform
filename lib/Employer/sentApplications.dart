@@ -453,9 +453,11 @@ class ViewPdf extends StatelessWidget {
   Widget build(BuildContext context) {
     print(document);
     return Scaffold(
+      backgroundColor: myColor.myBackground,
         body: isLoading
             ? SpinKitWave(
-                color: Colors.pink,
+                color: myColor.myBlack,
+          size: 25,
               )
             : PDFViewer(
                 showPicker: false,
