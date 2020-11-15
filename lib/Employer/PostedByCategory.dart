@@ -382,7 +382,7 @@ backgroundColor: myColor.myBackground,
                       }
                     }
                   } else {
-                    return SpinKitWave(color: Colors.pink,);
+                    return SpinKitWave(color: myColor.myBlack,);
                   }
                   return Center(child: Text('No post from this category'));
                 },
@@ -398,11 +398,12 @@ backgroundColor: myColor.myBackground,
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => PostJob(widget.category)));
         },
-        backgroundColor: Colors.black,
+        backgroundColor: myColor.myBlack,
+        foregroundColor: myColor.myWhite,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(50)
         ),
-        child: Icon(Icons.add, size: 25, color: Colors.pink,),
+        child: Icon(Icons.add, size: 25),
       ),
     );
   }
