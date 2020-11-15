@@ -11,6 +11,9 @@ import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 class sentApplications extends StatefulWidget {
   @override
   _sentApplicationsState createState() => _sentApplicationsState();
+  String email;
+
+  sentApplications(this.email);
 }
 
 Query sentRef;
@@ -81,7 +84,7 @@ class _sentApplicationsState extends State<sentApplications> {
                       .reference()
                       .child("application")
                       .orderByChild('AppliedTo')
-                      .equalTo(currentUser.email)
+                      .equalTo(widget.email)
                       .onValue,
                   builder: (BuildContext context, snapshot) {
                     if (snapshot.hasData) {
@@ -145,7 +148,38 @@ class _sentApplicationsState extends State<sentApplications> {
                                               BorderRadius.circular(10.0),
                                         ),
                                         child: ExpansionTile(
-                                          leading: Icon(
+                                          leading:  map.values.toList()[index]['imageUrl']!=null?
+                                          GestureDetector(
+                                            onTap: (){
+                                              showDialog(
+                                                  context: context,
+                                                  builder:(context){
+                                                    return Dialog(
+                                                      child: Container(
+                                                        width: 200,
+                                                        height: 200,
+                                                        decoration: BoxDecoration(
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(map.values.toList()[index]['imageUrl']),
+                                                                fit: BoxFit.cover
+                                                            )
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                              );
+                                            },
+                                            child: ClipOval(
+                                              child: FadeInImage(
+                                                width: 50,
+                                                height: 50,
+                                                fit:BoxFit.cover,
+                                                image: NetworkImage( map.values.toList()[index]['imageUrl']),
+                                                placeholder: AssetImage('image/internship.jpg'),
+                                              ),
+                                            ),
+                                          ):
+                                          Icon(
                                             Icons.person,
                                             color: myColor.myWhite,
                                             size: 40,
@@ -291,7 +325,7 @@ class _sentApplicationsState extends State<sentApplications> {
                                           });
                                     },
                                     child: Container(
-                                      height: 120,
+                                      width: 120,
                                       margin: EdgeInsets.symmetric(
                                           horizontal: 15, vertical: 10),
                                       child: Card(
@@ -301,7 +335,37 @@ class _sentApplicationsState extends State<sentApplications> {
                                               BorderRadius.circular(10.0),
                                         ),
                                         child: ExpansionTile(
-                                          leading: Icon(
+                                          leading: map.values.toList()[index]['imageUrl']!=null?
+                                          GestureDetector(
+                                            onTap: (){
+                                              showDialog(
+                                                context: context,
+                                                builder:(context){
+                                                  return Dialog(
+                                                    child: Container(
+                                                      width: 200,
+                                                      height: 200,
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(map.values.toList()[index]['imageUrl']),
+                                                              fit: BoxFit.cover
+                                                          )
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                              );
+                                            },
+                                            child: ClipOval(
+                                              child: FadeInImage(
+                                                width: 50,
+                                                height: 50,
+                                                fit:BoxFit.cover,
+                                                image: NetworkImage( map.values.toList()[index]['imageUrl']),
+                                                placeholder: AssetImage('image/internship.jpg'),
+                                              ),
+                                            ),
+                                          ):Icon(
                                             Icons.person,
                                             color: myColor.myBlack,
                                             size: 40,

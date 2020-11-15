@@ -149,7 +149,7 @@ class _LandingPageState extends State<LandingPage> {
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => sentApplications()));
+                        builder: (context) => sentApplications(widget.name)));
                   },
                 ),
                 // InkWell(
