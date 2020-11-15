@@ -79,6 +79,7 @@ class _PostJobState extends State<PostJob> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: myColor.myBackground,
       // appBar: AppBar(
       //   title: Text('Post Job'),
       //   centerTitle: true,
@@ -238,6 +239,10 @@ Widget reusableRow(name, controller, inputFormat,inputType,hintText,line) {
               inputFormatters: [inputFormat],
               keyboardType: inputType,
               decoration: InputDecoration(
+
+
+                filled: true,
+                fillColor: myColor.myWhite,
                 hintText: hintText
               ),
               maxLines: line,
