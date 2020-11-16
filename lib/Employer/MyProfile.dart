@@ -290,7 +290,7 @@ class _MyProfileState extends State<MyProfile> {
                                         Align(
                                           alignment: Alignment.center,
                                           child: Icon(Icons.person,
-                                              size: 45, color: Colors.purple),
+                                              size: 100, color: Colors.black),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
