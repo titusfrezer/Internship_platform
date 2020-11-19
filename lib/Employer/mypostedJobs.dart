@@ -2,11 +2,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:intl/intl.dart';
-
+import 'package:internship_platform/ReusableTextField.dart';
 class MyPostedJob extends StatefulWidget {
   String name;
 
@@ -21,7 +22,6 @@ class _MyPostedJobState extends State<MyPostedJob> {
   TextEditingController jobDescription = TextEditingController();
   TextEditingController howLong = TextEditingController();
   TextEditingController allowance = TextEditingController();
-  DatabaseReference myAppRef;
 
   @override
   Widget build(BuildContext context) {
@@ -72,21 +72,11 @@ class _MyPostedJobState extends State<MyPostedJob> {
                       if (snapshot.data.snapshot.value != null) {
                         Map<dynamic, dynamic> map =
                             snapshot.data.snapshot.value;
-                        print("hello ${map.keys}");
-//                    print(map.values.toList());
 
                         return ListView.builder(
                           itemCount: map.values.toList().length,
                           scrollDirection: Axis.vertical,
                           itemBuilder: (BuildContext context, int index) {
-                            jobTitle.text =
-                                map.values.toList()[index]['jobTitle'];
-                            jobDescription.text =
-                                "${map.values.toList()[index]['jobDescription']}";
-                            howLong.text =
-                                map.values.toList()[index]['howLong'];
-                            allowance.text =
-                                map.values.toList()[index]['allowance'];
                             return index % 2 == 0
                                 ? Dismissible(
                                     key: Key(
@@ -148,7 +138,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                 map.values.toList()[index]
                                                     ['jobTitle'],
                                                 overflow: TextOverflow.fade,
-                                                style: GoogleFonts.alice(
+                                                style: GoogleFonts.openSans(
                                                     color: myColor.myWhite,
                                                     fontSize: 18),
                                               ),
@@ -163,7 +153,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                 child: Text(
                                                   map.values.toList()[index]
                                                       ['category'],
-                                                  style: GoogleFonts.scada(
+                                                  style: GoogleFonts.roboto(
                                                       color: myColor.myWhite,
                                                       fontStyle:
                                                           FontStyle.italic),
@@ -298,6 +288,14 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                         'Edit',
                                                       ),
                                                       onPressed: () {
+                                                        jobTitle.text =
+                                                        map.values.toList()[index]['jobTitle'];
+                                                        jobDescription.text =
+                                                        "${map.values.toList()[index]['jobDescription']}";
+                                                        howLong.text =
+                                                        map.values.toList()[index]['howLong'];
+                                                        allowance.text =
+                                                        map.values.toList()[index]['allowance'];
                                                         return showDialog(
                                                             context: context,
                                                             builder: (context) {
@@ -306,41 +304,20 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                     'Edit Post'),
                                                                 content:
                                                                     Container(
-                                                                  height: 250,
+                                                                  height: 270,
                                                                   width: 350,
                                                                   child:
                                                                       SingleChildScrollView(
                                                                           child:
                                                                               Column(
                                                                     children: [
-                                                                      TextField(
-                                                                        controller:
-                                                                            jobTitle,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'Job Title'),
-                                                                      ),
-                                                                      TextField(
-                                                                        minLines:
-                                                                            2,
-                                                                        maxLines:
-                                                                            4,
-                                                                        controller:
-                                                                            jobDescription,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'Job Description'),
-                                                                      ),
-                                                                      TextField(
-                                                                        controller:
-                                                                            howLong,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'For How Long '),
-                                                                      ),
-                                                                      TextField(
-                                                                        controller:
-                                                                            allowance,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'Allowance(In Birr)'),
-                                                                      ),
+                                                                      ReusableTextField(jobTitle,  FilteringTextInputFormatter.deny(RegExp(r'[]')), TextInputType.text, 'Job Title', 1),
+                                                                      ReusableTextField(jobDescription,
+                                                                          FilteringTextInputFormatter.deny(RegExp(r'[]')),TextInputType.text,'Job Description',3),
+                                                                      ReusableTextField(howLong,
+                                                                          FilteringTextInputFormatter.deny(RegExp(r'[]')),TextInputType.text,'Duration',1),
+                                                                      ReusableTextField( allowance,
+                                                                          FilteringTextInputFormatter.digitsOnly,TextInputType.number,'Allowance',1),
                                                                     ],
                                                                   )),
                                                                 ),
@@ -349,7 +326,9 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                     children: [
                                                                       FlatButton(
                                                                         child: Text(
-                                                                            'Cancel',style:TextStyle(color:Colors.black)),
+                                                                            'Cancel',
+                                                                            style:
+                                                                                TextStyle(color: Colors.black)),
                                                                         onPressed:
                                                                             () {
                                                                           Navigator.of(context)
@@ -358,7 +337,9 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                       ),
                                                                       FlatButton(
                                                                         child: Text(
-                                                                            'Update',style:TextStyle(color:Colors.black)),
+                                                                            'Update',
+                                                                            style:
+                                                                                TextStyle(color: Colors.black)),
                                                                         onPressed:
                                                                             () async {
                                                                           FirebaseDatabase
@@ -474,7 +455,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                 map.values.toList()[index]
                                                     ['jobTitle'],
                                                 overflow: TextOverflow.fade,
-                                                style: GoogleFonts.alice(
+                                                style: GoogleFonts.openSans(
                                                     color: myColor.myBlack,
                                                     fontSize: 18),
                                               ),
@@ -489,10 +470,10 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                 child: Text(
                                                   map.values.toList()[index]
                                                       ['category'],
-                                                  style: GoogleFonts.scada(
+                                                  style: GoogleFonts.roboto(
                                                       color: myColor.myBlack,
                                                       fontStyle:
-                                                          FontStyle.italic),
+                                                      FontStyle.italic),
                                                 )),
                                             children: [
                                               Padding(
@@ -576,7 +557,7 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                               'Post Job',
                                                               style: TextStyle(
                                                                   color: myColor
-                                                                      .myBlack),
+                                                                      .myWhite),
                                                             ),
                                                             onPressed: () {
                                                               setState(() {
@@ -634,6 +615,14 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                 .myWhite),
                                                       ),
                                                       onPressed: () {
+                                                        jobTitle.text =
+                                                        map.values.toList()[index]['jobTitle'];
+                                                        jobDescription.text =
+                                                        "${map.values.toList()[index]['jobDescription']}";
+                                                        howLong.text =
+                                                        map.values.toList()[index]['howLong'];
+                                                        allowance.text =
+                                                        map.values.toList()[index]['allowance'];
                                                         return showDialog(
                                                             context: context,
                                                             builder: (context) {
@@ -642,41 +631,20 @@ class _MyPostedJobState extends State<MyPostedJob> {
                                                                     'Edit Post'),
                                                                 content:
                                                                     Container(
-                                                                  height: 250,
+                                                                  height: 270,
                                                                   width: 350,
                                                                   child:
                                                                       SingleChildScrollView(
                                                                           child:
                                                                               Column(
                                                                     children: [
-                                                                      TextField(
-                                                                        controller:
-                                                                            jobTitle,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'Job Title'),
-                                                                      ),
-                                                                      TextField(
-                                                                        minLines:
-                                                                            2,
-                                                                        maxLines:
-                                                                            4,
-                                                                        controller:
-                                                                            jobDescription,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'Job Description'),
-                                                                      ),
-                                                                      TextField(
-                                                                        controller:
-                                                                            howLong,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'For How Long '),
-                                                                      ),
-                                                                      TextField(
-                                                                        controller:
-                                                                            allowance,
-                                                                        decoration:
-                                                                            InputDecoration(labelText: 'Allowance(In Birr)'),
-                                                                      ),
+                                                                      ReusableTextField(jobTitle,  FilteringTextInputFormatter.deny(RegExp(r'[]')), TextInputType.text, 'Job Title', 1),
+                                                                      ReusableTextField(jobDescription,
+                                                                          FilteringTextInputFormatter.deny(RegExp(r'[]')),TextInputType.text,'Job Description',3),
+                                                                      ReusableTextField(howLong,
+                                                                          FilteringTextInputFormatter.deny(RegExp(r'[]')),TextInputType.text,'Duration',1),
+                                                                      ReusableTextField( allowance,
+                                                                          FilteringTextInputFormatter.digitsOnly,TextInputType.number,'Allowance',1),
                                                                     ],
                                                                   )),
                                                                 ),
@@ -756,7 +724,6 @@ class _MyPostedJobState extends State<MyPostedJob> {
                     } else {
                       return SpinKitWave(
                         color: myColor.myBlack,
-                       
                       );
                     }
                     return Center(

@@ -31,23 +31,16 @@ class jobDetail extends StatefulWidget {
 }
 
 class _jobDetailState extends State<jobDetail> {
-  var client;
-  var fullName;
-  var email;
-  var furtherInfo;
-
+  
   DatabaseReference applyRef =
       FirebaseDatabase.instance.reference().child('application');
   var file;
-  var isloading = false;
-bool connected;
-var imageUrl;
+
   @override
   void initState() {
     // TODO: implement initState
-
+isLoading = false;
     super.initState();
-    firebaseAuth = FirebaseAuth.instance;
     getInfo();
   }
 
@@ -65,7 +58,7 @@ var imageUrl;
       print("map is ${map.values.toList()}");
       fullName = map.values.toList()[0]['userName'];
       furtherInfo = map.values.toList()[0]['furtherInfo'];
-      imageUrl = map.values.toList()[0]['url'];
+      imageurl = map.values.toList()[0]['url'];
     });
     var connectivityResult = await (Connectivity().checkConnectivity());
     connected = ((connectivityResult == ConnectivityResult.wifi) ||
@@ -89,10 +82,10 @@ var imageUrl;
       'category': widget.category,
       'AppliedTo': widget.postedBy,
       'jobTitle': widget.jobTitle,
-      'imageUrl':imageUrl
+      'imageUrl':imageurl
     });
     setState(() {
-      isloading = false;
+      isLoading = false;
     });
   }
 
@@ -100,17 +93,12 @@ var imageUrl;
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: myColor.myBackground,
-      // appBar: AppBar(
-      //   title: Text('Apply'),
-      //   backgroundColor: Colors.black,
-      // ),
+
       body: SafeArea(
         child: Column(
           children: [
             ClipPath(
-              // clipper: WaveClipper1(),
-
-              child: Container(
+            child: Container(
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -133,28 +121,7 @@ var imageUrl;
                     ),
                   ),
                 ),
-                // child: Column(
-                //   children: <Widget>[
-                //     SizedBox(
-                //       height: 40,
-                //     ),
-                //     Icon(
-                //       Icons.work,
-                //       color: Colors.pink,
-                //       size: 60,
-                //     ),
-                //     SizedBox(
-                //       height: 20,
-                //     ),
-                //     Text(
-                //      "Job Title : ${ widget.jobTitle}",
-                //       style: TextStyle(
-                //           color: Colors.white,
-                //           fontWeight: FontWeight.w700,
-                //           fontSize: 30),
-                //     ),
-                //   ],
-                // ),
+
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.3,
                 decoration: BoxDecoration(
@@ -354,7 +321,7 @@ var imageUrl;
                                 (connectivityResult == ConnectivityResult.mobile));
                             print("connected $connected");
                             setState(() {
-                              isloading = true;
+                              isLoading = true;
                             });
 
                             if (file != null) {
@@ -385,14 +352,14 @@ var imageUrl;
                                 )
                                   ..show(context);
                                 setState(() {
-                                  isloading = false;
+                                  isLoading = false;
                                   file = null;
                                 });
                               }
                             }
                             else {
                               setState(() {
-                                isloading = false;
+                                isLoading = false;
                               });
                               Flushbar(
                                 icon: Icon(
@@ -406,7 +373,7 @@ var imageUrl;
                               )..show(context);
                             }
                           },
-                          child: isloading
+                          child: isLoading
                               ? SpinKitWave(
                                   color: myColor.myWhite,
                             size:20

@@ -46,8 +46,6 @@ class _HomeControllerState extends State<HomeController> {
     getUser();
   }
   var db = new DatabaseHelper();
-  var client;
-  bool connected=false;
   getUser() async {
 
     Query User = FirebaseDatabase.instance.reference().child("Users").orderByChild("email");
@@ -55,7 +53,6 @@ class _HomeControllerState extends State<HomeController> {
       Map<dynamic, dynamic> values = snapshot.value;
       values.forEach((key, values) {
         fullName=values['userName'];
-        // decodedImage = Base64Decoder().convert(values['decodedImage']);
       });
     });
     user = await firebaseAuth.currentUser();
@@ -80,7 +77,7 @@ class _HomeControllerState extends State<HomeController> {
               if(snapshot.connectionState == ConnectionState.active) {
                 final bool signedIn = snapshot.hasData;
 
-                print("$signedIn has signed In with name $fullName");
+                print("$signedIn has signed In with name $name");
 
                 return signedIn ? FutureBuilder(
                     future: db.getUser(name != null ? name : user.email),

@@ -16,14 +16,9 @@ class MyApplication extends StatefulWidget {
 
 class _MyApplicationState extends State<MyApplication> {
   DatabaseReference myAppRef;
-  FirebaseUser currentUser;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-   bool connected =false;
   void getUser() async {
-    print(_auth);
 
-      currentUser = await _auth.currentUser();
-    var connectivityResult =
+     connectivityResult =
     await (Connectivity()
         .checkConnectivity());
     print(connectivityResult);
@@ -92,7 +87,7 @@ class _MyApplicationState extends State<MyApplication> {
           builder: (BuildContext context, snapshot) {
 
             if (snapshot.hasData) {
-              print(currentUser!=null?currentUser.email:'no user');
+
           if(snapshot.data.snapshot.value!=null){
                 Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
 
@@ -238,7 +233,7 @@ class _MyApplicationState extends State<MyApplication> {
                                     SizedBox(height: 10,),
                                     Text(
                                       map.values.toList()[index]['jobTitle'],
-                                      style: GoogleFonts.alice(
+                                      style: GoogleFonts.openSans(
                                           color: myColor.myBlack,
                                           fontSize: 15),
                                     ),

@@ -26,15 +26,8 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfileState extends State<MyProfile> {
-  Query userRef;
-  var imageUrl;
-  var imageurl;
-  var individualKey;
-  var isLoading = false;
   TextEditingController companyNameController = TextEditingController();
   TextEditingController furtherController = TextEditingController();
-
-  bool connected = false;
   Query checkUser;
 
   void initState() {
@@ -53,28 +46,16 @@ class _MyProfileState extends State<MyProfile> {
     connected = ((connectivityResult == ConnectivityResult.wifi) ||
         (connectivityResult == ConnectivityResult.mobile));
     print("connected $connected");
+    client = await db.getUser(widget.email);
+    identity = client[0]['identity'];
   }
-
-  Uint8List _bytesImage;
-  File _image;
-  String base64Image;
-  var url;
-  var downloadUrl;
 
   Future getImage() async {
     var image2 = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 30);
     List<int> imageBytes = image2.readAsBytesSync();
-    print(imageBytes);
-    base64Image = base64Encode(imageBytes);
-    print('string is');
-    print(base64Image);
-    print("You selected gallery image : " + image2.path);
-
-    _bytesImage = Base64Decoder().convert(base64Image);
-
     setState(() {
-      _image = image2;
+      image = image2;
     });
   }
 
@@ -122,59 +103,65 @@ class _MyProfileState extends State<MyProfile> {
                           await getImage();
 //                          print("url is $downloadUrl");
                         },
-                        child: _image != null
+                        child: image != null
                             ? Container(
-                                height: 300,
-                                child: Stack(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Align(
-                                        alignment: Alignment.bottomRight,
-                                        child: FloatingActionButton(
-                                          foregroundColor: myColor.myBlack,
-                                          backgroundColor: myColor.myWhite,
-                                          child: Icon(
-                                            Icons.add_a_photo_outlined,
-                                            size: 25,
-                                          ),
-                                          onPressed: () async {
-                                            await getImage();
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 15, vertical: 10),
-                                        child: Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: myColor.myWhite,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: IconButton(
-                                              icon: Icon(Icons.arrow_back),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              }),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                          height: 300,
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.center,
+                                child: Container(
+                                  height:300,
+                                  width:300,
+                                  child: CircleAvatar(
+                                    backgroundColor: myColor.myWhite,
+                                      backgroundImage: FileImage(
+                                          image
+                                      )
+                                  ),
                                 ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(10.0),
+                                child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: FloatingActionButton(
+                                    foregroundColor: myColor.myBlack,
+                                    backgroundColor: myColor.myWhite,
+                                    child: Icon(
+                                      Icons.add_a_photo_outlined,
+                                      size: 25,
+                                    ),
+                                    onPressed: () async {
+                                      await getImage();
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 10),
+                                  child: Container(
+                                    height: 50,
+                                    width: 50,
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade400,
+                                        borderRadius:
+                                        BorderRadius.circular(20)),
+                                    child: IconButton(
+                                        icon: Icon(Icons.arrow_back),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        }),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
 
-
-                                decoration: BoxDecoration(
-                                    image: DecorationImage(
-
-                                        fit: BoxFit.cover,
-                                        image:
-                                        FileImage(_image))),
-                              )
+                        )
                             : widget.imageUrl != null
                                 ? Container(
                                     height: 300,
@@ -222,7 +209,7 @@ class _MyProfileState extends State<MyProfile> {
                                               height: 50,
                                               width: 50,
                                               decoration: BoxDecoration(
-                                                  color: myColor.myWhite,
+                                                  color:Colors.grey.shade400,
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           20)),
@@ -255,7 +242,7 @@ class _MyProfileState extends State<MyProfile> {
                                                   height: 50,
                                                   width: 50,
                                                   decoration: BoxDecoration(
-                                                      color: myColor.myWhite,
+                                                      color: Colors.grey.shade400,
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20)),
@@ -287,10 +274,13 @@ class _MyProfileState extends State<MyProfile> {
                                             ),
                                           ),
                                         ),
-                                        Align(
-                                          alignment: Alignment.center,
-                                          child: Icon(Icons.person,
-                                              size: 100, color: Colors.black),
+                                        Container(
+
+                                          child: ClipOval(
+
+                                             child:Icon(Icons.person,size:150),
+
+                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(10.0),
@@ -320,7 +310,7 @@ class _MyProfileState extends State<MyProfile> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 15),
                               child: TextField(
-                                style:  GoogleFonts.delius(
+                                style:  GoogleFonts.montserrat(
 
                                     color: myColor.myBlack),
                                 decoration: InputDecoration(
@@ -343,23 +333,15 @@ class _MyProfileState extends State<MyProfile> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 15),
                               child: TextField(
-                                style: GoogleFonts.delius(
+                                style: GoogleFonts.montserrat(
 
                                     color: myColor.myBlack),
                                 decoration: InputDecoration(
                                     filled: true,
                                     fillColor: myColor.myWhite,
-                                    // focusedBorder: OutlineInputBorder(
-                                    //   borderSide: const BorderSide(
-                                    //       color: Colors.purple, width: 2.0),
-//                      borderRadius: BorderRadius.circular(25.0),
-                                    // ),
-                                    // focusColor: Colors.transparent,
-                                    // border: OutlineInputBorder(),
+
                                     icon:
                                     Icon(Icons.add_location, color: myColor.myBlack)
-//                labelText: 'FullName',
-//                      hintText: furtherInfo
                                 ),
                                 controller: furtherController,
                               ),
@@ -416,13 +398,13 @@ class _MyProfileState extends State<MyProfile> {
                                           furtherController.text;
                                       var updatedName =
                                           companyNameController.text;
-                                      if (_image != null) {
+                                      if (image != null) {
                                         StorageReference ref = FirebaseStorage
                                             .instance
                                             .ref()
                                             .child("profile,${widget.email}");
                                         StorageUploadTask uploadTask =
-                                        ref.putFile(_image);
+                                        ref.putFile(image);
 
                                         url =
                                         await (await uploadTask.onComplete)

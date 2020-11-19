@@ -1,17 +1,16 @@
-import 'dart:convert';
+
 
 import 'dart:ui';
-
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Employer/MyProfile.dart';
 import 'package:internship_platform/Employer/PostedByCategory.dart';
-import 'package:internship_platform/Employer/createCategory.dart';
 import 'package:internship_platform/Employer/mypostedJobs.dart';
 import 'package:internship_platform/Employer/sentApplications.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
@@ -27,26 +26,22 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  DatabaseReference catRef =
+  FirebaseDatabase.instance.reference().child('Categories');
+  var counter = 0;
   void initState() {
     // TODO: implement initState
     super.initState();
     firebaseAuth = FirebaseAuth.instance;
     getUser();
-    print('hi');
+isLoading = false;
+
   }
-
-  TextEditingController controller = TextEditingController();
-  DatabaseReference catRef =
-      FirebaseDatabase.instance.reference().child('Categories');
-
-  bool connected = false;
-  bool isloading = false;
-  var imageurl;
 
   getUser() async {
     user = await firebaseAuth.currentUser();
 
-    var connectivityResult = await (Connectivity().checkConnectivity());
+     connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');
       connected = true;
@@ -57,15 +52,7 @@ class _LandingPageState extends State<LandingPage> {
       print('not connected');
       connected = false;
     }
-//    String apiUrl = 'http://192.168.1.3/Laravel/Laravel/public/api/todos';
-//    http.Response response = await http.get(apiUrl);
-//    await http.post('http://192.168.1.3/Laravel/Laravel/public/api/todo-save',body:{
-//
-//        'todo' : 'working with api is lovely',
-//        'completed': '${0}'
-//    }).then((value) => print(value.body));
-//    List fromApi = jsonDecode(response.body);
-//    print("from api ${fromApi[0]}");
+
     FirebaseDatabase.instance
         .reference()
         .child('Users')
@@ -75,15 +62,14 @@ class _LandingPageState extends State<LandingPage> {
         .then((snapshot) {
       Map<dynamic, dynamic> values = snapshot.value;
       values.forEach((key, values) {
-        print("value is ${values['url']}");
         imageurl = values['url'];
-        // decodedImage = Base64Decoder().convert(values['decodedImage']);
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController controller = TextEditingController();
     return Scaffold(
         backgroundColor: myColor.myBackground,
         drawer: Drawer(
@@ -227,7 +213,7 @@ class _LandingPageState extends State<LandingPage> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Text(
                   "Categories",
-                  style: GoogleFonts.combo(
+                  style: GoogleFonts.openSans(
                       fontSize: 18,
                       color: myColor.myBlack,
                       fontWeight: FontWeight.bold),
@@ -293,13 +279,58 @@ class _LandingPageState extends State<LandingPage> {
                                         map.values.toList()[index]['type'],
                                         textAlign: TextAlign.center,
                                         overflow: TextOverflow.visible,
-                                        style: GoogleFonts.alice(
+                                        style: GoogleFonts.montserrat(
                                             color: myColor.myBlack,
                                             fontSize: 16),
                                       )),
                                 ],
                               ));
                         },
+                      );
+                    }
+
+                    if (!connected) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.signal_wifi_off,
+                              size: 40,
+                              color: myColor.myBlack,
+                            ),
+                            FlatButton(
+                                shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: Colors.black,
+                                        width: 1,
+                                        style: BorderStyle.solid),
+                                    borderRadius:
+                                    BorderRadius.circular(50)),
+                                onPressed: () async {
+                                   connectivityResult =
+                                  await (Connectivity()
+                                      .checkConnectivity());
+                                  print(connectivityResult);
+                                  if ((connectivityResult ==
+                                      ConnectivityResult.wifi) ||
+                                      connectivityResult ==
+                                          ConnectivityResult.mobile) {
+                                    connected = true;
+                                    print('connected');
+                                    setState(() {});
+                                  } else {
+                                    setState(() {
+                                      connected = false;
+                                    });
+                                    print('not connected');
+                                  }
+                                },
+                                child: Text('Retry',
+                                    style: TextStyle(
+                                        color: myColor.myBlack)))
+                          ],
+                        ),
                       );
                     }
 
@@ -334,9 +365,14 @@ class _LandingPageState extends State<LandingPage> {
                 builder: (context) {
                   return AlertDialog(
                     title: Text("Create Category"),
-                    content: Expanded(
+                    content: Container(
+                      height:50,
+                      width:150,
                       child: TextField(
                         controller: controller,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(RegExp(r'[0-9]'))
+                        ],
                         decoration: InputDecoration(labelText: 'Category Name'),
                       ),
                     ),
@@ -350,15 +386,15 @@ class _LandingPageState extends State<LandingPage> {
                             },
                           ),
                           FlatButton(
-                            child: isloading
+                            child: isLoading
                                 ? SpinKitWave(
                                     color: myColor.myBlack,
                                     size: 16,
                                   )
                                 : Text('Save'),
-                            onPressed: () {
+                            onPressed: () async{
                               setState(() {
-                                isloading = true;
+                                isLoading = true;
                               });
                               if (controller.text.isEmpty) {
                                 Flushbar(
@@ -373,23 +409,60 @@ class _LandingPageState extends State<LandingPage> {
                                 )..show(context);
                               } else {
                                 setState(() {
-                                  isloading = false;
+                                  isLoading = false;
                                 });
-                                catRef.push().set(<dynamic, dynamic>{
-                                  'type': controller.text
-                                });
-                                Navigator.of(context).pop();
+                                await catRef.once().then((DataSnapshot snapshot){
 
-                                Flushbar(
-                                  icon: Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  ),
-                                  backgroundColor: Colors.green,
-                                  title: "Success",
-                                  message: "Category posted successfully",
-                                  duration: Duration(seconds: 3),
-                                )..show(context);
+                                  print('enterd categrory is ${controller.text.substring(0,1).toUpperCase()+controller.text.substring(1, controller.text.length)}');
+                                  var KEYS = snapshot.value.keys;
+                                  var DATA = snapshot.value;
+                                  for (var individualKey in KEYS) {
+                                    if (DATA[individualKey]['type'] == (controller.text.substring(0,1).toUpperCase()+controller.text.substring(1, controller.text.length))) {
+                                      // only store in the searched list if job not closed
+                                     counter++;
+                                     print('category detected ${DATA[individualKey]['type']}');
+                                    }
+                                  }
+
+                                });
+                                print('counter is $counter');
+                                if(counter==0){
+                                  // checking if the category has prevously created
+
+                                  catRef.push().set(<dynamic, dynamic>{
+
+                                    'type':controller.text.substring(0, 1).toUpperCase() +
+                                        controller.text.substring(1, controller.text.length)
+
+                                  });
+                                  Navigator.of(context).pop();
+
+                                  Flushbar(
+                                    icon: Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    ),
+                                    backgroundColor: Colors.green,
+                                    title: "Success",
+                                    message: "Category posted successfully",
+                                    duration: Duration(seconds: 3),
+                                  )..show(context);
+                                }else{
+                                  Navigator.of(context).pop();
+
+                                  Flushbar(
+                                    icon: Icon(
+                                      Icons.error,
+                                      color: Colors.red,
+                                    ),
+                                    backgroundColor: Colors.red,
+                                    title: "Wrong",
+                                    message: "Category created alreday",
+                                    duration: Duration(seconds: 3),
+                                  )..show(context);
+                                }
+
+
                               }
                             },
                           ),

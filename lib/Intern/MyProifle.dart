@@ -26,14 +26,10 @@ class MyProfile extends StatefulWidget {
 }
 
 class _MyProfileState extends State<MyProfile> {
-  Query userRef;
-
-  var identity;
-  var isLoading = false;
+  
   TextEditingController nameController = TextEditingController();
   TextEditingController furtherController = TextEditingController();
-  bool checkConnection = false;
-  Query checkUser;
+
 
   void initState() {
     super.initState();
@@ -43,56 +39,33 @@ class _MyProfileState extends State<MyProfile> {
 
   getInfo() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    checkConnection = ((connectivityResult == ConnectivityResult.wifi) ||
+    connected = ((connectivityResult == ConnectivityResult.wifi) ||
         (connectivityResult == ConnectivityResult.mobile));
-    print("connected $checkConnection");
+    print("connected $connected");
+    client = await db.getUser(widget.email);
+    identity = client[0]['identity'];
   }
-
-  // Uint8List _bytesImage;
-  File _image;
-  String base64Image;
-  var url;
-  var downloadUrl;
 
   Future getImage() async {
     var image2 = await ImagePicker.pickImage(
         source: ImageSource.gallery, imageQuality: 30);
     List<int> imageBytes = image2.readAsBytesSync();
-    base64Image = base64Encode(imageBytes);
-    print(base64Image);
-    // _bytesImage = Base64Decoder().convert(base64Image);
 
     setState(() {
-      _image = image2;
+      image = image2;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    checkUser = FirebaseDatabase.instance
+    Query checkUser = FirebaseDatabase.instance
         .reference()
         .child('Users')
         .orderByChild("email")
         .equalTo(widget.email);
     return Scaffold(
         resizeToAvoidBottomPadding: true,
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              setState(() {
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => InternCategoryPage(widget.email)),
-                  (Route<dynamic> route) => false,
-                );
-              });
-            },
-          ),
-          title: Text('My Profile'),
-        ),
+
         body: StreamBuilder(
             stream: checkUser.onValue,
             builder: (context, snapshot) {
@@ -110,11 +83,25 @@ class _MyProfileState extends State<MyProfile> {
                         await getImage();
 //                          print("url is $downloadUrl");
                       },
-                      child: _image != null
+                      child: image != null
                           ? Container(
+                        margin: EdgeInsets.only(top: 10),
                         height: 300,
                         child: Stack(
                           children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                height:300,
+                                width:300,
+                                child: CircleAvatar(
+                                  backgroundColor: myColor.myWhite,
+                                  backgroundImage: FileImage(
+                                    image
+                                  )
+                                ),
+                              ),
+                            ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Align(
@@ -141,7 +128,7 @@ class _MyProfileState extends State<MyProfile> {
                                   height: 50,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                      color: myColor.myWhite,
+                                      color: Colors.grey.shade400,
                                       borderRadius:
                                       BorderRadius.circular(20)),
                                   child: IconButton(
@@ -154,10 +141,7 @@ class _MyProfileState extends State<MyProfile> {
                             ),
                           ],
                         ),
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: FileImage(_image))),
+
                       )
                           : widget.imageUrl != null
                           ? Container(
@@ -201,12 +185,12 @@ class _MyProfileState extends State<MyProfile> {
                               alignment: Alignment.topLeft,
                               child: Padding(
                                 padding: EdgeInsets.symmetric(
-                                    horizontal: 15, vertical: 10),
+                                    horizontal: 15, vertical: 20),
                                 child: Container(
                                   height: 50,
                                   width: 50,
                                   decoration: BoxDecoration(
-                                      color: myColor.myWhite,
+                                      color: Colors.grey.shade400,
                                       borderRadius:
                                       BorderRadius.circular(
                                           20)),
@@ -239,7 +223,7 @@ class _MyProfileState extends State<MyProfile> {
                                       height: 50,
                                       width: 50,
                                       decoration: BoxDecoration(
-                                          color: myColor.myWhite,
+                                          color: Colors.grey.shade400,
                                           borderRadius:
                                           BorderRadius.circular(
                                               20)),
@@ -273,8 +257,11 @@ class _MyProfileState extends State<MyProfile> {
                             ),
                             Align(
                               alignment: Alignment.center,
-                              child: Icon(Icons.person,
-                                  size: 45, color: Colors.purple),
+                              child: CircleAvatar(
+                                backgroundColor: myColor.myWhite,
+                                child: Icon(Icons.person,
+                                    size: 100, color: Colors.black),
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(10.0),
@@ -304,7 +291,7 @@ class _MyProfileState extends State<MyProfile> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 15),
                             child: TextField(
-                              style:  GoogleFonts.delius(
+                              style:  GoogleFonts.montserrat(
 
                                   color: myColor.myBlack),
                               decoration: InputDecoration(
@@ -327,7 +314,7 @@ class _MyProfileState extends State<MyProfile> {
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 15),
                             child: TextField(
-                              style: GoogleFonts.delius(
+                              style: GoogleFonts.montserrat(
 
                                   color: myColor.myBlack),
                               decoration: InputDecoration(
@@ -341,7 +328,7 @@ class _MyProfileState extends State<MyProfile> {
                                   // focusColor: Colors.transparent,
                                   // border: OutlineInputBorder(),
                                   icon:
-                                  Icon(Icons.add_location, color: myColor.myBlack)
+                                  Icon(Icons.work, color: myColor.myBlack)
 //                labelText: 'FullName',
 //                      hintText: furtherInfo
                               ),
@@ -379,7 +366,7 @@ class _MyProfileState extends State<MyProfile> {
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  if (!checkConnection) {
+                                  if (!connected) {
                                     setState(() {
                                       isLoading = false;
                                     });
@@ -400,13 +387,13 @@ class _MyProfileState extends State<MyProfile> {
                                         furtherController.text;
                                     var updatedName =
                                         nameController.text;
-                                    if (_image != null) {
+                                    if (image != null) {
                                       StorageReference ref = FirebaseStorage
                                           .instance
                                           .ref()
                                           .child("profile,${widget.email}");
                                       StorageUploadTask uploadTask =
-                                      ref.putFile(_image);
+                                      ref.putFile(image);
 
                                       url =
                                       await (await uploadTask.onComplete)
@@ -478,7 +465,7 @@ class _MyProfileState extends State<MyProfile> {
                     ),
                   ],
                 );
-              } else if (!checkConnection) {
+              } else if (!connected) {
                 print('hi');
                 return Center(
                   child: Column(
@@ -506,11 +493,11 @@ class _MyProfileState extends State<MyProfile> {
                                     ConnectivityResult.mobile) {
                               print('connected');
                               setState(() {
-                                checkConnection = true;
+                                connected = true;
                               });
                             } else {
                               setState(() {
-                                checkConnection = false;
+                                connected = false;
                               });
                               print('not connected');
                             }
@@ -521,7 +508,7 @@ class _MyProfileState extends State<MyProfile> {
                   ),
                 );
               }
-              return SpinKitDualRing(color: Colors.purple);
+              return SpinKitWave(color: Colors.purple);
             }));
   }
 }

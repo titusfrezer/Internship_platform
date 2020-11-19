@@ -6,8 +6,8 @@ import 'package:internship_platform/WaveClipper.dart';
 
 
 final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-bool _autoValidate = false;
-bool isValid= true;
+
+
 class PersonalInfoPage extends StatefulWidget {
   @override
   _PersonalInfoPageState createState() => _PersonalInfoPageState();
@@ -25,7 +25,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       backgroundColor: Colors.white,
       body: Form(
         key: _formKey,
-        autovalidate: _autoValidate,
+        autovalidate: autoValidate,
         child: ListView(
           children: <Widget>[
             Stack(
@@ -213,7 +213,7 @@ class _PersonalInfoPageState extends State<PersonalInfoPage> {
       isValid=false;
 //    If all data are not valid then start auto validation.
       setState(() {
-        _autoValidate = true;
+        autoValidate = true;
       });
     }
   }

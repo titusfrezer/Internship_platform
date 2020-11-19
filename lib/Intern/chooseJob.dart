@@ -6,7 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/Intern/jobDetail.dart';
 
-import 'ApplyforJob.dart';
 
 class chooseJob extends StatefulWidget {
   @override
@@ -16,9 +15,10 @@ class chooseJob extends StatefulWidget {
   chooseJob(this.Category);
 }
 
-Query chooseRef;
+
 
 class _chooseJobState extends State<chooseJob> {
+  List chooseJobList = List();
   @override
   void initState() {
     // TODO: implement initState
@@ -27,7 +27,7 @@ class _chooseJobState extends State<chooseJob> {
 
   @override
   Widget build(BuildContext context) {
-    chooseRef = FirebaseDatabase.instance
+    Query chooseRef = FirebaseDatabase.instance
         .reference()
         .child("posts")
         .orderByChild('category')
@@ -75,7 +75,7 @@ class _chooseJobState extends State<chooseJob> {
               Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text(widget.Category,
-                    style: GoogleFonts.alice(
+                    style: GoogleFonts.openSans(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,
                         color: myColor.myBlack)),
@@ -88,6 +88,9 @@ class _chooseJobState extends State<chooseJob> {
                   stream: chooseRef.onValue,
                   builder: (BuildContext context, snapshot) {
                     if (snapshot.hasData) {
+
+                       chooseJobList.clear();
+
                       if (snapshot.data.snapshot.value != null) {
                         Map<dynamic, dynamic> map =
                             snapshot.data.snapshot.value;
@@ -95,6 +98,9 @@ class _chooseJobState extends State<chooseJob> {
                         for (var i = 0; i < map.values.toList().length; i++) {
                           if (map.values.toList()[i]['status'] == 'closed') {
                             counter++;
+                          }
+                          else if (map.values.toList()[i]['status'] == 'open'){
+                            chooseJobList.add(map.values.toList()[i]);
                           }
                         }
 
@@ -105,11 +111,10 @@ class _chooseJobState extends State<chooseJob> {
                               child: Text('No post from ${widget.Category}'));
                         } else {
                           return ListView.builder(
-                            itemCount: map.values.toList().length,
+                            itemCount: chooseJobList.length,
                             scrollDirection: Axis.vertical,
                             itemBuilder: (BuildContext context, int index) {
-                              if (map.values.toList()[index]['status'] ==
-                                  'open') {
+
                                 return index % 2 == 0? Container(
                                   width: 120,
                                   height: 100,
@@ -128,19 +133,19 @@ class _chooseJobState extends State<chooseJob> {
                                       title: Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: Text(
-                                            map.values.toList()[index]
+                                            chooseJobList[index]
                                                 ['jobTitle'],
                                             overflow: TextOverflow.fade,
-                                            style: GoogleFonts.alice(
+                                            style: GoogleFonts.openSans(
                                                 color: myColor.myWhite,
                                                 fontSize: 18),
                                           )),
                                       subtitle: Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: Text(
-                                            map.values.toList()[index]
+                                            chooseJobList[index]
                                                 ['companyName'],
-                                            style: GoogleFonts.scada(
+                                            style: GoogleFonts.montserrat(
                                                 color: myColor.myWhite,
                                                 fontStyle: FontStyle.italic),
                                           )),
@@ -148,23 +153,22 @@ class _chooseJobState extends State<chooseJob> {
                                           onTap: () {
                                             Navigator.of(context).push(MaterialPageRoute(
                                                 builder: (context) => jobDetail(
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                         ['jobTitle'],
-                                                    map.values
-                                                        .toList()[index]
+                                                    chooseJobList[index]
                                                             ['jobDescription']
                                                         .toString(),
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                         ['postedBy'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                         ['category'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                         ['postedAt'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                         ['allowance'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                         ['howLong'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                         ['companyName'])));
                                           },
                                           child: Text(
@@ -191,43 +195,42 @@ class _chooseJobState extends State<chooseJob> {
                                       title: Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: Text(
-                                            map.values.toList()[index]
+                                            chooseJobList[index]
                                             ['jobTitle'],
                                             overflow: TextOverflow.fade,
-                                            style: GoogleFonts.alice(
+                                            style: GoogleFonts.openSans(
                                                 color: myColor.myBlack,
                                                 fontSize: 18),
                                           )),
                                       subtitle: Padding(
                                           padding: EdgeInsets.all(8.0),
                                           child: Text(
-                                            map.values.toList()[index]
+                                            chooseJobList[index]
                                             ['companyName'],
-                                            style: GoogleFonts.scada(
-                                                color: myColor.myLightGrey,
+                                            style: GoogleFonts.montserrat(
+                                                color: myColor.myDarkGrey,
                                                 fontStyle: FontStyle.italic),
                                           )),
                                       trailing: GestureDetector(
                                           onTap: () {
                                             Navigator.of(context).push(MaterialPageRoute(
                                                 builder: (context) => jobDetail(
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                     ['jobTitle'],
-                                                    map.values
-                                                        .toList()[index]
+                                                    chooseJobList[index]
                                                     ['jobDescription']
                                                         .toString(),
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                     ['postedBy'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                     ['category'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                     ['postedAt'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                     ['allowance'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                     ['howLong'],
-                                                    map.values.toList()[index]
+                                                    chooseJobList[index]
                                                     ['companyName'])));
                                           },
                                           child: Text(
@@ -237,8 +240,7 @@ class _chooseJobState extends State<chooseJob> {
                                     ),
                                   ),
                                 );
-                              }
-                              return Container();
+
                             },
                           );
                         }

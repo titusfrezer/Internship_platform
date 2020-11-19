@@ -12,10 +12,8 @@ import 'package:internship_platform/util/dbclient.dart';
 import 'main.dart';
 import 'model/eventItem.dart';
 
-bool _autoValidate = false;
-bool isValid;
-DatabaseReference userRef =
-    FirebaseDatabase.instance.reference().child("Users");
+
+
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -31,7 +29,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isObscure = true;
+  DatabaseReference userRef =
+  FirebaseDatabase.instance.reference().child("Users");
+
 
   void initState() {
     super.initState();
@@ -44,7 +44,7 @@ class _SignUpPageState extends State<SignUpPage> {
       backgroundColor: Colors.white,
       body: Form(
         key: _formKey,
-        autovalidate: _autoValidate,
+        autovalidate: autoValidate,
         child: ListView(
           children: <Widget>[
             Stack(
@@ -315,7 +315,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             // fieldofStudy for intern and location for comapany
                           });
                           name = widget.email;
-                          fullName = widget.fullName;
                           Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
@@ -392,7 +391,7 @@ class _SignUpPageState extends State<SignUpPage> {
       isValid = false;
 //    If all data are not valid then start auto validation.
       setState(() {
-        _autoValidate = true;
+        autoValidate = true;
       });
     }
   }

@@ -22,14 +22,12 @@ DatabaseReference closeRef =
     FirebaseDatabase.instance.reference().child("closed");
 
 class _sentApplicationsState extends State<sentApplications> {
-  FirebaseUser currentUser;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  var client;
+
 
   void getUser() async {
-    print(_auth);
-    currentUser = await _auth.currentUser();
-    print("email is ${currentUser.email}");
+
+    user = await firebaseAuth.currentUser();
+
     setState(() {
       isLoading = false;
     });
@@ -42,7 +40,7 @@ class _sentApplicationsState extends State<sentApplications> {
 
   @override
   Widget build(BuildContext context) {
-    print("the user is$currentUser");
+
 
     return Scaffold(
         backgroundColor: myColor.myBackground,
@@ -191,7 +189,7 @@ class _sentApplicationsState extends State<sentApplications> {
                                             child: Text(
                                               "${map.values.toList()[index]['ApplierName']} ",
                                               overflow: TextOverflow.fade,
-                                              style: GoogleFonts.alice(
+                                              style: GoogleFonts.openSans(
                                                   color: myColor.myWhite,
                                                   fontSize: 18),
                                             ),
@@ -201,7 +199,7 @@ class _sentApplicationsState extends State<sentApplications> {
                                             padding: EdgeInsets.all(8.0),
                                             child: Text(
                                               "  ${map.values.toList()[index]['jobTitle']}",
-                                              style: GoogleFonts.scada(
+                                              style: GoogleFonts.montserrat(
                                                   color: myColor.myWhite,
                                                   fontStyle: FontStyle.italic),
                                             ),
@@ -375,7 +373,7 @@ class _sentApplicationsState extends State<sentApplications> {
                                           title: Text(
                                             "${map.values.toList()[index]['ApplierName']} ",
                                             overflow: TextOverflow.fade,
-                                            style: GoogleFonts.alice(
+                                            style: GoogleFonts.openSans(
                                                 color: myColor.myBlack,
                                                 fontSize: 18),
                                           ),
@@ -383,7 +381,7 @@ class _sentApplicationsState extends State<sentApplications> {
 
                                           subtitle: Text(
                                             "  ${map.values.toList()[index]['jobTitle']}",
-                                            style: GoogleFonts.scada(
+                                            style: GoogleFonts.montserrat(
                                                 color: myColor.myBlack,
                                                 fontStyle: FontStyle.italic),
                                           ),

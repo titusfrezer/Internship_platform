@@ -11,9 +11,6 @@ import 'package:internship_platform/util/dbclient.dart';
 
 import 'model/eventItem.dart';
 
-bool _autoValidate = false;
-bool isValid = true;
-
 class LoginSevenPage extends StatefulWidget {
   String email;
   String password;
@@ -24,20 +21,19 @@ class LoginSevenPage extends StatefulWidget {
 
 class _LoginSevenPageState extends State<LoginSevenPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool isObscure = true;
+
+  initState() {
+    super.initState();
+    isLoading = false;
+  }
 
   @override
   Widget build(BuildContext context) {
-    initState() {
-      super.initState();
-      isLoading = false;
-    }
-
     return Scaffold(
       backgroundColor: myColor.myBackground,
       body: Form(
         key: _formKey,
-        autovalidate: _autoValidate,
+        autovalidate: autoValidate,
         child: ListView(
           children: <Widget>[
             Stack(
@@ -109,7 +105,6 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                 ),
               ],
             ),
-
             SizedBox(
               height: 30,
             ),
@@ -230,51 +225,45 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                       print('Login pressed');
                       _validateInputs();
                       try {
-                        name = widget.email;
-
                         // The below code uses to register the User incase he uses another device(i.e user must logged in first)
 
-                        // db = new DatabaseHelper();
+
                         var client = await db.getUser(widget.email);
-                        print(client);
-
-
+                        name = widget.email;
                         if (client.toString() == '[]') {
                           Query checkUser = FirebaseDatabase.instance
                               .reference()
                               .child("Users")
                               .orderByChild("email")
                               .equalTo(widget.email);
-                          checkUser.once().then((DataSnapshot snapshot) {
+                        await checkUser.once().then((DataSnapshot snapshot) {
                             var KEYS = snapshot.value.keys;
                             var DATA = snapshot.value;
                             for (var individualKey in KEYS) {
-
                               identity = DATA[individualKey]['identity'];
                               fullName = DATA[individualKey]['userName'];
                               furtherInfo = DATA[individualKey]['furtherInfo'];
                             }
                             // saving to local database
-                          }).then((x) {
-                            print("idenityi is $identity");
-                            db.saveUser(User(identity, widget.email, fullName,
+                          });
+                        print("Identity $identity, FullName $fullName , furtherInfo $furtherInfo");
+                           await  db.saveUser(User(identity, widget.email, fullName,
                                 furtherInfo, "none"));
 
-                          });
 
                         }
                         await FirebaseAuth.instance.signInWithEmailAndPassword(
                             email: widget.email, password: widget.password);
-                       setState(() {
-                         isLoading = false;
-                       });
+                        setState(() {
+                          isLoading = false;
+                        });
 
-                       await Navigator.pushAndRemoveUntil(
+                        await Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context)=>HomeController()),
-                              (Route<dynamic> route) => false,
+                          MaterialPageRoute(
+                              builder: (context) => HomeController()),
+                          (Route<dynamic> route) => false,
                         );
-
                       } catch (Exception) {
                         print(Exception.toString());
                         if (Exception.toString() ==
@@ -294,21 +283,26 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                             icon: Icon(Icons.error),
                             message: 'Email Doesnt exist',
                           )..show(context);
+                        } else if (Exception.toString() ==
+                            'PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null, null)') {
+                          Flushbar(
+                            duration: Duration(seconds: 3),
+                            backgroundColor: Colors.red,
+                            icon: Icon(Icons.error),
+                            message: 'Invalid Password',
+                          )..show(context);
                         }
                       }
 
-
-                        setState(() {
-                          isLoading = false;
-                        });
-
+                      setState(() {
+                        isLoading = false;
+                      });
                     },
                   ),
                 )),
             SizedBox(
               height: 20,
             ),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -342,12 +336,10 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
     if (_formKey.currentState.validate()) {
 //    If all data are correct then save data to out variables
       _formKey.currentState.save();
-      isValid = true;
     } else {
-      isValid = false;
 //    If all data are not valid then start auto validation.
       setState(() {
-        _autoValidate = true;
+        autoValidate = true;
       });
     }
   }

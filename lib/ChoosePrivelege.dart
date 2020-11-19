@@ -10,13 +10,12 @@ class ChoosePrivelege extends StatefulWidget {
   _ChoosePrivelegeState createState() => _ChoosePrivelegeState();
 }
 
-int radioValue = 0;
+
 
 class _ChoosePrivelegeState extends State<ChoosePrivelege> {
   handleChange(int value) {
     if (this.mounted) {
       // check whether the state object is in tree
-
       setState(() {
         radioValue = value;
         print('changeed');

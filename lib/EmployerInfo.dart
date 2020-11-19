@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/SignUp.dart';
 import 'package:internship_platform/WaveClipper.dart';
-final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-bool _autoValidate = false;
-bool isValid;
+
+
 
 class EmployerInfoPage extends StatefulWidget {
 
@@ -17,6 +16,7 @@ class EmployerInfoPage extends StatefulWidget {
 }
 
 class _EmployerInfoPageState extends State<EmployerInfoPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +24,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
       body: Form(
         key: _formKey,
 
-        autovalidate: _autoValidate,
+        autovalidate: autoValidate,
         child: ListView(
           children: <Widget>[
             Stack(
@@ -143,7 +143,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                 borderRadius: BorderRadius.all(Radius.circular(30)),
                 child: TextFormField(
                   validator: (value){
-                    if(value.length<5){
+                    if(value.length<3){
                       return 'valid Location required';
                     }
                     return null;
@@ -159,7 +159,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
                         elevation: 0,
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         child: Icon(
-                          Icons.lock,
+                          Icons.add_location,
                           color: myColor.myBlack,
                         ),
                       ),
@@ -213,7 +213,7 @@ class _EmployerInfoPageState extends State<EmployerInfoPage> {
       isValid=false;
 //    If all data are not valid then start auto validation.
       setState(() {
-        _autoValidate = true;
+        autoValidate = true;
       });
     }
   }

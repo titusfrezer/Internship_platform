@@ -25,18 +25,11 @@ class _PostJobState extends State<PostJob> {
   TextEditingController forhowLong = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
   TextEditingController allowanceController = TextEditingController();
-  var isloading = false;
   DatabaseReference postRef =
       FirebaseDatabase.instance.reference().child('posts');
-  DatabaseReference catRef;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  FirebaseUser user;
-  var client;
-  var companyName;
-  var email;
 
   void getUser() async {
-    user = await _auth.currentUser();
+    user = await firebaseAuth.currentUser();
 
     FirebaseDatabase.instance
         .reference()
@@ -72,7 +65,7 @@ class _PostJobState extends State<PostJob> {
       'status': 'open'
     });
     setState(() {
-      isloading = false;
+      isLoading = false;
     });
   }
 
@@ -121,17 +114,17 @@ class _PostJobState extends State<PostJob> {
               child: ListView(
                 children: <Widget>[
                   reusableRow('Job Title', jobTitleController,
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-z A-Z]')),TextInputType.text,'Job Title',1),
+                      FilteringTextInputFormatter.singleLineFormatter,TextInputType.text,'Job Title',1),
                   SizedBox(
                     height: 20,
                   ),
                   reusableRow('Job Description', jobDescriptionController,
-                      FilteringTextInputFormatter.allow(RegExp(r'[0-9 a-z A-Z]')),TextInputType.text,'Job Description',5),
+                      FilteringTextInputFormatter.deny(RegExp(r'[]')),TextInputType.text,'Job Description',5),
                   SizedBox(
                     height: 20,
                   ),
                   reusableRow('How long it take', forhowLong,
-                      FilteringTextInputFormatter.allow(RegExp(r'[a-z A-Z 0-9]')),TextInputType.text,'Duration',1),
+                      FilteringTextInputFormatter.deny(RegExp(r'[]')),TextInputType.text,'Duration',1),
                   SizedBox(
                     height: 20,
                   ),
@@ -154,7 +147,7 @@ class _PostJobState extends State<PostJob> {
                                 width: 1,
                                 style: BorderStyle.solid),
                             borderRadius: BorderRadius.circular(50)),
-                        child: isloading
+                        child: isLoading
                             ? SpinKitWave(
                                 color: Colors.pinkAccent,
                               )
@@ -163,7 +156,7 @@ class _PostJobState extends State<PostJob> {
                             color: myColor.myWhite)),
                         onPressed: () async {
                           setState(() {
-                            isloading = true;
+                            isLoading = true;
                           });
 
                           if (allowanceController.text.isNotEmpty &&
@@ -188,7 +181,7 @@ class _PostJobState extends State<PostJob> {
                             )..show(context);
                           } else {
                             setState(() {
-                              isloading = false;
+                              isLoading = false;
                             });
                             Flushbar(
                               icon: Icon(
@@ -226,13 +219,7 @@ Widget reusableRow(name, controller, inputFormat,inputType,hintText,line) {
     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
     child: Row(
       children: <Widget>[
-        // Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: Text(
-        //     name,
-        //     style: TextStyle(fontSize: 20),
-        //   ),
-        // ),
+
         Expanded(
           child: TextField(
 
