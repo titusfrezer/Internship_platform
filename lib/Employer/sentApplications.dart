@@ -4,6 +4,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_pdf_viewer/flutter_plugin_pdf_viewer.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
@@ -22,10 +23,7 @@ DatabaseReference closeRef =
     FirebaseDatabase.instance.reference().child("closed");
 
 class _sentApplicationsState extends State<sentApplications> {
-
-
   void getUser() async {
-
     user = await firebaseAuth.currentUser();
 
     setState(() {
@@ -40,8 +38,6 @@ class _sentApplicationsState extends State<sentApplications> {
 
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
         backgroundColor: myColor.myBackground,
         body: SafeArea(
@@ -146,42 +142,50 @@ class _sentApplicationsState extends State<sentApplications> {
                                               BorderRadius.circular(10.0),
                                         ),
                                         child: ExpansionTile(
-                                          leading:  map.values.toList()[index]['imageUrl']!=null?
-                                          GestureDetector(
-                                            onTap: (){
-                                              showDialog(
-                                                  context: context,
-                                                  builder:(context){
-                                                    return Dialog(
-                                                      child: Container(
-                                                        width: 200,
-                                                        height: 200,
-                                                        decoration: BoxDecoration(
-                                                            image: DecorationImage(
-                                                                image: NetworkImage(map.values.toList()[index]['imageUrl']),
-                                                                fit: BoxFit.cover
-                                                            )
-                                                        ),
-                                                      ),
-                                                    );
-                                                  }
-                                              );
-                                            },
-                                            child: ClipOval(
-                                              child: FadeInImage(
-                                                width: 50,
-                                                height: 50,
-                                                fit:BoxFit.cover,
-                                                image: NetworkImage( map.values.toList()[index]['imageUrl']),
-                                                placeholder: AssetImage('image/internship.jpg'),
-                                              ),
-                                            ),
-                                          ):
-                                          Icon(
-                                            Icons.person,
-                                            color: myColor.myWhite,
-                                            size: 40,
-                                          ),
+                                          leading: map.values.toList()[index]
+                                                      ['imageUrl'] !=
+                                                  null
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                            child: Container(
+                                                              width: 200,
+                                                              height: 200,
+                                                              decoration: BoxDecoration(
+                                                                  image: DecorationImage(
+                                                                      image: NetworkImage(map
+                                                                              .values
+                                                                              .toList()[index]
+                                                                          [
+                                                                          'imageUrl']),
+                                                                      fit: BoxFit
+                                                                          .cover)),
+                                                            ),
+                                                          );
+                                                        });
+                                                  },
+                                                  child: ClipOval(
+                                                    child: FadeInImage(
+                                                      width: 50,
+                                                      height: 50,
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage(map
+                                                              .values
+                                                              .toList()[index]
+                                                          ['imageUrl']),
+                                                      placeholder: AssetImage(
+                                                          'image/internship.jpg'),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Icon(
+                                                  Icons.person,
+                                                  color: myColor.myWhite,
+                                                  size: 40,
+                                                ),
                                           trailing: Icon(Icons.arrow_drop_down,
                                               color: myColor.myWhite, size: 40),
                                           title: Padding(
@@ -213,6 +217,9 @@ class _sentApplicationsState extends State<sentApplications> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
+                                                  map.values.toList()[0]['telegram']!=null?IconButton(icon: FaIcon(FontAwesomeIcons.telegram,color: Colors.white,), onPressed: (){
+                                                    UrlLauncher.launch(map.values.toList()[0]['telegram']);
+                                                  }):Container(),
                                                   RaisedButton(
                                                     color: myColor.myWhite,
                                                     shape:
@@ -228,10 +235,6 @@ class _sentApplicationsState extends State<sentApplications> {
                                                               myColor.myBlack),
                                                     ),
                                                     onPressed: () {
-                                                      map.values.toList()[index]
-                                                              [
-                                                              'ApplierExpertise'] =
-                                                          'Software Engineer';
                                                       UrlLauncher.launch(
                                                           'mailto:${map.values.toList()[index]['ApplierEmail']}?subject=Intern Application&body=This is to inform that you are selected to be our intern');
                                                     },
@@ -333,41 +336,50 @@ class _sentApplicationsState extends State<sentApplications> {
                                               BorderRadius.circular(10.0),
                                         ),
                                         child: ExpansionTile(
-                                          leading: map.values.toList()[index]['imageUrl']!=null?
-                                          GestureDetector(
-                                            onTap: (){
-                                              showDialog(
-                                                context: context,
-                                                builder:(context){
-                                                  return Dialog(
-                                                    child: Container(
-                                                      width: 200,
-                                                      height: 200,
-                                                      decoration: BoxDecoration(
-                                                          image: DecorationImage(
-                                                              image: NetworkImage(map.values.toList()[index]['imageUrl']),
-                                                              fit: BoxFit.cover
-                                                          )
-                                                      ),
+                                          leading: map.values.toList()[index]
+                                                      ['imageUrl'] !=
+                                                  null
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Dialog(
+                                                            child: Container(
+                                                              width: 200,
+                                                              height: 200,
+                                                              decoration: BoxDecoration(
+                                                                  image: DecorationImage(
+                                                                      image: NetworkImage(map
+                                                                              .values
+                                                                              .toList()[index]
+                                                                          [
+                                                                          'imageUrl']),
+                                                                      fit: BoxFit
+                                                                          .cover)),
+                                                            ),
+                                                          );
+                                                        });
+                                                  },
+                                                  child: ClipOval(
+                                                    child: FadeInImage(
+                                                      width: 50,
+                                                      height: 50,
+                                                      fit: BoxFit.cover,
+                                                      image: NetworkImage(map
+                                                              .values
+                                                              .toList()[index]
+                                                          ['imageUrl']),
+                                                      placeholder: AssetImage(
+                                                          'image/internship.jpg'),
                                                     ),
-                                                  );
-                                                }
-                                              );
-                                            },
-                                            child: ClipOval(
-                                              child: FadeInImage(
-                                                width: 50,
-                                                height: 50,
-                                                fit:BoxFit.cover,
-                                                image: NetworkImage( map.values.toList()[index]['imageUrl']),
-                                                placeholder: AssetImage('image/internship.jpg'),
-                                              ),
-                                            ),
-                                          ):Icon(
-                                            Icons.person,
-                                            color: myColor.myBlack,
-                                            size: 40,
-                                          ),
+                                                  ),
+                                                )
+                                              : Icon(
+                                                  Icons.person,
+                                                  color: myColor.myBlack,
+                                                  size: 40,
+                                                ),
                                           trailing: Icon(Icons.arrow_drop_down,
                                               color: myColor.myBlack, size: 40),
                                           title: Text(
@@ -417,10 +429,6 @@ class _sentApplicationsState extends State<sentApplications> {
                                                               myColor.myWhite),
                                                     ),
                                                     onPressed: () {
-                                                      map.values.toList()[index]
-                                                              [
-                                                              'ApplierExpertise'] =
-                                                          'Software Engineer';
                                                       UrlLauncher.launch(
                                                           'mailto:${map.values.toList()[index]['ApplierEmail']}?subject=Intern Application&body=This is to inform that you are selected to be our intern');
                                                     },
@@ -515,11 +523,11 @@ class ViewPdf extends StatelessWidget {
   Widget build(BuildContext context) {
     print(document);
     return Scaffold(
-      backgroundColor: myColor.myBackground,
+        backgroundColor: myColor.myBackground,
         body: isLoading
             ? SpinKitWave(
                 color: myColor.myBlack,
-          size: 25,
+                size: 25,
               )
             : PDFViewer(
                 showPicker: false,

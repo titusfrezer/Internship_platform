@@ -8,6 +8,8 @@ import 'package:internship_platform/Intern/CategoryPage.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/LoginPage.dart';
 import 'package:internship_platform/util/dbclient.dart';
+import 'package:provider/provider.dart';
+import 'Providers/Job.dart';
 import 'authService.dart';
 
 
@@ -17,8 +19,15 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return Provider(
-      auth: AuthService(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<AuthService>(
+          create: (_)=>AuthService(),
+        ),
+        ChangeNotifierProvider<Job>(
+          create: (_)=>Job(),
+        )
+      ],
       child: MaterialApp(
         title: 'Ethio-Intern',
         theme: ThemeData(
@@ -48,13 +57,6 @@ class _HomeControllerState extends State<HomeController> {
   var db = new DatabaseHelper();
   getUser() async {
 
-    Query User = FirebaseDatabase.instance.reference().child("Users").orderByChild("email");
-    User.once().then((DataSnapshot snapshot){
-      Map<dynamic, dynamic> values = snapshot.value;
-      values.forEach((key, values) {
-        fullName=values['userName'];
-      });
-    });
     user = await firebaseAuth.currentUser();
 
   }
@@ -64,10 +66,7 @@ class _HomeControllerState extends State<HomeController> {
   @override
   Widget build(BuildContext context) {
 
-
-    final AuthService auth = Provider
-        .of(context)
-        .auth;
+    final  auth = Provider.of<AuthService>(context);
     return StreamBuilder(
       stream: auth.onAuthStateChanged,
 
@@ -84,7 +83,6 @@ class _HomeControllerState extends State<HomeController> {
                   // stream: User.equalTo(name!=null?name:user.email).onValue,
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
-
                         // Map map = snapshot.data.snapshot.value;
                         // print("map is ${map.values.toList()}");
                         print("identity from future is ${snapshot
@@ -105,12 +103,6 @@ class _HomeControllerState extends State<HomeController> {
                     : LoginSevenPage();
               }else{
               return SpinKitWave(color: Colors.purple,);}
-/*
-    return StreamBuilder(
-     stream:user.equalTo(name != null ? name : user.email)
-    );
-
-*/
 
 
       },
@@ -118,16 +110,16 @@ class _HomeControllerState extends State<HomeController> {
   }
 }
 
-class Provider extends InheritedWidget {
-  final AuthService auth;
-
-  Provider({Key key, Widget child, this.auth}) : super(key: key, child: child);
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return true;
-  }
-
-  static Provider of(BuildContext context) =>
-      (context.inheritFromWidgetOfExactType(Provider) as Provider);
-}
+// class Provider extends InheritedWidget {
+//   final AuthService auth;
+//
+//   Provider({Key key, Widget child, this.auth}) : super(key: key, child: child);
+//
+//   @override
+//   bool updateShouldNotify(InheritedWidget oldWidget) {
+//     return true;
+//   }
+//
+//   static Provider of(BuildContext context) =>
+//       (context.inheritFromWidgetOfExactType(Provider) as Provider);
+// }

@@ -87,7 +87,6 @@ backgroundColor: myColor.myBackground,
                       if(counter >0 ) {
                         return ListView.builder(
                           itemBuilder: (context, int index) {
-                            print("the suer s ${widget.name}");
                             print(map.values.toList()[index]['postedBy']);
                             if (map.values.toList()[index]['postedBy'] == widget.name) {
 

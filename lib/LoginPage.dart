@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
@@ -6,8 +7,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/ChoosePrivelege.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/WaveClipper.dart';
+import 'package:internship_platform/authService.dart';
 import 'package:internship_platform/main.dart';
 import 'package:internship_platform/util/dbclient.dart';
+import 'package:provider/provider.dart';
 
 import 'model/eventItem.dart';
 
@@ -27,8 +30,23 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
     isLoading = false;
   }
 
+  checkConnection() async {
+    connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      print('connected via cellular');
+      connected = true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      print('connected via wifi');
+      connected = true;
+    } else if (connectivityResult == ConnectivityResult.none) {
+      print('not connected');
+      connected = false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthService>(context);
     return Scaffold(
       backgroundColor: myColor.myBackground,
       body: Form(
@@ -219,78 +237,93 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
                                 fontSize: 18),
                           ),
                     onPressed: () async {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      print('Login pressed');
+                      await checkConnection();
+                      // setState(() {
+                      //   isLoading = true;
+                      // });
+
                       _validateInputs();
-                      try {
-                        // The below code uses to register the User incase he uses another device(i.e user must logged in first)
 
-
-                        var client = await db.getUser(widget.email);
-                        name = widget.email;
-                        if (client.toString() == '[]') {
-                          Query checkUser = FirebaseDatabase.instance
-                              .reference()
-                              .child("Users")
-                              .orderByChild("email")
-                              .equalTo(widget.email);
-                        await checkUser.once().then((DataSnapshot snapshot) {
-                            var KEYS = snapshot.value.keys;
-                            var DATA = snapshot.value;
-                            for (var individualKey in KEYS) {
-                              identity = DATA[individualKey]['identity'];
-                              fullName = DATA[individualKey]['userName'];
-                              furtherInfo = DATA[individualKey]['furtherInfo'];
-                            }
-                            // saving to local database
-                          });
-                        print("Identity $identity, FullName $fullName , furtherInfo $furtherInfo");
-                           await  db.saveUser(User(identity, widget.email, fullName,
-                                furtherInfo, "none"));
-
-
-                        }
-                        await FirebaseAuth.instance.signInWithEmailAndPassword(
-                            email: widget.email, password: widget.password);
+                      if (!connected) {
                         setState(() {
                           isLoading = false;
                         });
+                        Flushbar(
+                          duration: Duration(seconds: 3),
+                          backgroundColor: Colors.red,
+                          icon: Icon(Icons.error),
+                          message: 'Connection Error',
+                        )..show(context);
+                      }
+                      if (isValid && connected) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
+                          // The below code uses to register the User incase he uses another device(i.e user must logged in first)
 
-                        await Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => HomeController()),
-                          (Route<dynamic> route) => false,
-                        );
-                      } catch (Exception) {
-                        print(Exception.toString());
-                        if (Exception.toString() ==
-                            "PlatformException(ERROR_NETWORK_REQUEST_FAILED, A network error (such as timeout, interrupted connection or unreachable host) has occurred., null, null)") {
-                          print("true");
-                          Flushbar(
-                            duration: Duration(seconds: 3),
-                            backgroundColor: Colors.red,
-                            icon: Icon(Icons.error),
-                            message: 'Connection error',
-                          )..show(context);
-                        } else if (Exception.toString() ==
-                            'PlatformException(ERROR_USER_NOT_FOUND, There is no user record corresponding to this identifier. The user may have been deleted., null, null)') {
-                          Flushbar(
-                            duration: Duration(seconds: 3),
-                            backgroundColor: Colors.red,
-                            icon: Icon(Icons.error),
-                            message: 'Email Doesnt exist',
-                          )..show(context);
-                        } else if (Exception.toString() ==
-                            'PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null, null)') {
-                          Flushbar(
-                            duration: Duration(seconds: 3),
-                            backgroundColor: Colors.red,
-                            icon: Icon(Icons.error),
-                            message: 'Invalid Password',
-                          )..show(context);
+                          var client = await db.getUser(widget.email);
+                          name = widget.email;
+                          print("client is $client");
+                          if (client.toString() == '[]') {
+                            Query checkUser = FirebaseDatabase.instance
+                                .reference()
+                                .child("Users")
+                                .orderByChild("email")
+                                .equalTo(widget.email);
+
+                            await checkUser
+                                .once()
+                                .then((DataSnapshot snapshot) {
+                              if (snapshot.value != null) {
+                                var KEYS = snapshot.value.keys;
+                                var DATA = snapshot.value;
+                                for (var individualKey in KEYS) {
+                                  identity = DATA[individualKey]['identity'];
+                                  fullName = DATA[individualKey]['userName'];
+                                  furtherInfo =
+                                      DATA[individualKey]['furtherInfo'];
+                                }
+                              } else {
+                                Flushbar(
+                                  duration: Duration(seconds: 3),
+                                  backgroundColor: Colors.red,
+                                  icon: Icon(Icons.error),
+                                  message: "Email Doesn't exist",
+                                )..show(context);
+                              }
+                              setState(() {
+                                isLoading=false;
+                              });
+                            });
+
+                            print(
+                                "Identity $identity, FullName $fullName , furtherInfo $furtherInfo");
+                            await db.saveUser(User(identity, widget.email, fullName,
+                                furtherInfo, "none"));
+
+                          }
+                          await FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                              email: widget.email,
+                              password: widget.password);
+                          await Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeController()),
+                                (Route<dynamic> route) => false,
+                          );
+                        } catch (Exception) {
+                          print(Exception.toString());
+                          if (Exception.toString() ==
+                              'PlatformException(ERROR_WRONG_PASSWORD, The password is invalid or the user does not have a password., null, null)') {
+                            Flushbar(
+                              duration: Duration(seconds: 3),
+                              backgroundColor: Colors.red,
+                              icon: Icon(Icons.error),
+                              message: 'Invalid Password',
+                            )..show(context);
+                          }
                         }
                       }
 
@@ -336,7 +369,9 @@ class _LoginSevenPageState extends State<LoginSevenPage> {
     if (_formKey.currentState.validate()) {
 //    If all data are correct then save data to out variables
       _formKey.currentState.save();
+      isValid = true;
     } else {
+      isValid = false;
 //    If all data are not valid then start auto validation.
       setState(() {
         autoValidate = true;

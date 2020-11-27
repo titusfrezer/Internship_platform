@@ -295,7 +295,7 @@ isLoading = false;
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.signal_wifi_off,
+                              Icons.wifi_off_rounded,
                               size: 40,
                               color: myColor.myBlack,
                             ),
@@ -408,9 +408,7 @@ isLoading = false;
                                   duration: Duration(seconds: 3),
                                 )..show(context);
                               } else {
-                                setState(() {
-                                  isLoading = false;
-                                });
+
                                 await catRef.once().then((DataSnapshot snapshot){
 
                                   print('enterd categrory is ${controller.text.substring(0,1).toUpperCase()+controller.text.substring(1, controller.text.length)}');
@@ -457,13 +455,16 @@ isLoading = false;
                                     ),
                                     backgroundColor: Colors.red,
                                     title: "Wrong",
-                                    message: "Category created alreday",
+                                    message: "Category created already ",
                                     duration: Duration(seconds: 3),
                                   )..show(context);
                                 }
 
 
                               }
+                              setState(() {
+                                isLoading = false;
+                              });
                             },
                           ),
                         ],

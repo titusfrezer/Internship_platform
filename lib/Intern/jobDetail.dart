@@ -35,7 +35,8 @@ class _jobDetailState extends State<jobDetail> {
   DatabaseReference applyRef =
       FirebaseDatabase.instance.reference().child('application');
   var file;
-
+  var telegram;
+  var github;
   @override
   void initState() {
     // TODO: implement initState
@@ -59,6 +60,8 @@ isLoading = false;
       fullName = map.values.toList()[0]['userName'];
       furtherInfo = map.values.toList()[0]['furtherInfo'];
       imageurl = map.values.toList()[0]['url'];
+      telegram = map.values.toList()[0]['telegram'];
+      github = map.values.toList()[0]['github'];
     });
     var connectivityResult = await (Connectivity().checkConnectivity());
     connected = ((connectivityResult == ConnectivityResult.wifi) ||
@@ -82,7 +85,9 @@ isLoading = false;
       'category': widget.category,
       'AppliedTo': widget.postedBy,
       'jobTitle': widget.jobTitle,
-      'imageUrl':imageurl
+      'imageUrl':imageurl,
+      'telegram': telegram,
+      'github':github
     });
     setState(() {
       isLoading = false;
