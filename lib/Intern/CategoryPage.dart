@@ -24,7 +24,7 @@ class InternCategoryPage extends StatefulWidget {
 }
 
 class _InternCategoryPageState extends State<InternCategoryPage> {
-  List RecentPost = List();
+
 
   void initState() {
     // TODO: implement initState
@@ -32,7 +32,6 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     firebaseAuth = FirebaseAuth.instance;
     getUser();
     print('hi');
-    RecentPost.clear();
     imageurl = null;
   }
 
@@ -512,148 +511,96 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                 child: StreamBuilder(
                                     stream: FirebaseDatabase.instance
                                         .reference()
-                                        .child("posts")
+                                        .child("posts").limitToLast(5)
                                         .onValue,
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         Map<dynamic, dynamic> map =
                                             snapshot.data.snapshot.value;
-
-                                        RecentPost.clear();
-
-                                        var counter = 0;
-                                        for (var i = 0;
-                                            i < map.values.toList().length;
-                                            i++) {
-                                          if (map.values.toList()[i]
-                                                  ['status'] ==
-                                              'open') {
-                                            if (int.parse(map.values
-                                                    .toList()[i]['postedAt']
-                                                    .toString()
-                                                    .split("-")[0]) ==
-                                                DateTime.now().year) {
-                                              if (int.parse(map.values
-                                                      .toList()[i]['postedAt']
-                                                      .toString()
-                                                      .split("-")[1]) ==
-                                                  DateTime.now().month) {
-                                                if (DateTime.now().day -
-                                                        (int.parse(map.values
-                                                            .toList()[i]
-                                                                ['postedAt']
-                                                            .toString()
-                                                            .split("-")[2])) <=
-                                                    5) {
-                                                  print("month is equal");
-                                                  RecentPost.add(
-                                                      map.values.toList()[i]);
-                                                  counter++;
-                                                }
-                                              } else if ((DateTime.now().month -
-                                                      int.parse(map.values
-                                                          .toList()[i]
-                                                              ['postedAt']
-                                                          .toString()
-                                                          .split("-")[1])) ==
-                                                  1) {
-                                                // if the month difference is 1 like Nov and Oct
-                                                if ((30 -
-                                                            int.parse(map.values
-                                                                .toList()[i]
-                                                                    ['postedAt']
-                                                                .toString()
-                                                                .split(
-                                                                    "-")[2])) +
-                                                        DateTime.now().day <=
-                                                    5) {
-                                                  print("less month");
-                                                  RecentPost.add(
-                                                      map.values.toList()[i]);
-                                                  counter++;
-                                                }
-                                              }
-                                            }
-                                          }
-                                        } // if there is at least less than 5 days post
-                                        print('$counter is counter');
-                                        if (counter == 0) {
-                                          return Center(
-                                            child: Text('No recent post yet'),
-                                          );
-                                        } else {
                                           return ListView.builder(
                                               scrollDirection: Axis.vertical,
-                                              itemCount: RecentPost.length,
+                                              itemCount: map.values.toList().length,
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index) {
-                                                return Container(
-                                                  margin: EdgeInsets.only(
-                                                      bottom: 20),
-                                                  decoration: BoxDecoration(
-                                                      color: myColor.myWhite,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15)),
-                                                  child: ListTile(
-                                                    leading: Icon(
-                                                      Icons.access_time,
-                                                      color: Colors.purple,
-                                                    ),
-                                                    title: Text(
-                                                        "${RecentPost[index]['jobTitle']}",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    subtitle: Row(
+                                                if(map.values.toList()[index]['status']=='open') {
+                                                  return Container(
+                                                    margin: EdgeInsets.only(
+                                                        bottom: 20),
+                                                    decoration: BoxDecoration(
+                                                        color: myColor.myWhite,
+                                                        borderRadius:
+                                                        BorderRadius.circular(
+                                                            15)),
+                                                    child: ListTile(
+                                                      leading: Icon(
+                                                        Icons.access_time,
+                                                        color: Colors.purple,
+                                                      ),
+                                                      title: Text(
+                                                          "${map.values
+                                                              .toList()[index]['jobTitle']}",
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .bold)),
+                                                      subtitle: Row(
 //                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                      children: <Widget>[
-                                                        Container(
-                                                            width: 100,
-                                                            child: Text(
-                                                              "${RecentPost[index]['companyName']}",
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            )),
+                                                        children: <Widget>[
+                                                          Container(
+                                                              width: 100,
+                                                              child: Text(
+                                                                "${map.values
+                                                                    .toList()[index]['companyName']}",
+                                                                overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                              )),
 //
-                                                      ],
+                                                        ],
+                                                      ),
+                                                      trailing: FlatButton(
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                context).push(
+                                                                MaterialPageRoute(
+                                                                    builder: (
+                                                                        context) =>
+                                                                        jobDetail(
+                                                                            map.values.toList()[index][
+                                                                            'jobTitle'],
+                                                                            map.values.toList()[index]
+                                                                            [
+                                                                            'jobDescription'],
+                                                                            map.values.toList()[index]
+                                                                            [
+                                                                            'postedBy'],
+                                                                            map.values.toList()[index]
+                                                                            [
+                                                                            'category'],
+                                                                            map.values.toList()[index]
+                                                                            [
+                                                                            'postedAt'],
+                                                                            map.values.toList()[index]
+                                                                            [
+                                                                            'allowance'],
+                                                                            map.values.toList()[index]
+                                                                            [
+                                                                            'howLong'],
+                                                                            map.values.toList()[index]
+                                                                            ['companyName'])));
+                                                          },
+                                                          child: Text(
+                                                              "Detail")),
                                                     ),
-                                                    trailing: FlatButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).push(MaterialPageRoute(
-                                                              builder: (context) => jobDetail(
-                                                                  RecentPost[index][
-                                                                      'jobTitle'],
-                                                                  RecentPost[index]
-                                                                      [
-                                                                      'jobDescription'],
-                                                                  RecentPost[index]
-                                                                      [
-                                                                      'postedBy'],
-                                                                  RecentPost[index]
-                                                                      [
-                                                                      'category'],
-                                                                  RecentPost[index]
-                                                                      [
-                                                                      'postedAt'],
-                                                                  RecentPost[index]
-                                                                      [
-                                                                      'allowance'],
-                                                                  RecentPost[index]
-                                                                      [
-                                                                      'howLong'],
-                                                                  RecentPost[index]
-                                                                      ['companyName'])));
-                                                        },
-                                                        child: Text("Detail")),
-                                                  ),
-                                                );
+                                                  );
+                                                }
+                                                else{
+                                                  return Container();
+                                                }
                                               });
                                         }
-                                      }
+
                                       if (!connected) {
                                         return Center(
                                           child: Column(

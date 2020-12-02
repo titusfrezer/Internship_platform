@@ -13,65 +13,19 @@ import 'package:provider/provider.dart';
 
 String initdata = "Mechanical Engineering";
 
-class PostJob extends StatefulWidget {
+class PostJob extends StatelessWidget {
   @override
-  _PostJobState createState() => _PostJobState();
-
   String category;
 
   PostJob(this.category);
-}
 
-class _PostJobState extends State<PostJob> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController jobTitleController = TextEditingController();
   TextEditingController jobDescriptionController = TextEditingController();
   TextEditingController forhowLong = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
   TextEditingController allowanceController = TextEditingController();
-  DatabaseReference postRef =
-      FirebaseDatabase.instance.reference().child('posts');
 
-  void getUser() async {
-    user = await firebaseAuth.currentUser();
-
-    FirebaseDatabase.instance
-        .reference()
-        .child("Users")
-        .orderByChild('email')
-        .equalTo(user.email)
-        .once()
-        .then((DataSnapshot snapshot) {
-      Map map = snapshot.value;
-      print("map is ${map.values.toList()}");
-      companyName = map.values.toList()[0]['userName'];
-    });
-  }
-
-  void initState() {
-    super.initState();
-    getUser();
-  }
-
-  // posttoFirebase(String title, String description, String howLong,
-  //     String allowance, String category) async {
-  //   await postRef.push().set(<dynamic, dynamic>{
-  //     'jobTitle': title.substring(0, 1).toUpperCase() +
-  //         title.substring(1, title.length),
-  //     'firstLetter': title.substring(0, 1).toUpperCase(),
-  //     'jobDescription': description,
-  //     'howLong': howLong,
-  //     'companyName': companyName,
-  //     'allowance': allowance,
-  //     'category': widget.category,
-  //     'postedBy': user.email,
-  //     'postedAt': DateFormat('yyyy-MM-dd').format(DateTime.now()),
-  //     'status': 'open'
-  //   });
-  //   setState(() {
-  //     isLoading = false;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -79,11 +33,6 @@ class _PostJobState extends State<PostJob> {
     return Scaffold(
 
       backgroundColor: myColor.myBackground,
-      // appBar: AppBar(
-      //   title: Text('Post Job'),
-      //   centerTitle: true,
-      //   backgroundColor: Colors.black,
-      // ),
       body: Form(
         key: _formKey,
         child: SafeArea(
@@ -195,7 +144,7 @@ class _PostJobState extends State<PostJob> {
                                             jobDescriptionController.text,
                                         howLong: forhowLong.text,
                                         allowance: allowanceController.text,
-                                        category: widget.category));
+                                        category: category));
                                     Flushbar(
                                       icon: Icon(
                                         Icons.check,
@@ -225,13 +174,6 @@ class _PostJobState extends State<PostJob> {
                       ),
                     ),
 
-//          RaisedButton(
-//            child: Text('logout'),
-//            onPressed: () async{
-//              await _auth.signOut();
-//
-//            },
-//          )
                   ],
                 ),
               ),

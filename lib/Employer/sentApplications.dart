@@ -9,6 +9,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
+import 'ViewProfile.dart';
+
 class sentApplications extends StatefulWidget {
   @override
   _sentApplicationsState createState() => _sentApplicationsState();
@@ -146,27 +148,9 @@ class _sentApplicationsState extends State<sentApplications> {
                                                       ['imageUrl'] !=
                                                   null
                                               ? GestureDetector(
-                                                  onTap: () {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                            child: Container(
-                                                              width: 200,
-                                                              height: 200,
-                                                              decoration: BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image: NetworkImage(map
-                                                                              .values
-                                                                              .toList()[index]
-                                                                          [
-                                                                          'imageUrl']),
-                                                                      fit: BoxFit
-                                                                          .cover)),
-                                                            ),
-                                                          );
-                                                        });
-                                                  },
+                                            onTap: () {
+                                              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ViewProfile(map.values.toList()[index]['ApplierEmail'])));
+                                            },
                                                   child: ClipOval(
                                                     child: FadeInImage(
                                                       width: 50,
@@ -181,10 +165,12 @@ class _sentApplicationsState extends State<sentApplications> {
                                                     ),
                                                   ),
                                                 )
-                                              : Icon(
-                                                  Icons.person,
-                                                  color: myColor.myWhite,
-                                                  size: 40,
+                                              : IconButton(
+                                                  icon:Icon(Icons.person,color: myColor.myWhite,
+                                                    size: 40,),
+                                                  onPressed: (){
+                                                    Navigator.of(context).push(MaterialPageRoute(builder:(context)=>ViewProfile(map.values.toList()[index]['ApplierEmail'])));
+                                                  },
                                                 ),
                                           trailing: Icon(Icons.arrow_drop_down,
                                               color: myColor.myWhite, size: 40),
@@ -217,7 +203,7 @@ class _sentApplicationsState extends State<sentApplications> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.start,
                                                 children: [
-                                                  map.values.toList()[0]['telegram']!=null?IconButton(icon: FaIcon(FontAwesomeIcons.telegram,color: Colors.white,), onPressed: (){
+                                                  map.values.toList()[index]['telegram']!=null?IconButton(icon: FaIcon(FontAwesomeIcons.telegram,color: Colors.white,), onPressed: (){
                                                     UrlLauncher.launch(map.values.toList()[0]['telegram']);
                                                   }):Container(),
                                                   RaisedButton(
@@ -266,7 +252,6 @@ class _sentApplicationsState extends State<sentApplications> {
                                                       print(map.values
                                                               .toList()[index]
                                                           ['cvUrl']);
-                                                      print("hii");
                                                       await Navigator.of(
                                                               context)
                                                           .push(MaterialPageRoute(
@@ -341,25 +326,7 @@ class _sentApplicationsState extends State<sentApplications> {
                                                   null
                                               ? GestureDetector(
                                                   onTap: () {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (context) {
-                                                          return Dialog(
-                                                            child: Container(
-                                                              width: 200,
-                                                              height: 200,
-                                                              decoration: BoxDecoration(
-                                                                  image: DecorationImage(
-                                                                      image: NetworkImage(map
-                                                                              .values
-                                                                              .toList()[index]
-                                                                          [
-                                                                          'imageUrl']),
-                                                                      fit: BoxFit
-                                                                          .cover)),
-                                                            ),
-                                                          );
-                                                        });
+                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ViewProfile(map.values.toList()[index]['ApplierEmail'])));
                                                   },
                                                   child: ClipOval(
                                                     child: FadeInImage(
@@ -375,10 +342,13 @@ class _sentApplicationsState extends State<sentApplications> {
                                                     ),
                                                   ),
                                                 )
-                                              : Icon(
-                                                  Icons.person,
-                                                  color: myColor.myBlack,
-                                                  size: 40,
+                                              : IconButton(
+                                                  icon:Icon(Icons.person,size: 40,color: myColor.myBlack),
+                                                  onPressed: (){
+                                                    Navigator.of(context).push(MaterialPageRoute(builder: (context)=>ViewProfile(map.values.toList()[index]['ApplierEmail'])));
+
+                                                  },
+
                                                 ),
                                           trailing: Icon(Icons.arrow_drop_down,
                                               color: myColor.myBlack, size: 40),
