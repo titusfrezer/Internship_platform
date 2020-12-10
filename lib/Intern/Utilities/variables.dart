@@ -37,3 +37,5 @@ var identity;
 var email;
 var companyName;
 var client;
+var isfileChosen = false;
+var file=null;

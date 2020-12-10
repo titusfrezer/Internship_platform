@@ -7,6 +7,7 @@ import 'package:internship_platform/Employer/ELandingPage.dart';
 import 'package:internship_platform/Intern/CategoryPage.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/LoginPage.dart';
+import 'package:internship_platform/Providers/Apply.dart';
 import 'package:internship_platform/util/dbclient.dart';
 import 'package:provider/provider.dart';
 import 'Providers/Job.dart';
@@ -26,7 +27,10 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<Job>(
           create: (_)=>Job(),
-        )
+        ),
+        ChangeNotifierProvider<Apply>(
+          create: (_)=>Apply(),
+        ),
       ],
       child: MaterialApp(
         title: 'Ethio-Intern',

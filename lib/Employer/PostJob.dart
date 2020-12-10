@@ -29,7 +29,7 @@ class PostJob extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final post = Provider.of<Job>(context, listen: false);
+    // final post = Provider.of<Job>(context, listen: false);
     return Scaffold(
 
       backgroundColor: myColor.myBackground,
