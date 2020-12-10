@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,11 +36,13 @@ class _jobDetailState extends State<jobDetail> {
   
   DatabaseReference applyRef =
       FirebaseDatabase.instance.reference().child('application');
-  var file;
+  File file;
   var telegram;
   var github;
+
   @override
   void initState() {
+
     // TODO: implement initState
 isLoading = false;
     super.initState();
@@ -264,56 +268,58 @@ isLoading = false;
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Container(
-                      height: 50,
-                      width: 125,
-                      child: RaisedButton(
-                        color: myColor.myWhite,
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: myColor.myDarkGrey,
-                                width: 0.25,
-                                style: BorderStyle.solid),
-                            borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            file != null
-                                ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("$fullName",
+                    Expanded(
+                      child: SizedBox(
+                        height:50,
+                        child: RaisedButton(
+                          color: myColor.myWhite,
+                          shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                  color: myColor.myDarkGrey,
+                                  width: 0.25,
+                                  style: BorderStyle.solid),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              file != null
+                                  ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("$fullName",
+                                          style: GoogleFonts.delius(
+                                              fontWeight: FontWeight.w600,
+                                              color: myColor.myBlack,fontSize: 13)),
+                                      Text(".pdf")
+                                    ],
+                                  )
+                                  : Text(
+                                        "Upload CV (Max 500KB)",
                                         style: GoogleFonts.delius(
+                                          fontSize: 16,
                                             fontWeight: FontWeight.w600,
-                                            color: myColor.myBlack,fontSize: 13)),
-                                    Text(".pdf")
-                                  ],
-                                )
-                                : Text(
-                                    "Upload CV",
-                                    style: GoogleFonts.delius(
-                                        fontWeight: FontWeight.w600,
-                                        color: myColor.myBlack),
-                                  ),
-                            Icon(Icons.file_upload)
-                          ],
+                                            color: myColor.myBlack),
+                                      ),
+
+                              Icon(Icons.file_upload)
+                            ],
+                          ),
+                          onPressed: () async {
+
+                            file = await FilePicker.getFile(
+                                type: FileType.CUSTOM, fileExtension: 'pdf');
+                            setState(() {
+
+                            });
+                          },
                         ),
-                        onPressed: () async {
-
-                          file = await FilePicker.getFile(
-                              type: FileType.CUSTOM, fileExtension: 'pdf');
-                          setState(() {
-
-                          });
-//                    String fileName = '${applierName.text}.pdf';
-//                    print(fileName);
-                        },
                       ),
                     ),
                     SizedBox(
                       width: 15,
                     ),
                     Expanded(
+                      flex:2,
                       child: SizedBox(
                         height: 50,
                         child: RaisedButton(
@@ -331,19 +337,36 @@ isLoading = false;
 
                             if (file != null) {
                               if (connected) {
-                                await postToFirebase();
-                                Flushbar(
-                                  icon: Icon(
-                                    Icons.check,
-                                    color: Colors.green,
-                                  ),
-                                  backgroundColor: Colors.green,
-                                  title: "Success",
-                                  message: "Application posted successfully",
-                                  duration: Duration(seconds: 3),
-                                )
-                                  ..show(context);
-                                file = null;
+                                if(file.lengthSync()>500000){
+                                  print("file size is ${file.lengthSync()}");
+                                  setState(() {
+                                    isLoading = false;
+                                  });
+                                  Flushbar(
+                                    icon: Icon(
+                                      Icons.error,
+                                      color: Colors.red,
+                                    ),
+                                    backgroundColor: Colors.red,
+                                    title: "Wrong",
+                                    message: "File size must not exceed 500KB",
+                                    duration: Duration(seconds: 3),
+                                  )..show(context);
+                                }else {
+                                  await postToFirebase();
+                                  Flushbar(
+                                    icon: Icon(
+                                      Icons.check,
+                                      color: Colors.green,
+                                    ),
+                                    backgroundColor: Colors.green,
+                                    title: "Success",
+                                    message: "Application posted successfully",
+                                    duration: Duration(seconds: 3),
+                                  )
+                                    ..show(context);
+                                  file = null;
+                                }
                               } else {
                                 Flushbar(
                                   icon: Icon(

@@ -2,18 +2,18 @@ import 'dart:ui';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/Intern/chooseJob.dart';
 import '../LoginPage.dart';
 import 'MyProifle.dart';
 import 'jobDetail.dart';
 import 'myApplication.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 class InternCategoryPage extends StatefulWidget {
   String name;
 
@@ -24,7 +24,7 @@ class InternCategoryPage extends StatefulWidget {
 }
 
 class _InternCategoryPageState extends State<InternCategoryPage> {
-
+  FirebaseMessaging _messaging = FirebaseMessaging();
 
   void initState() {
     // TODO: implement initState
@@ -33,6 +33,25 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     getUser();
     print('hi');
     imageurl = null;
+    // _messaging.getToken().then((token){
+    //   print(" token is $token");
+    // });
+    _messaging.subscribeToTopic('NewJob');
+    _messaging.configure(
+      onMessage: (Map<String,dynamic> message){
+        print("onMessage : $message");
+         Flushbar(
+          icon: Icon(
+            Icons.new_releases_outlined,
+            color: Colors.black,
+          ),
+          backgroundColor: Colors.green,
+          title: "Update",
+          message: "New Job Posted",
+          duration: Duration(seconds: 3),
+        )..show(context);
+      }
+    );
   }
 
   getUser() async {

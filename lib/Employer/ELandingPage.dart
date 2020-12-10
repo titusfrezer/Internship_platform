@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,13 +30,17 @@ class _LandingPageState extends State<LandingPage> {
   DatabaseReference catRef =
   FirebaseDatabase.instance.reference().child('Categories');
   var counter = 0;
+  FirebaseMessaging _messaging = FirebaseMessaging();
   void initState() {
     // TODO: implement initState
     super.initState();
     firebaseAuth = FirebaseAuth.instance;
     getUser();
 isLoading = false;
-
+_messaging.getToken().then((token){
+  print(" token is $token");
+});
+_messaging.subscribeToTopic('NewJob');
   }
 
   getUser() async {
