@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flushbar/flushbar.dart';
@@ -23,4 +24,27 @@ class AuthService extends ChangeNotifier {
   currentUser() {
     _firebaseAuth.currentUser();
   }
+  checkConnection() async{
+
+    var connectivityResult =
+    await (Connectivity()
+        .checkConnectivity());
+    print(" from authservice$connectivityResult");
+    if ((connectivityResult ==
+        ConnectivityResult
+            .wifi) ||
+        connectivityResult ==
+            ConnectivityResult
+                .mobile) {
+      connected = true;
+      print("connected");
+
+
+    } else {
+      connected = false;
+      // notifyListeners();
+    }
+    notifyListeners();
+  }
+  bool get isConnected => connected;
 }

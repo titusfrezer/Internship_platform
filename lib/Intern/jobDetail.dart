@@ -107,7 +107,7 @@ class jobDetail extends StatelessWidget {
                             "$allowance birr",
                             style: GoogleFonts.scada(
                                 fontSize: 16, color: myColor.myBlack),
-                          ):Text(""),
+                          ):Text("No Allowance"),
                           decoration: BoxDecoration(
                               color: myColor.myBackground,
                               shape: BoxShape.rectangle,
@@ -280,7 +280,7 @@ class jobDetail extends StatelessWidget {
                                               duration: Duration(seconds: 3),
                                             )..show(context);
                                           } else {
-                                            application.submitApplication(
+                                             await application.submitApplication(
                                                 ApplyForJob(
                                                     category: category,
                                                     AppliedTo: postedBy,

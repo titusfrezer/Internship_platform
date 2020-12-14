@@ -9,11 +9,14 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/Intern/chooseJob.dart';
+import 'package:provider/provider.dart';
 import '../LoginPage.dart';
+import '../authService.dart';
 import 'MyProifle.dart';
 import 'jobDetail.dart';
 import 'myApplication.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
 class InternCategoryPage extends StatefulWidget {
   String name;
 
@@ -33,30 +36,26 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     getUser();
     print('hi');
     imageurl = null;
-    // _messaging.getToken().then((token){
-    //   print(" token is $token");
-    // });
     _messaging.subscribeToTopic('NewJob');
-    _messaging.configure(
-      onMessage: (Map<String,dynamic> message){
-        print("onMessage : $message");
-         Flushbar(
-          icon: Icon(
-            Icons.new_releases_outlined,
-            color: Colors.black,
-          ),
-          backgroundColor: Colors.green,
-          title: "Update",
-          message: "New Job Posted",
-          duration: Duration(seconds: 3),
-        )..show(context);
-      }
-    );
+    _messaging.configure(onMessage: (Map<String, dynamic> message) {
+      print("onMessage : $message");
+      Flushbar(
+        icon: Icon(
+          Icons.new_releases_outlined,
+          color: Colors.black,
+        ),
+        backgroundColor: Colors.green,
+        title: "Update",
+        message: "New Job Posted",
+        duration: Duration(seconds: 3),
+      )..show(context);
+      return null;
+    });
+
   }
 
   getUser() async {
     user = await firebaseAuth.currentUser();
-
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('${user.email} is connected via cellular');
@@ -119,6 +118,8 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final check = Provider.of<AuthService>(context, listen: false);
+    check.checkConnection();
     return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus.unfocus();
@@ -212,7 +213,6 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                       );
                     },
                   ),
-
                 ],
               ),
             ),
@@ -490,7 +490,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                           size: 20,
                                         );
                                       },
-                                    )),
+                                    ))
                               ],
                             ),
                             Container(
@@ -523,103 +523,90 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(
-                            height: 300,
-                            child: Padding(
+                              height: 300,
+                              child: Padding(
                                 padding: EdgeInsets.only(
                                     left: 10, top: 10, right: 10),
                                 child: StreamBuilder(
                                     stream: FirebaseDatabase.instance
                                         .reference()
-                                        .child("posts").limitToLast(5)
+                                        .child("posts")
+                                        .limitToLast(5)
                                         .onValue,
                                     builder: (context, snapshot) {
                                       if (snapshot.hasData) {
                                         Map<dynamic, dynamic> map =
                                             snapshot.data.snapshot.value;
-                                          return ListView.builder(
-                                              scrollDirection: Axis.vertical,
-                                              itemCount: map.values.toList().length,
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index) {
-                                                if(map.values.toList()[index]['status']=='open') {
-                                                  return Container(
-                                                    margin: EdgeInsets.only(
-                                                        bottom: 20),
-                                                    decoration: BoxDecoration(
-                                                        color: myColor.myWhite,
-                                                        borderRadius:
-                                                        BorderRadius.circular(
-                                                            15)),
-                                                    child: ListTile(
-                                                      leading: Icon(
-                                                        Icons.access_time,
-                                                        color: Colors.purple,
-                                                      ),
-                                                      title: Text(
-                                                          "${map.values
-                                                              .toList()[index]['jobTitle']}",
-                                                          style: TextStyle(
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .bold)),
-                                                      subtitle: Row(
-//                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                        children: <Widget>[
-                                                          Container(
-                                                              width: 100,
-                                                              child: Text(
-                                                                "${map.values
-                                                                    .toList()[index]['companyName']}",
-                                                                overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                              )),
-//
-                                                        ],
-                                                      ),
-                                                      trailing: FlatButton(
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                context).push(
-                                                                MaterialPageRoute(
-                                                                    builder: (
-                                                                        context) =>
-                                                                        jobDetail(
-                                                                            map.values.toList()[index][
-                                                                            'jobTitle'],
-                                                                            map.values.toList()[index]
-                                                                            [
-                                                                            'jobDescription'],
-                                                                            map.values.toList()[index]
-                                                                            [
-                                                                            'postedBy'],
-                                                                            map.values.toList()[index]
-                                                                            [
-                                                                            'category'],
-                                                                            map.values.toList()[index]
-                                                                            [
-                                                                            'postedAt'],
-                                                                            map.values.toList()[index]
-                                                                            [
-                                                                            'allowance'],
-                                                                            map.values.toList()[index]
-                                                                            [
-                                                                            'howLong'],
-                                                                            map.values.toList()[index]
-                                                                            ['companyName'])));
-                                                          },
-                                                          child: Text(
-                                                              "Detail")),
+                                        return ListView.builder(
+                                            scrollDirection: Axis.vertical,
+                                            itemCount:
+                                                map.values.toList().length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              if (map.values.toList()[index]
+                                                      ['status'] ==
+                                                  'open') {
+                                                return Container(
+                                                  margin: EdgeInsets.only(
+                                                      bottom: 20),
+                                                  decoration: BoxDecoration(
+                                                      color: myColor.myWhite,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15)),
+                                                  child: ListTile(
+                                                    leading: Icon(
+                                                      Icons.access_time,
+                                                      color: Colors.purple,
                                                     ),
-                                                  );
-                                                }
-                                                else{
-                                                  return Container();
-                                                }
-                                              });
-                                        }
-
+                                                    title: Text(
+                                                        "${map.values.toList()[index]['jobTitle']}",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    subtitle: Row(
+//                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                      children: <Widget>[
+                                                        Container(
+                                                            width: 100,
+                                                            child: Text(
+                                                              "${map.values.toList()[index]['companyName']}",
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            )),
+//
+                                                      ],
+                                                    ),
+                                                    trailing: FlatButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context).push(MaterialPageRoute(
+                                                              builder: (context) => jobDetail(
+                                                                  map.values.toList()[index][
+                                                                      'jobTitle'],
+                                                                  map.values.toList()[index][
+                                                                      'jobDescription'],
+                                                                  map.values.toList()[index][
+                                                                      'postedBy'],
+                                                                  map.values.toList()[index]
+                                                                      [
+                                                                      'category'],
+                                                                  map.values
+                                                                          .toList()[index]
+                                                                      ['postedAt'],
+                                                                  map.values.toList()[index]['allowance'],
+                                                                  map.values.toList()[index]['howLong'],
+                                                                  map.values.toList()[index]['companyName'])));
+                                                        },
+                                                        child: Text("Detail")),
+                                                  ),
+                                                );
+                                              } else {
+                                                return Container();
+                                              }
+                                            });
+                                      }
                                       if (!connected) {
                                         return Center(
                                           child: Column(
@@ -627,8 +614,9 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Icon(
-                                                Icons.signal_wifi_off,
+                                                Icons.wifi_off_rounded,
                                                 size: 40,
+                                                color: myColor.myBlack,
                                               ),
                                               FlatButton(
                                                   shape: RoundedRectangleBorder(
@@ -641,33 +629,21 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                           BorderRadius.circular(
                                                               50)),
                                                   onPressed: () async {
-                                                    var connectivityResult =
-                                                        await (Connectivity()
-                                                            .checkConnectivity());
-                                                    print(connectivityResult);
-                                                    if ((connectivityResult ==
-                                                            ConnectivityResult
-                                                                .wifi) ||
-                                                        connectivityResult ==
-                                                            ConnectivityResult
-                                                                .mobile) {
-                                                      connected = true;
-                                                      print('connected');
-                                                      setState(() {});
-                                                    } else {
-                                                      print('not connected');
-                                                    }
+                                                    check.checkConnection();
                                                   },
-                                                  child: Text('Retry'))
+                                                  child: Text('Retry',
+                                                      style: TextStyle(
+                                                          color:
+                                                              myColor.myBlack)))
                                             ],
                                           ),
                                         );
-                                      } else {
-                                        return SpinKitWave(
-                                            color: myColor.myBlack, size: 20);
                                       }
-                                    })),
-                          ),
+
+                                      return SpinKitWave(
+                                          color: myColor.myBlack, size: 20);
+                                    }),
+                              )),
                         ),
                       ],
                     ),

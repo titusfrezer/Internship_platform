@@ -1,5 +1,3 @@
-
-
 import 'dart:ui';
 import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,8 +13,11 @@ import 'package:internship_platform/Employer/PostedByCategory.dart';
 import 'package:internship_platform/Employer/mypostedJobs.dart';
 import 'package:internship_platform/Employer/sentApplications.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../LoginPage.dart';
+import '../authService.dart';
 
 class LandingPage extends StatefulWidget {
   @override
@@ -28,7 +29,7 @@ class LandingPage extends StatefulWidget {
 
 class _LandingPageState extends State<LandingPage> {
   DatabaseReference catRef =
-  FirebaseDatabase.instance.reference().child('Categories');
+      FirebaseDatabase.instance.reference().child('Categories');
   var counter = 0;
   FirebaseMessaging _messaging = FirebaseMessaging();
   void initState() {
@@ -36,17 +37,15 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
     firebaseAuth = FirebaseAuth.instance;
     getUser();
-isLoading = false;
-_messaging.getToken().then((token){
-  print(" token is $token");
-});
-_messaging.subscribeToTopic('NewJob');
+    _messaging.subscribeToTopic('NewApplication');
+    _messaging.configure(onMessage: (Map<String, dynamic> message) {
+      print("message is ${message["data"]['SentTo']}");
+    });
   }
 
   getUser() async {
     user = await firebaseAuth.currentUser();
-
-     connectivityResult = await (Connectivity().checkConnectivity());
+    var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile) {
       print('connected via cellular');
       connected = true;
@@ -57,7 +56,7 @@ _messaging.subscribeToTopic('NewJob');
       print('not connected');
       connected = false;
     }
-
+    print("Now Connection is $connected");
     FirebaseDatabase.instance
         .reference()
         .child('Users')
@@ -74,7 +73,6 @@ _messaging.subscribeToTopic('NewJob');
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController controller = TextEditingController();
     return Scaffold(
         backgroundColor: myColor.myBackground,
         drawer: Drawer(
@@ -118,7 +116,8 @@ _messaging.subscribeToTopic('NewJob');
                   ),
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => MyProfile(widget.name, imageurl)));
+                        builder: (context) =>
+                            MyProfile(widget.name, imageurl)));
                   },
                 ),
                 InkWell(
@@ -143,20 +142,10 @@ _messaging.subscribeToTopic('NewJob');
                         builder: (context) => sentApplications(widget.name)));
                   },
                 ),
-                // InkWell(
-                //   child: ListTile(
-                //     leading: Icon(Icons.category, color: myColor.myBlack),
-                //     title: Text('Create Category'),
-                //   ),
-                //   onTap: () {
-                //     Navigator.of(context).pop();
-                //     Navigator.of(context).push(MaterialPageRoute(
-                //         builder: (context) => createCategory()));
-                //   },
-                // ),
                 InkWell(
                   child: ListTile(
-                      leading: Icon(Icons.visibility_off, color: myColor.myBlack),
+                      leading:
+                          Icon(Icons.visibility_off, color: myColor.myBlack),
                       title: Text('Log out')),
                   onTap: () async {
                     await firebaseAuth.signOut();
@@ -226,10 +215,7 @@ _messaging.subscribeToTopic('NewJob');
               ),
               Flexible(
                 child: StreamBuilder(
-                  stream: FirebaseDatabase.instance
-                      .reference()
-                      .child("Categories")
-                      .onValue,
+                  stream:  FirebaseDatabase.instance.reference().child('Categories').onValue,
                   builder: (BuildContext context, snapshot) {
                     if (snapshot.hasData) {
                       Map<dynamic, dynamic> map = snapshot.data.snapshot.value;
@@ -292,35 +278,44 @@ _messaging.subscribeToTopic('NewJob');
                               ));
                         },
                       );
-                    }
 
-                    if (!connected) {
+                    }if (!connected) {
                       return Center(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment:
+                          MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.wifi_off_rounded,
+                              Icons.signal_wifi_off,
                               size: 40,
                               color: myColor.myBlack,
                             ),
                             FlatButton(
-                                shape: RoundedRectangleBorder(
+                                shape:
+                                RoundedRectangleBorder(
                                     side: BorderSide(
-                                        color: Colors.black,
+                                        color:
+                                        Colors
+                                            .black,
                                         width: 1,
-                                        style: BorderStyle.solid),
+                                        style:
+                                        BorderStyle
+                                            .solid),
                                     borderRadius:
-                                    BorderRadius.circular(50)),
+                                    BorderRadius
+                                        .circular(
+                                        50)),
                                 onPressed: () async {
-                                   connectivityResult =
+                                  var connectivityResult =
                                   await (Connectivity()
                                       .checkConnectivity());
                                   print(connectivityResult);
                                   if ((connectivityResult ==
-                                      ConnectivityResult.wifi) ||
+                                      ConnectivityResult
+                                          .wifi) ||
                                       connectivityResult ==
-                                          ConnectivityResult.mobile) {
+                                          ConnectivityResult
+                                              .mobile) {
                                     connected = true;
                                     print('connected');
                                     setState(() {});
@@ -333,151 +328,18 @@ _messaging.subscribeToTopic('NewJob');
                                 },
                                 child: Text('Retry',
                                     style: TextStyle(
-                                        color: myColor.myBlack)))
+                                        color: myColor
+                                            .myBlack)))
                           ],
                         ),
                       );
                     }
-
-                    return Center(
-                        child: SpinKitWave(
-                      color: myColor.myBlack,
-                      size: 25,
-                    ));
+                    return SpinKitWave(color: Colors.black);
                   },
                 ),
               ),
             ],
           ),
-        ),
-        // bottomNavigationBar: BottomAppBar(
-        //   shape: CircularNotchedRectangle(),
-        //   notchMargin: 6,
-        //   clipBehavior: Clip.antiAlias,
-        //   child: Container(
-        //     color: myColor.myBackground,
-        //     height: 50,
-        //   ),
-        //
-        // ),
-        floatingActionButton: FloatingActionButton(
-            backgroundColor: myColor.myWhite,
-            foregroundColor: myColor.myBlack,
-            child: Icon(Icons.add),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: Text("Create Category"),
-                    content: Container(
-                      height:50,
-                      width:150,
-                      child: TextField(
-                        controller: controller,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.deny(RegExp(r'[0-9]'))
-                        ],
-                        decoration: InputDecoration(labelText: 'Category Name'),
-                      ),
-                    ),
-                    actions: [
-                      Row(
-                        children: [
-                          FlatButton(
-                            child: Text('Cancel'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          FlatButton(
-                            child: isLoading
-                                ? SpinKitWave(
-                                    color: myColor.myBlack,
-                                    size: 16,
-                                  )
-                                : Text('Save'),
-                            onPressed: () async{
-                              setState(() {
-                                isLoading = true;
-                              });
-                              if (controller.text.isEmpty) {
-                                Flushbar(
-                                  icon: Icon(
-                                    Icons.error,
-                                    color: Colors.red,
-                                  ),
-                                  backgroundColor: Colors.red,
-                                  title: "Error",
-                                  message: "Fill the Category Name field",
-                                  duration: Duration(seconds: 3),
-                                )..show(context);
-                              } else {
-
-                                await catRef.once().then((DataSnapshot snapshot){
-
-                                  print('enterd categrory is ${controller.text.substring(0,1).toUpperCase()+controller.text.substring(1, controller.text.length)}');
-                                  var KEYS = snapshot.value.keys;
-                                  var DATA = snapshot.value;
-                                  for (var individualKey in KEYS) {
-                                    if (DATA[individualKey]['type'] == (controller.text.substring(0,1).toUpperCase()+controller.text.substring(1, controller.text.length))) {
-                                      // only store in the searched list if job not closed
-                                     counter++;
-                                     print('category detected ${DATA[individualKey]['type']}');
-                                    }
-                                  }
-
-                                });
-                                print('counter is $counter');
-                                if(counter==0){
-                                  // checking if the category has prevously created
-
-                                  catRef.push().set(<dynamic, dynamic>{
-
-                                    'type':controller.text.substring(0, 1).toUpperCase() +
-                                        controller.text.substring(1, controller.text.length)
-
-                                  });
-                                  Navigator.of(context).pop();
-
-                                  Flushbar(
-                                    icon: Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    ),
-                                    backgroundColor: Colors.green,
-                                    title: "Success",
-                                    message: "Category posted successfully",
-                                    duration: Duration(seconds: 3),
-                                  )..show(context);
-                                }else{
-                                  Navigator.of(context).pop();
-
-                                  Flushbar(
-                                    icon: Icon(
-                                      Icons.error,
-                                      color: Colors.red,
-                                    ),
-                                    backgroundColor: Colors.red,
-                                    title: "Wrong",
-                                    message: "Category created already ",
-                                    duration: Duration(seconds: 3),
-                                  )..show(context);
-                                }
-
-
-                              }
-                              setState(() {
-                                isLoading = false;
-                              });
-                            },
-                          ),
-                        ],
-                      )
-                    ],
-                  );
-                },
-              );
-            }));
+        ));
   }
 }

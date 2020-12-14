@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+
         ChangeNotifierProvider<AuthService>(
           create: (_)=>AuthService(),
         ),
@@ -70,7 +71,7 @@ class _HomeControllerState extends State<HomeController> {
   @override
   Widget build(BuildContext context) {
 
-    final  auth = Provider.of<AuthService>(context);
+    final  auth = Provider.of<AuthService>(context,listen: false);
     return StreamBuilder(
       stream: auth.onAuthStateChanged,
 

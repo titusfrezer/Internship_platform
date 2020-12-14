@@ -16,29 +16,9 @@ class MyApplication extends StatefulWidget {
 
 class _MyApplicationState extends State<MyApplication> {
   DatabaseReference myAppRef;
-  void getUser() async {
-
-     connectivityResult =
-    await (Connectivity()
-        .checkConnectivity());
-    print(connectivityResult);
-    if ((connectivityResult ==
-        ConnectivityResult.wifi) ||
-        connectivityResult ==
-            ConnectivityResult.mobile) {
-      connected = true;
-      print('connected');
-      setState(() {});
-    } else {
-      print('not connected');
-    }
-
-
-  }
 
   void initState() {
     super.initState();
-    getUser();
   }
   @override
   Widget build(BuildContext context) {
