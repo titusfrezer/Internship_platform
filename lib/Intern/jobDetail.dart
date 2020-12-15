@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Providers/Apply.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/model/ApplyForJob.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -30,65 +31,43 @@ class jobDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: myColor.myBackground,
+      appBar: AppBar(title:Text("Detail"),backgroundColor: myColor.myBackground,),
       body: SafeArea(
         child: Column(
           children: [
-            ClipPath(
-              child: Container(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          color: myColor.myWhite,
-                          borderRadius: BorderRadius.circular(15)),
-                      child: IconButton(
-                          icon: Icon(
-                            Icons.arrow_back,
-                            color: myColor.myBlack,
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          }),
-                    ),
-                  ),
-                ),
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
-                decoration: BoxDecoration(
-                    color: myColor.myBlack,
-                    image: DecorationImage(
-                        image: AssetImage("image/internship.jpg"),
-                        fit: BoxFit.fill)),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(
-                      15,
-                    ),
-                    bottomRight: Radius.circular(15)),
-                color: Colors.white,
-              ),
-              height: 150,
+
+
+
+            Padding(
+
+
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Column(
+
+
+                    children: [
+                      Align(
+                        alignment: Alignment.center,
+                        child: Container(
+
+                          child: Icon(Icons.school,color: myColor.myWhite,size: 25,),
+                        ),
+                      ),
+                       SizedBox(height: 15),
+                       Text(
+                        jobTitle,overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.cabinCondensed(
+                            fontSize: 35,
+                            fontWeight: FontWeight.w500,
+                            color: myColor.myWhite),
+                      ),
+                    ]
+                  ),
                   ListTile(
-                    title: Text(
-                      jobTitle,
-                      style: GoogleFonts.cabinCondensed(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w500,
-                          color: myColor.myBlack),
-                    ),
                     contentPadding: EdgeInsets.all(0),
                     subtitle: Row(
                       children: [
@@ -109,7 +88,7 @@ class jobDetail extends StatelessWidget {
                                 fontSize: 16, color: myColor.myBlack),
                           ):Text("No Allowance"),
                           decoration: BoxDecoration(
-                              color: myColor.myBackground,
+                              color: myColor.myYellow,
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.circular(10)),
                         )
@@ -122,7 +101,7 @@ class jobDetail extends StatelessWidget {
                       Text(
                      companyName,
                         style: GoogleFonts.scada(
-                            fontSize: 18, color: myColor.myBlack),
+                            fontSize: 18, color: myColor.myWhite),
                       ),
                       Text(
                         'Duration : $howLong',
@@ -138,7 +117,7 @@ class jobDetail extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 decoration: BoxDecoration(
-                  color: myColor.myWhite,
+                  color: myColor.myBackground,
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(
@@ -156,7 +135,7 @@ class jobDetail extends StatelessWidget {
                         'Description',
                         style: GoogleFonts.delius(
                             fontSize: 20,
-                            color: myColor.myBlack,
+                            color: myColor.myWhite,
                             fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -183,7 +162,7 @@ class jobDetail extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 decoration: BoxDecoration(
-                  color: myColor.myWhite,
+                  color: myColor.myGreen,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(
                         15,
@@ -197,6 +176,7 @@ class jobDetail extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Expanded(
+                        flex: 0,
                         child: SizedBox(
                           height: 50,
                           child: RaisedButton(
@@ -208,12 +188,13 @@ class jobDetail extends StatelessWidget {
                                     style: BorderStyle.solid),
                                 borderRadius: BorderRadius.circular(10)),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                               children: [
                                 application.isFileChosen
                                     ? Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
+
                                         children: [
                                           Text("$fullName",
                                               style: GoogleFonts.delius(
@@ -223,13 +204,27 @@ class jobDetail extends StatelessWidget {
                                           Text(".pdf")
                                         ],
                                       )
-                                    : Text(
-                                        "Upload CV (Max 500KB)",
-                                        style: GoogleFonts.delius(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                            color: myColor.myBlack),
-                                      ),
+                                    : Column(
+
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                            "Upload CV",overflow: TextOverflow.ellipsis,
+                                            style: GoogleFonts.delius(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                                color: myColor.myBlack),
+                                          ),
+
+                                        Text("(Max 500KB)", style: TextStyle(
+                                            fontSize: 12,
+                                            color: myColor.myBlack),overflow: TextOverflow.ellipsis)
+                                      ],
+                                    ),
+                                SizedBox(
+                                  width: 15,
+                                ),
                                 Icon(Icons.file_upload)
                               ],
                             ),
@@ -244,7 +239,7 @@ class jobDetail extends StatelessWidget {
                         width: 15,
                       ),
                       Expanded(
-                        flex: 2,
+
                         child: SizedBox(
                           height: 50,
                           child: application.isloading
