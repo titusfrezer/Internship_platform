@@ -597,9 +597,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                                       ['postedAt'],
                                                                   map.values.toList()[index]['allowance'],
                                                                   map.values.toList()[index]['howLong'],
-                                                                  map.values.toList()[index]['companyName'],
-                                                                  map.values.toList()[index]['token']
-                                                              )));
+                                                                  map.values.toList()[index]['companyName'])));
                                                         },
                                                         child: Text("Detail")),
                                                   ),
@@ -670,9 +668,7 @@ Widget buildResultCard(data, BuildContext context) {
               data['postedAt'],
               data['allowance'],
               data['howLong'],
-              data['companyName'],
-              data['token']
-          )));
+              data['companyName'])));
     },
     child: Column(
       children: [

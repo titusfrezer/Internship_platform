@@ -63,7 +63,12 @@ class _MyProfileState extends State<MyProfile> {
         .orderByChild("email")
         .equalTo(widget.email);
     return Scaffold(
-        resizeToAvoidBottomPadding: true,
+        resizeToAvoidBottomPadding: false,
+      backgroundColor: myColor.myBackground,
+        appBar: AppBar(
+          title: Text("Personal Information"),backgroundColor: myColor.myBackground,
+        ),
+
         body: Form(
           key: _formKey,
           autovalidateMode: AutovalidateMode.always,
@@ -121,26 +126,7 @@ class _MyProfileState extends State<MyProfile> {
                                         ),
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 15, vertical: 10),
-                                        child: Container(
-                                          height: 50,
-                                          width: 50,
-                                          decoration: BoxDecoration(
-                                              color: Colors.grey.shade400,
-                                              borderRadius:
-                                                  BorderRadius.circular(20)),
-                                          child: IconButton(
-                                              icon: Icon(Icons.arrow_back),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              }),
-                                        ),
-                                      ),
-                                    ),
+
                                   ],
                                 ),
                               )
@@ -181,27 +167,7 @@ class _MyProfileState extends State<MyProfile> {
                                             ),
                                           ),
                                         ),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 20),
-                                            child: Container(
-                                              height: 50,
-                                              width: 50,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.grey.shade400,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              child: IconButton(
-                                                  icon: Icon(Icons.arrow_back),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  }),
-                                            ),
-                                          ),
-                                        ),
+
                                       ],
                                     ),
                                   )
@@ -283,6 +249,7 @@ class _MyProfileState extends State<MyProfile> {
                                     ),
                                   ),
                       ),
+                      SizedBox(height: 15,),
                       Expanded(
                         child: ListView(
                           children: [
@@ -304,7 +271,7 @@ class _MyProfileState extends State<MyProfile> {
                                   fillColor: myColor.myWhite,
                                   filled: true,
                                   icon: Icon(Icons.person,
-                                      color: myColor.myBlack),
+                                      color: myColor.myWhite),
                                 ),
                                 controller: nameController,
                               ),
@@ -325,7 +292,7 @@ class _MyProfileState extends State<MyProfile> {
                                     filled: true,
                                     fillColor: myColor.myWhite,
                                     icon: Icon(Icons.work,
-                                        color: myColor.myBlack)),
+                                        color: myColor.myWhite)),
                                 controller: furtherController,
                               ),
                             ),
@@ -350,7 +317,7 @@ class _MyProfileState extends State<MyProfile> {
                                     fillColor: myColor.myWhite,
                                     icon: FaIcon(
                                       FontAwesomeIcons.telegram,
-                                      color: myColor.myBlack,
+                                      color: myColor.myWhite,
                                     )),
                                 controller: telegramController,
                               ),
@@ -376,13 +343,13 @@ class _MyProfileState extends State<MyProfile> {
                                     fillColor: myColor.myWhite,
                                     icon: FaIcon(
                                       FontAwesomeIcons.github,
-                                      color: myColor.myBlack,
+                                      color: myColor.myWhite,
                                     )),
                                 controller: githubController,
                               ),
                             ),
                             SizedBox(
-                              height: 50,
+                              height: 25,
                             ),
                             Align(
                               alignment: Alignment.bottomCenter,
@@ -393,11 +360,11 @@ class _MyProfileState extends State<MyProfile> {
                                     )
                                   : Container(
                                       margin:
-                                          EdgeInsets.symmetric(horizontal: 15),
+                                          EdgeInsets.symmetric(horizontal: 15,vertical: 25),
                                       height: 50,
                                       width: double.infinity,
                                       child: RaisedButton(
-                                        color: myColor.myBlack,
+                                        color: myColor.myGreen,
                                         shape: RoundedRectangleBorder(
                                             side: BorderSide(
                                                 color: Colors.black,
@@ -408,8 +375,9 @@ class _MyProfileState extends State<MyProfile> {
                                         child: Text(
                                           'Update',
                                           style: GoogleFonts.delius(
+                                              fontSize: 18,
                                               fontWeight: FontWeight.w600,
-                                              color: myColor.myWhite),
+                                              color: myColor.myBackground),
                                         ),
                                         onPressed: () async {
                                           if (_formKey.currentState

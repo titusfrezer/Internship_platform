@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Intern/Utilities/variables.dart';
 import 'package:internship_platform/Intern/jobDetail.dart';
 
+
 class chooseJob extends StatefulWidget {
   @override
   _chooseJobState createState() => _chooseJobState();
@@ -14,9 +15,10 @@ class chooseJob extends StatefulWidget {
   chooseJob(this.Category);
 }
 
+
+
 class _chooseJobState extends State<chooseJob> {
   List chooseJobList = List();
-
   @override
   void initState() {
     // TODO: implement initState
@@ -32,6 +34,7 @@ class _chooseJobState extends State<chooseJob> {
         .equalTo(widget.Category);
 
     return Scaffold(
+
         backgroundColor: myColor.myBackground,
         body: SafeArea(
           child: Column(
@@ -85,7 +88,8 @@ class _chooseJobState extends State<chooseJob> {
                   stream: chooseRef.onValue,
                   builder: (BuildContext context, snapshot) {
                     if (snapshot.hasData) {
-                      chooseJobList.clear();
+
+                       chooseJobList.clear();
 
                       if (snapshot.data.snapshot.value != null) {
                         Map<dynamic, dynamic> map =
@@ -94,8 +98,8 @@ class _chooseJobState extends State<chooseJob> {
                         for (var i = 0; i < map.values.toList().length; i++) {
                           if (map.values.toList()[i]['status'] == 'closed') {
                             counter++;
-                          } else if (map.values.toList()[i]['status'] ==
-                              'open') {
+                          }
+                          else if (map.values.toList()[i]['status'] == 'open'){
                             chooseJobList.add(map.values.toList()[i]);
                           }
                         }
@@ -110,154 +114,133 @@ class _chooseJobState extends State<chooseJob> {
                             itemCount: chooseJobList.length,
                             scrollDirection: Axis.vertical,
                             itemBuilder: (BuildContext context, int index) {
-                              return index % 2 == 0
-                                  ? Container(
-                                      width: 120,
-                                      height: 100,
-                                      margin:
-                                          EdgeInsets.symmetric(horizontal: 15),
-                                      child: Card(
-                                        color: myColor.myBlack,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        child: ListTile(
-                                          leading: Icon(
-                                            Icons.school,
-                                            color: myColor.myWhite,
-                                            size: 40,
-                                          ),
-                                          title: Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text(
-                                                chooseJobList[index]
-                                                    ['jobTitle'],
-                                                overflow: TextOverflow.fade,
-                                                style: GoogleFonts.openSans(
-                                                    color: myColor.myWhite,
-                                                    fontSize: 18),
-                                              )),
-                                          subtitle: Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text(
-                                                chooseJobList[index]
-                                                    ['companyName'],
-                                                style: GoogleFonts.montserrat(
-                                                    color: myColor.myWhite,
-                                                    fontStyle:
-                                                        FontStyle.italic),
-                                              )),
-                                          trailing: GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) => jobDetail(
-                                                            chooseJobList[index]
-                                                                ['jobTitle'],
-                                                            chooseJobList[index]
-                                                                    [
-                                                                    'jobDescription']
-                                                                .toString(),
-                                                            chooseJobList[index]
-                                                                ['postedBy'],
-                                                            chooseJobList[index]
-                                                                ['category'],
-                                                            chooseJobList[index]
-                                                                ['postedAt'],
-                                                            chooseJobList[index]
-                                                                ['allowance'],
-                                                            chooseJobList[index]
-                                                                ['howLong'],
-                                                            chooseJobList[index]
-                                                                [
-                                                                'companyName'],
-                                                           chooseJobList[index]['token']
-                                                        )));
-                                              },
-                                              child: Text(
-                                                'See more',
-                                                style: GoogleFonts.delius(
-                                                    color: myColor.myWhite,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      width: 120,
-                                      height: 100,
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal: 15, vertical: 10),
-                                      child: Card(
+
+                                return index % 2 == 0? Container(
+                                  width: 120,
+                                  height: 100,
+                                  margin: EdgeInsets.symmetric(horizontal: 15),
+                                  child: Card(
+                                    color: myColor.myBlack,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        Icons.school,
                                         color: myColor.myWhite,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        child: ListTile(
-                                          leading: Icon(
-                                            Icons.school,
-                                            color: myColor.myBlack,
-                                            size: 40,
-                                          ),
-                                          title: Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text(
-                                                chooseJobList[index]
-                                                    ['jobTitle'],
-                                                overflow: TextOverflow.fade,
-                                                style: GoogleFonts.openSans(
-                                                    color: myColor.myBlack,
-                                                    fontSize: 18),
-                                              )),
-                                          subtitle: Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text(
-                                                chooseJobList[index]
-                                                    ['companyName'],
-                                                style: GoogleFonts.montserrat(
-                                                    color: myColor.myDarkGrey,
-                                                    fontStyle:
-                                                        FontStyle.italic),
-                                              )),
-                                          trailing: GestureDetector(
-                                              onTap: () {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) => jobDetail(
-                                                            chooseJobList[index]
-                                                                ['jobTitle'],
-                                                            chooseJobList[index]
-                                                                    [
-                                                                    'jobDescription']
-                                                                .toString(),
-                                                            chooseJobList[index]
-                                                                ['postedBy'],
-                                                            chooseJobList[index]
-                                                                ['category'],
-                                                            chooseJobList[index]
-                                                                ['postedAt'],
-                                                            chooseJobList[index]
-                                                                ['allowance'],
-                                                            chooseJobList[index]
-                                                                ['howLong'],
-                                                            chooseJobList[index]
-                                                                ['companyName'],
-                                                            chooseJobList[index]
-                                                                ['token'])));
-                                              },
-                                              child: Text(
-                                                'See more',
-                                                style: GoogleFonts.delius(
-                                                    color: myColor.myBlack,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )),
-                                        ),
+                                        size: 40,
                                       ),
-                                    );
+                                      title: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            chooseJobList[index]
+                                                ['jobTitle'],
+                                            overflow: TextOverflow.fade,
+                                            style: GoogleFonts.openSans(
+                                                color: myColor.myWhite,
+                                                fontSize: 18),
+                                          )),
+                                      subtitle: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            chooseJobList[index]
+                                                ['companyName'],
+                                            style: GoogleFonts.montserrat(
+                                                color: myColor.myWhite,
+                                                fontStyle: FontStyle.italic),
+                                          )),
+                                      trailing: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                                builder: (context) => jobDetail(
+                                                    chooseJobList[index]
+                                                        ['jobTitle'],
+                                                    chooseJobList[index]
+                                                            ['jobDescription']
+                                                        .toString(),
+                                                    chooseJobList[index]
+                                                        ['postedBy'],
+                                                    chooseJobList[index]
+                                                        ['category'],
+                                                    chooseJobList[index]
+                                                        ['postedAt'],
+                                                    chooseJobList[index]
+                                                        ['allowance'],
+                                                    chooseJobList[index]
+                                                        ['howLong'],
+                                                    chooseJobList[index]
+                                                        ['companyName'])));
+                                          },
+                                          child: Text(
+                                            'See more',
+                                            style: GoogleFonts.delius(color: myColor.myWhite,fontWeight: FontWeight.w500),
+                                          )),
+                                    ),
+                                  ),
+                                ):Container(
+                                  width: 120,
+                                  height: 100,
+                                  margin: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
+                                  child: Card(
+                                    color: myColor.myWhite,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: ListTile(
+                                      leading: Icon(
+                                        Icons.school,
+                                        color: myColor.myBlack,
+                                        size: 40,
+                                      ),
+                                      title: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            chooseJobList[index]
+                                            ['jobTitle'],
+                                            overflow: TextOverflow.fade,
+                                            style: GoogleFonts.openSans(
+                                                color: myColor.myBlack,
+                                                fontSize: 18),
+                                          )),
+                                      subtitle: Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text(
+                                            chooseJobList[index]
+                                            ['companyName'],
+                                            style: GoogleFonts.montserrat(
+                                                color: myColor.myDarkGrey,
+                                                fontStyle: FontStyle.italic),
+                                          )),
+                                      trailing: GestureDetector(
+                                          onTap: () {
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                                builder: (context) => jobDetail(
+                                                    chooseJobList[index]
+                                                    ['jobTitle'],
+                                                    chooseJobList[index]
+                                                    ['jobDescription']
+                                                        .toString(),
+                                                    chooseJobList[index]
+                                                    ['postedBy'],
+                                                    chooseJobList[index]
+                                                    ['category'],
+                                                    chooseJobList[index]
+                                                    ['postedAt'],
+                                                    chooseJobList[index]
+                                                    ['allowance'],
+                                                    chooseJobList[index]
+                                                    ['howLong'],
+                                                    chooseJobList[index]
+                                                    ['companyName'])));
+                                          },
+                                          child: Text(
+                                            'See more',
+                                            style: GoogleFonts.delius(color: myColor.myBlack,fontWeight: FontWeight.w500),
+                                          )),
+                                    ),
+                                  ),
+                                );
+
                             },
                           );
                         }

@@ -23,9 +23,10 @@ class _MyApplicationState extends State<MyApplication> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: myColor.myBackground,
       appBar: AppBar(
         title:Text('My Application')
-            ,backgroundColor: Colors.black,
+            ,backgroundColor: myColor.myBackground,
       ),
         body: !connected ?Center(child:Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +112,8 @@ class _MyApplicationState extends State<MyApplication> {
                         width: 120,
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         child: Card(
-                          color: myColor.myBlack,
+                          color:index % 3 ==0 ? myColor.myGreen: index % 4 == 0? myColor.myYellow: myColor.myBlue,
+
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -246,7 +248,7 @@ class _MyApplicationState extends State<MyApplication> {
                   },
                 );}
           else{
-            return Center(child: Text('No Application yet'),);
+            return Center(child: Text('No Application yet',),);
           }
 
             }
