@@ -145,6 +145,7 @@ class PostJob extends StatelessWidget {
                                         howLong: forhowLong.text,
                                         allowance: allowanceController.text,
                                         category: category));
+                                   Navigator.of(context).pop();
                                     Flushbar(
                                       icon: Icon(
                                         Icons.check,
@@ -155,8 +156,9 @@ class PostJob extends StatelessWidget {
                                       message: "Job posted successfully",
                                       duration: Duration(seconds: 3),
                                     )..show(context);
-                                    Navigator.of(context).pop();
+
                                     // Navigator.of(context).pop();
+
                                   } else {
 
                                     Flushbar(

@@ -77,7 +77,6 @@ class _HomeControllerState extends State<HomeController> {
 
       builder: (context, snapshot) {
 
-
               if(snapshot.connectionState == ConnectionState.active) {
                 final bool signedIn = snapshot.hasData;
 

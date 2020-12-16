@@ -59,7 +59,8 @@ class Apply extends ChangeNotifier{
       'jobTitle': application.jobTitle,
       'imageUrl':imageurl,
       'telegram': telegram,
-      'github':github
+      'github':github,
+      'token':application.token
     });
 
     isLoading = false;

@@ -37,10 +37,7 @@ class _LandingPageState extends State<LandingPage> {
     super.initState();
     firebaseAuth = FirebaseAuth.instance;
     getUser();
-    _messaging.subscribeToTopic('NewApplication');
-    _messaging.configure(onMessage: (Map<String, dynamic> message) {
-      print("message is ${message["data"]['SentTo']}");
-    });
+
   }
 
   getUser() async {
@@ -56,7 +53,22 @@ class _LandingPageState extends State<LandingPage> {
       print('not connected');
       connected = false;
     }
-    print("Now Connection is $connected");
+
+    // _messaging.subscribeToTopic('NewApplication');
+    _messaging.configure(onMessage: (Map<String, dynamic> message) {
+      print("message is ${message["data"]['SentTo']}");
+      Flushbar(
+        icon: Icon(
+          Icons.new_releases_outlined,
+          color: Colors.black,
+        ),
+        backgroundColor: Colors.green,
+        title: "Update",
+        message: "New Job Posted",
+        duration: Duration(seconds: 3),
+      )..show(context);
+      return null;
+    });
     FirebaseDatabase.instance
         .reference()
         .child('Users')

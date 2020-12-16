@@ -22,9 +22,9 @@ class jobDetail extends StatelessWidget {
   String allowance;
   String howLong;
   String companyName;
-
+  String token;
   jobDetail(this.jobTitle, this.jobDescription, this.postedBy, this.category,
-      this.postedAt, this.allowance, this.howLong, this.companyName);
+      this.postedAt, this.allowance, this.howLong, this.companyName,this.token);
 
   @override
   Widget build(BuildContext context) {
@@ -280,11 +280,12 @@ class jobDetail extends StatelessWidget {
                                               duration: Duration(seconds: 3),
                                             )..show(context);
                                           } else {
-                                             await application.submitApplication(
+                                              application.submitApplication(
                                                 ApplyForJob(
                                                     category: category,
                                                     AppliedTo: postedBy,
                                                     jobTitle: jobTitle,
+                                                  token:token
                                                 ));
                                             Flushbar(
                                               icon: Icon(

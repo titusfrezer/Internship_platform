@@ -9,7 +9,7 @@ class ApplyForJob {
   var imageUrl;
   var telegram;
   var github;
-
+  var token;
   ApplyForJob(
       {this.ApplierName,
       this.ApplierEmail,
@@ -21,5 +21,6 @@ class ApplyForJob {
       this.imageUrl,
       this.telegram,
       this.github,
+        this.token
       });
 }
