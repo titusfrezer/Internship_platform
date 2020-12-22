@@ -34,41 +34,17 @@ class _chooseJobState extends State<chooseJob> {
         .equalTo(widget.Category);
 
     return Scaffold(
+        appBar: AppBar(
+          title: Text("Internship Platform",style: TextStyle(fontSize: 18,color: myColor.myWhite),),
+          backgroundColor: myColor.myBackground,
 
+        ),
         backgroundColor: myColor.myBackground,
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                child: Row(
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          color: myColor.myWhite,
-                          borderRadius: BorderRadius.circular(20)),
-                      child: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          }),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: MediaQuery.of(context).size.width * 0.15),
-                      alignment: Alignment.center,
-                      child: Text(
-                        "Internship Platform",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+
               SizedBox(
                 height: 15,
               ),
@@ -120,7 +96,12 @@ class _chooseJobState extends State<chooseJob> {
                                   height: 100,
                                   margin: EdgeInsets.symmetric(horizontal: 15),
                                   child: Card(
-                                    color: myColor.myBlack,
+                                    color: index % 2 == 0
+                                        ? (index % 3 == 0? myColor.myYellow:myColor.myGreen)
+                                        : index % 3 == 0
+                                        ? myColor.myBlue
+                                        : myColor
+                                        .myYellow,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),

@@ -106,11 +106,11 @@ class _HomeControllerState extends State<HomeController> {
                         }
 
                       }
-                      return SpinKitWave(color: Colors.purple,);
+                      return SpinKitWave(color: myColor.myWhite,size: 20,);
                     })
                     : LoginSevenPage();
               }else{
-              return SpinKitWave(color: Colors.purple,);}
+              return SpinKitWave(color: myColor.myWhite,size: 20,);}
 
 
       },

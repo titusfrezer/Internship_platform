@@ -491,7 +491,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                         }
 
                                         return SpinKitWave(
-                                          color: myColor.myBlack,
+                                          color: myColor.myWhite,
                                           size: 20,
                                         );
                                       },
@@ -655,7 +655,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                               Icon(
                                                 Icons.wifi_off_rounded,
                                                 size: 40,
-                                                color: myColor.myBlack,
+                                                color: myColor.myWhite,
                                               ),
                                               FlatButton(
                                                   shape: RoundedRectangleBorder(
@@ -680,7 +680,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                       }
 
                                       return SpinKitWave(
-                                          color: myColor.myBlack, size: 20);
+                                          color: myColor.myWhite, size: 20);
                                     }),
                               )),
                         ),
