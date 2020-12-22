@@ -85,6 +85,7 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final check = Provider.of<AuthService>(context,listen: false);
     return Scaffold(
         backgroundColor: myColor.myBackground,
         drawer: Drawer(
@@ -318,25 +319,7 @@ class _LandingPageState extends State<LandingPage> {
                                         .circular(
                                         50)),
                                 onPressed: () async {
-                                  var connectivityResult =
-                                  await (Connectivity()
-                                      .checkConnectivity());
-                                  print(connectivityResult);
-                                  if ((connectivityResult ==
-                                      ConnectivityResult
-                                          .wifi) ||
-                                      connectivityResult ==
-                                          ConnectivityResult
-                                              .mobile) {
-                                    connected = true;
-                                    print('connected');
-                                    setState(() {});
-                                  } else {
-                                    setState(() {
-                                      connected = false;
-                                    });
-                                    print('not connected');
-                                  }
+                                  check.checkConnection();
                                 },
                                 child: Text('Retry',
                                     style: TextStyle(

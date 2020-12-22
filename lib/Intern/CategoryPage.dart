@@ -73,7 +73,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    final check = Provider.of<AuthService>(context);
+    // final check = Provider.of<AuthService>(context);
     return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus.unfocus();
@@ -553,34 +553,37 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                             });
                                       }
                                       if (!connected) {
-                                        return Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.wifi_off_rounded,
-                                                size: 40,
-                                                color: myColor.myBlack,
-                                              ),
-                                              FlatButton(
-                                                  shape: RoundedRectangleBorder(
-                                                      side: BorderSide(
-                                                          color: Colors.black,
-                                                          width: 1,
-                                                          style: BorderStyle
-                                                              .solid),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              50)),
-                                                  onPressed: () async {
-                                                    check.checkConnection();
-                                                  },
-                                                  child: Text('Retry',
-                                                      style: TextStyle(
-                                                          color:
-                                                              myColor.myBlack)))
-                                            ],
+                                        return Consumer<AuthService>(
+                                          builder: (_,check,__)=>
+                                           Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.wifi_off_rounded,
+                                                  size: 40,
+                                                  color: myColor.myBlack,
+                                                ),
+                                                FlatButton(
+                                                    shape: RoundedRectangleBorder(
+                                                        side: BorderSide(
+                                                            color: Colors.black,
+                                                            width: 1,
+                                                            style: BorderStyle
+                                                                .solid),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                50)),
+                                                    onPressed: () async {
+                                                      check.checkConnection();
+                                                    },
+                                                    child: Text('Retry',
+                                                        style: TextStyle(
+                                                            color:
+                                                                myColor.myBlack)))
+                                              ],
+                                            ),
                                           ),
                                         );
                                       }
