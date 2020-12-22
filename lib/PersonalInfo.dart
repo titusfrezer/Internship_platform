@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 import 'package:internship_platform/SignUp.dart';
 import 'package:internship_platform/WaveClipper.dart';
 

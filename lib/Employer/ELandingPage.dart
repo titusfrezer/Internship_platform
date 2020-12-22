@@ -12,12 +12,12 @@ import 'package:internship_platform/Employer/MyProfile.dart';
 import 'package:internship_platform/Employer/PostedByCategory.dart';
 import 'package:internship_platform/Employer/mypostedJobs.dart';
 import 'package:internship_platform/Employer/sentApplications.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../LoginPage.dart';
-import '../authService.dart';
+import 'package:internship_platform/services/authService.dart';
 
 class LandingPage extends StatefulWidget {
   @override

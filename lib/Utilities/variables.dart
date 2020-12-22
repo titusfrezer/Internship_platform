@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:internship_platform/util/dbclient.dart';
+import 'package:internship_platform/Utilities/dbclient.dart';
 
 class myColor {
   static final Color myBlack = Color(0xff090808);

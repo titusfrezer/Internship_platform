@@ -9,7 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Employer/PostJob.dart';
 import 'package:internship_platform/ReusableTextField.dart';
 import 'package:intl/intl.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 
 class PostedByCategory extends StatefulWidget {
   @override

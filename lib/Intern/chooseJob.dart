@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 import 'package:internship_platform/Intern/jobDetail.dart';
 
 
@@ -169,7 +169,9 @@ class _chooseJobState extends State<chooseJob> {
                                                     chooseJobList[index]
                                                         ['howLong'],
                                                     chooseJobList[index]
-                                                        ['companyName'])));
+                                                        ['companyName'],
+                                                    chooseJobList[index]['token']
+                                                )));
                                           },
                                           child: Text(
                                             'See more',
@@ -231,7 +233,9 @@ class _chooseJobState extends State<chooseJob> {
                                                     chooseJobList[index]
                                                     ['howLong'],
                                                     chooseJobList[index]
-                                                    ['companyName'])));
+                                                    ['companyName'],
+                                                    chooseJobList[index]['token']
+                                                )));
                                           },
                                           child: Text(
                                             'See more',

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 class ReusableTextField extends StatelessWidget {
  final controller;
  final inputFormat;

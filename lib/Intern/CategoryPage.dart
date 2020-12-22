@@ -7,11 +7,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 import 'package:internship_platform/Intern/chooseJob.dart';
+import 'package:internship_platform/services/searchService.dart';
 import 'package:provider/provider.dart';
 import '../LoginPage.dart';
-import '../authService.dart';
+import 'package:internship_platform/services/authService.dart';
 import 'MyProifle.dart';
 import 'jobDetail.dart';
 import 'myApplication.dart';
@@ -69,57 +70,10 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     }
   }
 
-  var queryResultSet = [];
-  var tempSearchStore = [];
-
-  initiateSearch(String value) {
-    if (value.isEmpty) {
-      setState(() {
-        queryResultSet = [];
-        tempSearchStore = [];
-      });
-    }
-    var capitalizedValue =
-        value.substring(0, 1).toUpperCase() + value.substring(1);
-    print(capitalizedValue);
-    if (queryResultSet.isEmpty && value.toString().length == 1) {
-      print("true");
-      Query query = FirebaseDatabase.instance
-          .reference()
-          .child('posts')
-          .orderByChild('firstLetter')
-          .equalTo(value.substring(0, 1).toUpperCase());
-      query.once().then((DataSnapshot snapshot) {
-        var KEYS = snapshot.value.keys;
-        var DATA = snapshot.value;
-        for (var individualKey in KEYS) {
-          if (DATA[individualKey]['status'] == 'open') {
-            // only store in the searched list if job not closed
-            print("${DATA[individualKey]['jobTitle']} is the value");
-
-            queryResultSet.add(DATA[individualKey]);
-          } else {
-            print('Job closed');
-          }
-        }
-      });
-    } else {
-      tempSearchStore = [];
-      queryResultSet.forEach((element) {
-        if (element['jobTitle'].toString().startsWith(capitalizedValue)) {
-          print("hooray");
-          setState(() {
-            tempSearchStore.add(element);
-          });
-        }
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    final check = Provider.of<AuthService>(context, listen: false);
-    check.checkConnection();
+    final check = Provider.of<AuthService>(context);
     return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus.unfocus();
@@ -318,8 +272,9 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
 //                    if (value.isEmpty) {
 //                      FocusManager.instance.primaryFocus.unfocus();
 //                    }
-
-                        initiateSearch(value);
+                       final search = Provider.of<SearchService>(context,listen: false);
+                       print("value is $value");
+                        search.initiateSearch(value);
                       },
                       decoration: InputDecoration(
                           hintText: "Search for Internship",
@@ -429,80 +384,68 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                             },
                                           );
                                         }
-                                        if (!connected) {
-                                          return Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.signal_wifi_off,
-                                                  size: 40,
-                                                  color: myColor.myBlack,
-                                                ),
-                                                FlatButton(
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                                color:
-                                                                    Colors
-                                                                        .black,
-                                                                width: 1,
-                                                                style:
-                                                                    BorderStyle
-                                                                        .solid),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        50)),
-                                                    onPressed: () async {
-                                                      var connectivityResult =
-                                                          await (Connectivity()
-                                                              .checkConnectivity());
-                                                      print(connectivityResult);
-                                                      if ((connectivityResult ==
-                                                              ConnectivityResult
-                                                                  .wifi) ||
-                                                          connectivityResult ==
-                                                              ConnectivityResult
-                                                                  .mobile) {
-                                                        connected = true;
-                                                        print('connected');
-                                                        setState(() {});
-                                                      } else {
-                                                        setState(() {
-                                                          connected = false;
-                                                        });
-                                                        print('not connected');
-                                                      }
-                                                    },
-                                                    child: Text('Retry',
-                                                        style: TextStyle(
-                                                            color: myColor
-                                                                .myBlack)))
-                                              ],
-                                            ),
-                                          );
-                                        }
 
-                                        return SpinKitWave(
-                                          color: myColor.myBlack,
-                                          size: 20,
-                                        );
+                                          return Consumer<AuthService>(
+                                            builder: (_,check,__)=>
+                                            check.isConnected? Center(
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.signal_wifi_off,
+                                                    size: 40,
+                                                    color: myColor.myBlack,
+                                                  ),
+                                                  FlatButton(
+                                                      shape:
+                                                          RoundedRectangleBorder(
+                                                              side: BorderSide(
+                                                                  color:
+                                                                      Colors
+                                                                          .red,
+                                                                  width: 1,
+                                                                  style:
+                                                                      BorderStyle
+                                                                          .solid),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          50)),
+                                                      onPressed: () async {
+                                                       check.checkConnection();
+                                                      },
+                                                      child: Text('Retry',
+                                                          style: TextStyle(
+                                                              color: myColor
+                                                                  .myBlack)))
+                                                ],
+                                              ),
+                                            ):SpinKitWave(
+                                              color: myColor.myBlack,
+                                              size: 20,
+                                            )
+                                          );
+
+
+
                                       },
                                     ))
                               ],
                             ),
-                            Container(
-                              color: myColor.myBackground,
-                              child: ListView(
-                                shrinkWrap: true,
-                                primary: false,
-                                children: tempSearchStore.map((element) {
-                                  print(
-                                      'the element to be build is ${element['jobTitle']}');
-                                  return buildResultCard(element, context);
-                                }).toList(),
+                            Consumer<SearchService>(
+                              builder: (_,search,__)=>
+                               Container(
+                                color: myColor.myBackground,
+                                child: ListView(
+                                  shrinkWrap: true,
+                                  primary: false,
+                                  children: search.tempSearchStore.map((element) {
+                                    print(
+                                        'the element to be build is ${element['jobTitle']}');
+                                    return buildResultCard(element, context);
+                                  }).toList(),
+                                ),
                               ),
                             ),
                           ],
@@ -597,7 +540,9 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                                       ['postedAt'],
                                                                   map.values.toList()[index]['allowance'],
                                                                   map.values.toList()[index]['howLong'],
-                                                                  map.values.toList()[index]['companyName'])));
+                                                                  map.values.toList()[index]['companyName'],
+                                                                  map.values.toList()[index]['token']
+                                                              )));
                                                         },
                                                         child: Text("Detail")),
                                                   ),
@@ -668,7 +613,9 @@ Widget buildResultCard(data, BuildContext context) {
               data['postedAt'],
               data['allowance'],
               data['howLong'],
-              data['companyName'])));
+              data['companyName'],
+              data['token']
+          )));
     },
     child: Column(
       children: [

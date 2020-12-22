@@ -5,11 +5,11 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/ChoosePrivelege.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 import 'package:internship_platform/WaveClipper.dart';
-import 'package:internship_platform/authService.dart';
+import 'package:internship_platform/services/authService.dart';
 import 'package:internship_platform/main.dart';
-import 'package:internship_platform/util/dbclient.dart';
+import 'package:internship_platform/Utilities/dbclient.dart';
 import 'package:provider/provider.dart';
 
 import 'model/eventItem.dart';

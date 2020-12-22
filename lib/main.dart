@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:internship_platform/Employer/ELandingPage.dart';
 import 'package:internship_platform/Intern/CategoryPage.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+import 'package:internship_platform/Utilities/variables.dart';
 import 'package:internship_platform/LoginPage.dart';
 import 'package:internship_platform/Providers/Apply.dart';
-import 'package:internship_platform/util/dbclient.dart';
+import 'package:internship_platform/Utilities/dbclient.dart';
+import 'package:internship_platform/services/searchService.dart';
 import 'package:provider/provider.dart';
 import 'Providers/Job.dart';
-import 'authService.dart';
+import 'package:internship_platform/services/authService.dart';
 
 
 void main() => runApp(MaterialApp(home: MyApp()));
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
 
+        ChangeNotifierProvider<SearchService>(
+          create: (_)=>SearchService(),
+        ),
         ChangeNotifierProvider<AuthService>(
           create: (_)=>AuthService(),
         ),
