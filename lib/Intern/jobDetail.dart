@@ -163,7 +163,7 @@ class jobDetail extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 decoration: BoxDecoration(
-                  color: myColor.myGreen,
+                  color: myColor.myDarkGrey,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(
                         15,

@@ -35,7 +35,7 @@ class _chooseJobState extends State<chooseJob> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text("Internship Platform",style: TextStyle(fontSize: 18,color: myColor.myWhite),),
+          title: Text("${widget.Category}",style: TextStyle(fontSize: 18,color: myColor.myWhite),),
           backgroundColor: myColor.myBackground,
 
         ),
@@ -45,17 +45,6 @@ class _chooseJobState extends State<chooseJob> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              SizedBox(
-                height: 15,
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text(widget.Category,
-                    style: GoogleFonts.openSans(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                        color: myColor.myBlack)),
-              ),
               SizedBox(
                 height: 15,
               ),
@@ -84,7 +73,7 @@ class _chooseJobState extends State<chooseJob> {
                         // if all of post are closed!!
                         if (counter == map.values.toList().length) {
                           return Center(
-                              child: Text('No post from ${widget.Category}'));
+                              child: Text('No post from ${widget.Category}',style:TextStyle(color: myColor.myWhite)));
                         } else {
                           return ListView.builder(
                             itemCount: chooseJobList.length,
@@ -232,12 +221,12 @@ class _chooseJobState extends State<chooseJob> {
                       }
                     } else {
                       return SpinKitWave(
-                        color: myColor.myBlack,
+                        color: myColor.myWhite,
                       );
                     }
 
                     return Center(
-                        child: Text('No post from ${widget.Category}'));
+                        child: Text('No post from ${widget.Category}',style: TextStyle(color:myColor.myWhite),));
                   },
                 ),
               ),

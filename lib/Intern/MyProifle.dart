@@ -324,10 +324,7 @@ class _MyProfileState extends State<MyProfile> {
                                       child: RaisedButton(
                                         color: myColor.myWhite,
                                         shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                color: Colors.black,
-                                                width: 1,
-                                                style: BorderStyle.solid),
+
                                             borderRadius:
                                                 BorderRadius.circular(50)),
                                         child: Text(

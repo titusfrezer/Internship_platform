@@ -443,7 +443,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                 Icon(
                                                   Icons.signal_wifi_off,
                                                   size: 40,
-                                                  color: myColor.myBlack,
+                                                  color: myColor.myWhite,
                                                 ),
                                                 FlatButton(
                                                     shape:
@@ -484,7 +484,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                     child: Text('Retry',
                                                         style: TextStyle(
                                                             color: myColor
-                                                                .myBlack)))
+                                                                .myWhite)))
                                               ],
                                             ),
                                           );
@@ -673,7 +673,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                   child: Text('Retry',
                                                       style: TextStyle(
                                                           color:
-                                                              myColor.myBlack)))
+                                                              myColor.myWhite)))
                                             ],
                                           ),
                                         );
