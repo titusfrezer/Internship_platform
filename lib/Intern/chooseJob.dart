@@ -170,7 +170,7 @@ class _chooseJobState extends State<chooseJob> {
                                                         ['howLong'],
                                                     chooseJobList[index]
                                                         ['companyName'],
-                                                    chooseJobList[index]['token']
+                                                   // chooseJobList[index]['token']
                                                 )));
                                           },
                                           child: Text(
@@ -234,7 +234,7 @@ class _chooseJobState extends State<chooseJob> {
                                                     ['howLong'],
                                                     chooseJobList[index]
                                                     ['companyName'],
-                                                    chooseJobList[index]['token']
+                                                   // chooseJobList[index]['token']
                                                 )));
                                           },
                                           child: Text(

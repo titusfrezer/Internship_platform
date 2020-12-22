@@ -7,11 +7,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:internship_platform/Intern/Utilities/variables.dart';
+
 import 'package:internship_platform/Intern/chooseJob.dart';
+import 'package:internship_platform/Utilities/variables.dart';
+import 'package:internship_platform/services/authService.dart';
 import 'package:provider/provider.dart';
 import '../LoginPage.dart';
-import '../authService.dart';
+
 import 'MyProifle.dart';
 import 'jobDetail.dart';
 import 'myApplication.dart';

@@ -10,6 +10,9 @@ class myColor {
   static final Color myLightGrey = Color(0xffA4A4A6);
   static final Color myDarkGrey = Color(0xff6B6C70);
   static final Color myBackground = Color(0xffe1e2e2);
+  static final Color myGreen = Color(0xff41883C);
+  static final Color myBlue = Color(0xff3024AE);
+  static final Color myYellow = Color(0xffF6A435);
 }
 
 bool autoValidate = false;
