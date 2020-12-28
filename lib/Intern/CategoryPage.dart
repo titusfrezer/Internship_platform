@@ -6,13 +6,15 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:internship_platform/Utilities/variables.dart';
+
 import 'package:internship_platform/Intern/chooseJob.dart';
-import 'package:internship_platform/services/searchService.dart';
+import 'package:internship_platform/Utilities/variables.dart';
+import 'package:internship_platform/services/authService.dart';
 import 'package:provider/provider.dart';
 import '../LoginPage.dart';
-import 'package:internship_platform/services/authService.dart';
+
 import 'MyProifle.dart';
 import 'jobDetail.dart';
 import 'myApplication.dart';
@@ -20,8 +22,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 class InternCategoryPage extends StatefulWidget {
   String name;
+  String furtherInfo;
 
-  InternCategoryPage(this.name);
+  InternCategoryPage(this.name, this.furtherInfo);
 
   @override
   _InternCategoryPageState createState() => _InternCategoryPageState();
@@ -52,7 +55,6 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
       )..show(context);
       return null;
     });
-
   }
 
   getUser() async {
@@ -70,10 +72,57 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
     }
   }
 
+  var queryResultSet = [];
+  var tempSearchStore = [];
+
+  initiateSearch(String value) {
+    if (value.isEmpty) {
+      setState(() {
+        queryResultSet = [];
+        tempSearchStore = [];
+      });
+    }
+    var capitalizedValue =
+        value.substring(0, 1).toUpperCase() + value.substring(1);
+    print(capitalizedValue);
+    if (queryResultSet.isEmpty && value.toString().length == 1) {
+      print("true");
+      Query query = FirebaseDatabase.instance
+          .reference()
+          .child('posts')
+          .orderByChild('firstLetter')
+          .equalTo(value.substring(0, 1).toUpperCase());
+      query.once().then((DataSnapshot snapshot) {
+        var KEYS = snapshot.value.keys;
+        var DATA = snapshot.value;
+        for (var individualKey in KEYS) {
+          if (DATA[individualKey]['status'] == 'open') {
+            // only store in the searched list if job not closed
+            print("${DATA[individualKey]['jobTitle']} is the value");
+
+            queryResultSet.add(DATA[individualKey]);
+          } else {
+            print('Job closed');
+          }
+        }
+      });
+    } else {
+      tempSearchStore = [];
+      queryResultSet.forEach((element) {
+        if (element['jobTitle'].toString().startsWith(capitalizedValue)) {
+          print("hooray");
+          setState(() {
+            tempSearchStore.add(element);
+          });
+        }
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // final check = Provider.of<AuthService>(context);
+    final check = Provider.of<AuthService>(context, listen: false);
+    check.checkConnection();
     return GestureDetector(
         onTap: () {
           FocusManager.instance.primaryFocus.unfocus();
@@ -82,92 +131,101 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
           backgroundColor: myColor.myBackground,
           resizeToAvoidBottomInset: false,
           drawer: Drawer(
-            child: SafeArea(
-              child: Column(
-                children: [
-                  ClipRect(
-                    child: Container(
-                        width: 300,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: ExactAssetImage('image/internship.jpg'),
-                                fit: BoxFit.cover)),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaY: 3.9, sigmaX: 3.9),
-                          child: UserAccountsDrawerHeader(
-                            decoration:
-                                BoxDecoration(color: Colors.transparent),
-                            accountName: CircleAvatar(
-                                backgroundColor: myColor.myBlack,
-                                foregroundColor: myColor.myWhite,
-                                child: Text(
-                                  widget.name.substring(0, 1).toUpperCase(),
-                                  style: GoogleFonts.delius(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                )),
-                            accountEmail: Text(
-                              widget.name,
-                              style: TextStyle(
-                                  color: myColor.myBlack,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18),
+            child: Container(
+              color: myColor.myBackground,
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    ClipRect(
+                      child: Container(
+                          width: 300,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image:
+                                      ExactAssetImage('image/internship.jpg'),
+                                  fit: BoxFit.cover)),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaY: 3.9, sigmaX: 3.9),
+                            child: UserAccountsDrawerHeader(
+                              decoration:
+                                  BoxDecoration(color: Colors.transparent),
+                              accountName: CircleAvatar(
+                                  backgroundColor: myColor.myBlack,
+                                  foregroundColor: myColor.myWhite,
+                                  child: Text(
+                                    widget.name.substring(0, 1).toUpperCase(),
+                                    style: GoogleFonts.delius(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  )),
+                              accountEmail: Text(
+                                widget.name,
+                                style: TextStyle(
+                                    color: myColor.myBlack,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18),
+                              ),
                             ),
-                          ),
-                        )),
-                  ),
-                  InkWell(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.person,
-                        color: myColor.myBlack,
-                      ),
-                      title: Text("My Profile"),
+                          )),
                     ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) =>
-                              MyProfile(user.email, imageurl)));
-                    },
-                  ),
-                  InkWell(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.description,
-                        color: myColor.myBlack,
+                    InkWell(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.person,
+                          color: myColor.myWhite,
+                        ),
+                        title: Text(
+                          "My Profile",
+                          style: TextStyle(color: myColor.myWhite),
+                        ),
                       ),
-                      title: Text("My Applications"),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) =>
+                                MyProfile(user.email, imageurl)));
+                      },
                     ),
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => MyApplication(widget.name)));
-                    },
-                  ),
-                  InkWell(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.visibility_off,
-                        color: myColor.myBlack,
+                    InkWell(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.description,
+                          color: myColor.myWhite,
+                        ),
+                        title: Text("My Applications",
+                            style: TextStyle(color: myColor.myWhite)),
                       ),
-                      title: Text('log out'),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MyApplication(widget.name)));
+                      },
                     ),
-                    onTap: () async {
-                      print('out');
-                      await firebaseAuth.signOut();
-                      var user = await firebaseAuth.currentUser();
-                      print(user);
-                      Navigator.of(context).pop();
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => LoginSevenPage()),
-                        (Route<dynamic> route) => false,
-                      );
-                    },
-                  ),
-                ],
+                    InkWell(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.visibility_off,
+                          color: myColor.myWhite,
+                        ),
+                        title: Text('log out',
+                            style: TextStyle(color: myColor.myWhite)),
+                      ),
+                      onTap: () async {
+                        print('out');
+                        await firebaseAuth.signOut();
+                        var user = await firebaseAuth.currentUser();
+                        print(user);
+                        Navigator.of(context).pop();
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginSevenPage()),
+                          (Route<dynamic> route) => false,
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -181,29 +239,24 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              color: myColor.myWhite,
-                              borderRadius: BorderRadius.circular(20)),
-                          child: Builder(
-                            builder: (context) => IconButton(
-                                icon: Icon(
-                                  Icons.list,
-                                  color: myColor.myBlack,
-                                ),
-                                onPressed: () {
-                                  Scaffold.of(context).openDrawer();
-                                }),
-                          ),
+                        Builder(
+                          builder: (context) => IconButton(
+                              icon: Icon(
+                                Icons.list,
+                                color: myColor.myWhite,
+                              ),
+                              onPressed: () {
+                                Scaffold.of(context).openDrawer();
+                              }),
                         ),
                         Container(
                           alignment: Alignment.center,
                           child: Text(
                             "Internship Platform",
                             style: TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                color: myColor.myWhite,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
@@ -232,7 +285,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                               return Text(
                                 'Hi ${map.values.toList()[0]['userName']}',
                                 style: TextStyle(
-                                    color: myColor.myDarkGrey,
+                                    color: myColor.myWhite,
                                     fontFamily: 'Oswald',
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16),
@@ -241,7 +294,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                             return Text(
                               'Hi',
                               style: TextStyle(
-                                  color: myColor.myDarkGrey,
+                                  color: myColor.myWhite,
                                   fontFamily: 'Oswald',
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16),
@@ -256,7 +309,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                         style: GoogleFonts.alice(
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
-                            color: myColor.myBlack)),
+                            color: myColor.myWhite)),
                   ),
                   SizedBox(
                     height: 20,
@@ -265,17 +318,17 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                     margin: EdgeInsets.symmetric(horizontal: 20),
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     decoration: BoxDecoration(
-                        color: myColor.myWhite,
+                        border: Border.all(color: myColor.myDarkGrey),
                         borderRadius: BorderRadius.circular(15)),
                     child: TextFormField(
                       onChanged: (value) {
 //                    if (value.isEmpty) {
 //                      FocusManager.instance.primaryFocus.unfocus();
 //                    }
-                       final search = Provider.of<SearchService>(context,listen: false);
-                       print("value is $value");
-                        search.initiateSearch(value);
+
+                        initiateSearch(value);
                       },
+                      style: TextStyle(color: myColor.myWhite),
                       decoration: InputDecoration(
                           hintText: "Search for Internship",
                           hintStyle: TextStyle(color: myColor.myLightGrey),
@@ -290,9 +343,9 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                           ),
                           icon: Icon(
                             Icons.search,
-                            color: myColor.myBlack,
+                            color: myColor.myWhite,
                           )),
-                      cursorColor: myColor.myBlack,
+                      cursorColor: myColor.myWhite,
                     ),
                   ),
                   Expanded(
@@ -312,7 +365,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                     "Categories",
                                     style: GoogleFonts.roboto(
                                         fontSize: 18,
-                                        color: myColor.myBlack,
+                                        color: myColor.myWhite,
                                         fontWeight: FontWeight.w400),
                                   ),
                                 ),
@@ -352,7 +405,13 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                   margin: EdgeInsets.symmetric(
                                                       horizontal: 15),
                                                   child: Card(
-                                                    color: myColor.myBlack,
+                                                    color: index % 2 == 0
+                                                        ? (index % 3 == 0
+                                                            ? myColor.myBlue
+                                                            : myColor.myGreen)
+                                                        : index % 3 == 0
+                                                            ? myColor.myBlue
+                                                            : myColor.myYellow,
                                                     shape:
                                                         RoundedRectangleBorder(
                                                       borderRadius:
@@ -371,12 +430,10 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                               overflow:
                                                                   TextOverflow
                                                                       .fade,
-                                                              style: GoogleFonts
-                                                                  .alice(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      fontSize:
-                                                                          16),
+                                                              style: GoogleFonts.alice(
+                                                                  color: myColor
+                                                                      .myBlack,
+                                                                  fontSize: 16),
                                                             ))),
                                                   ),
                                                 ),
@@ -384,68 +441,80 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                             },
                                           );
                                         }
-
-                                          return Consumer<AuthService>(
-                                            builder: (_,check,__)=>
-                                            check.isConnected? Center(
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.signal_wifi_off,
-                                                    size: 40,
-                                                    color: myColor.myBlack,
-                                                  ),
-                                                  FlatButton(
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                              side: BorderSide(
-                                                                  color:
-                                                                      Colors
-                                                                          .red,
-                                                                  width: 1,
-                                                                  style:
-                                                                      BorderStyle
-                                                                          .solid),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          50)),
-                                                      onPressed: () async {
-                                                       check.checkConnection();
-                                                      },
-                                                      child: Text('Retry',
-                                                          style: TextStyle(
-                                                              color: myColor
-                                                                  .myBlack)))
-                                                ],
-                                              ),
-                                            ):SpinKitWave(
-                                              color: myColor.myBlack,
-                                              size: 20,
-                                            )
+                                        if (!connected) {
+                                          return Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.signal_wifi_off,
+                                                  size: 40,
+                                                  color: myColor.myWhite,
+                                                ),
+                                                FlatButton(
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            side: BorderSide(
+                                                                color:
+                                                                    Colors
+                                                                        .black,
+                                                                width: 1,
+                                                                style:
+                                                                    BorderStyle
+                                                                        .solid),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        50)),
+                                                    onPressed: () async {
+                                                      var connectivityResult =
+                                                          await (Connectivity()
+                                                              .checkConnectivity());
+                                                      print(connectivityResult);
+                                                      if ((connectivityResult ==
+                                                              ConnectivityResult
+                                                                  .wifi) ||
+                                                          connectivityResult ==
+                                                              ConnectivityResult
+                                                                  .mobile) {
+                                                        connected = true;
+                                                        print('connected');
+                                                        setState(() {});
+                                                      } else {
+                                                        setState(() {
+                                                          connected = false;
+                                                        });
+                                                        print('not connected');
+                                                      }
+                                                    },
+                                                    child: Text('Retry',
+                                                        style: TextStyle(
+                                                            color: myColor
+                                                                .myWhite)))
+                                              ],
+                                            ),
                                           );
+                                        }
 
-
-
+                                        return SpinKitWave(
+                                          color: myColor.myWhite,
+                                          size: 20,
+                                        );
                                       },
                                     ))
                               ],
                             ),
-                            Consumer<SearchService>(
-                              builder: (_,search,__)=>
-                               Container(
-                                color: myColor.myBackground,
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  primary: false,
-                                  children: search.tempSearchStore.map((element) {
-                                    print(
-                                        'the element to be build is ${element['jobTitle']}');
-                                    return buildResultCard(element, context);
-                                  }).toList(),
-                                ),
+                            Container(
+                              color: myColor.myBackground,
+                              child: ListView(
+                                shrinkWrap: true,
+                                primary: false,
+                                children: tempSearchStore.map((element) {
+                                  print(
+                                      'the element to be build is ${element['jobTitle']}');
+                                  return buildResultCard(element, context);
+                                }).toList(),
                               ),
                             ),
                           ],
@@ -459,14 +528,14 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                             "Recent Posts",
                             style: GoogleFonts.openSans(
                                 fontSize: 20,
-                                color: myColor.myBlack,
+                                color: myColor.myWhite,
                                 fontWeight: FontWeight.w600),
                           ),
                         ),
                         Align(
                           alignment: Alignment.bottomCenter,
                           child: Container(
-                              height: 300,
+                              height: 150,
                               child: Padding(
                                 padding: EdgeInsets.only(
                                     left: 10, top: 10, right: 10),
@@ -481,7 +550,7 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                         Map<dynamic, dynamic> map =
                                             snapshot.data.snapshot.value;
                                         return ListView.builder(
-                                            scrollDirection: Axis.vertical,
+                                            scrollDirection: Axis.horizontal,
                                             itemCount:
                                                 map.values.toList().length,
                                             itemBuilder: (BuildContext context,
@@ -490,109 +559,179 @@ class _InternCategoryPageState extends State<InternCategoryPage> {
                                                       ['status'] ==
                                                   'open') {
                                                 return Container(
-                                                  margin: EdgeInsets.only(
-                                                      bottom: 20),
-                                                  decoration: BoxDecoration(
-                                                      color: myColor.myWhite,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              15)),
-                                                  child: ListTile(
-                                                    leading: Icon(
-                                                      Icons.access_time,
-                                                      color: Colors.purple,
-                                                    ),
-                                                    title: Text(
-                                                        "${map.values.toList()[index]['jobTitle']}",
-                                                        style: TextStyle(
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    subtitle: Row(
+                                                    width: 120,
+                                                    margin: EdgeInsets.only(
+                                                        bottom: 20,
+                                                        left: 10,
+                                                        right: 10),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 10),
+                                                    decoration: BoxDecoration(
+                                                        // color: myColor.myWhite,
+                                                        color: index % 2 == 0
+                                                            ? myColor.myGreen
+                                                            : index % 3 == 0
+                                                                ? myColor.myBlue
+                                                                : myColor
+                                                                    .myYellow,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15)),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Text(
+                                                            "${map.values.toList()[index]['jobTitle']}",
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold)),
+                                                        Row(
 //                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                      children: <Widget>[
-                                                        Container(
-                                                            width: 100,
-                                                            child: Text(
+                                                          children: <Widget>[
+                                                            Container(
+                                                                child: Text(
                                                               "${map.values.toList()[index]['companyName']}",
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
                                                             )),
 //
+                                                          ],
+                                                        ),
+                                                        RaisedButton(
+                                                          onPressed: () {
+                                                            Navigator.of(context).push(MaterialPageRoute(
+                                                                builder: (context) => jobDetail(
+                                                                    map.values.toList()[index][
+                                                                        'jobTitle'],
+                                                                    map.values.toList()[index][
+                                                                        'jobDescription'],
+                                                                    map.values.toList()[index][
+                                                                        'postedBy'],
+                                                                    map.values
+                                                                            .toList()[index][
+                                                                        'category'],
+                                                                    map.values
+                                                                            .toList()[index]
+                                                                        ['postedAt'],
+                                                                    map.values.toList()[index]['allowance'],
+                                                                    map.values.toList()[index]['howLong'],
+                                                                    map.values.toList()[index]['companyName'])));
+                                                          },
+                                                          child: Text(
+                                                            "Detail",
+                                                            style: TextStyle(
+                                                                color: myColor
+                                                                    .myWhite),
+                                                          ),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .all(
+                                                              Radius.circular(
+                                                                  10),
+                                                            ),
+                                                          ),
+                                                          color: myColor
+                                                              .myBackground,
+                                                        ),
                                                       ],
-                                                    ),
-                                                    trailing: FlatButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).push(MaterialPageRoute(
-                                                              builder: (context) => jobDetail(
-                                                                  map.values.toList()[index][
-                                                                      'jobTitle'],
-                                                                  map.values.toList()[index][
-                                                                      'jobDescription'],
-                                                                  map.values.toList()[index][
-                                                                      'postedBy'],
-                                                                  map.values.toList()[index]
-                                                                      [
-                                                                      'category'],
-                                                                  map.values
-                                                                          .toList()[index]
-                                                                      ['postedAt'],
-                                                                  map.values.toList()[index]['allowance'],
-                                                                  map.values.toList()[index]['howLong'],
-                                                                  map.values.toList()[index]['companyName'],
-                                                                  map.values.toList()[index]['token']
-                                                              )));
-                                                        },
-                                                        child: Text("Detail")),
-                                                  ),
-                                                );
+
+                                                      // leading: Icon(
+                                                      //   Icons.access_time,
+                                                      //   color: Colors.purple,
+                                                      // ),
+                                                    ));
                                               } else {
                                                 return Container();
                                               }
                                             });
                                       }
                                       if (!connected) {
-                                        return Consumer<AuthService>(
-                                          builder: (_,check,__)=>
-                                           Center(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Icon(
-                                                  Icons.wifi_off_rounded,
-                                                  size: 40,
-                                                  color: myColor.myBlack,
-                                                ),
-                                                FlatButton(
-                                                    shape: RoundedRectangleBorder(
-                                                        side: BorderSide(
-                                                            color: Colors.black,
-                                                            width: 1,
-                                                            style: BorderStyle
-                                                                .solid),
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                                50)),
-                                                    onPressed: () async {
-                                                      check.checkConnection();
-                                                    },
-                                                    child: Text('Retry',
-                                                        style: TextStyle(
-                                                            color:
-                                                                myColor.myBlack)))
-                                              ],
-                                            ),
+                                        return Center(
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.wifi_off_rounded,
+                                                size: 40,
+                                                color: myColor.myWhite,
+                                              ),
+                                              FlatButton(
+                                                  shape: RoundedRectangleBorder(
+                                                      side: BorderSide(
+                                                          color: Colors.black,
+                                                          width: 1,
+                                                          style: BorderStyle
+                                                              .solid),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              50)),
+                                                  onPressed: () async {
+                                                    check.checkConnection();
+                                                  },
+                                                  child: Text('Retry',
+                                                      style: TextStyle(
+                                                          color:
+                                                              myColor.myWhite)))
+                                            ],
                                           ),
                                         );
                                       }
 
                                       return SpinKitWave(
-                                          color: myColor.myBlack, size: 20);
+                                          color: myColor.myWhite, size: 20);
                                     }),
                               )),
                         ),
+                        Text('Recommended',style: TextStyle(color:Colors.white),),
+                        Container(
+                          height: 100,
+                          child: StreamBuilder(
+                            stream: FirebaseDatabase.instance
+                                .reference()
+                                .child("posts")
+                                .orderByChild("category")
+                                .equalTo("Test").onValue,
+                            builder:(context,snapshot){
+                              if(snapshot.hasData) {
+                                print('data is ${snapshot.data}');
+                                Map map = snapshot.data.snapshot.value;
+                                return ListView.builder(
+                                    itemCount: map.values
+                                        .toList()
+                                        .length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        leading: FaIcon(
+                                          FontAwesomeIcons.clock,
+                                          color: Colors.white,
+                                        ),
+                                        title: Text(map.values
+                                            .toList()[index]['jobTitle'],
+                                          style: TextStyle(
+                                              color: Colors.white),),
+                                      );
+                                    });
+                              }
+                              return SpinKitWave(color:Colors.white);
+                            }
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -616,21 +755,19 @@ Widget buildResultCard(data, BuildContext context) {
               data['postedAt'],
               data['allowance'],
               data['howLong'],
-              data['companyName'],
-              data['token']
-          )));
+              data['companyName'])));
     },
     child: Column(
       children: [
         ListTile(
           leading: Icon(
             Icons.work,
-            color: myColor.myBlack,
+            color: myColor.myWhite,
           ),
           title: Text(data['jobTitle'],
-              style: GoogleFonts.delius(color: myColor.myBlack, fontSize: 20)),
+              style: GoogleFonts.delius(color: myColor.myWhite, fontSize: 20)),
         ),
-        Divider(thickness: 0.2, color: myColor.myBlack)
+        Divider(thickness: 0.3, color: myColor.myDarkGrey)
       ],
     ),
   );

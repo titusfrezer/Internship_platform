@@ -23,7 +23,7 @@ class _MyApplicationState extends State<MyApplication> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: myColor.myBackground,
+      backgroundColor: myColor.myBackground,
       appBar: AppBar(
         title:Text('My Application')
             ,backgroundColor: myColor.myBackground,
@@ -33,6 +33,7 @@ class _MyApplicationState extends State<MyApplication> {
           children: [
             Icon(
               Icons.signal_wifi_off,
+              color: myColor.myWhite,
               size: 40,
             ),
             FlatButton(
@@ -112,8 +113,12 @@ class _MyApplicationState extends State<MyApplication> {
                         width: 120,
                         margin: EdgeInsets.symmetric(horizontal: 15),
                         child: Card(
-                          color:index % 3 ==0 ? myColor.myGreen: index % 4 == 0? myColor.myYellow: myColor.myBlue,
-
+                          color: index % 2 == 0
+                              ? (index % 3 == 0? myColor.myYellow:myColor.myGreen)
+                              : index % 3 == 0
+                              ? myColor.myBlue
+                              : myColor
+                              .myYellow,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0),
                           ),
@@ -248,7 +253,7 @@ class _MyApplicationState extends State<MyApplication> {
                   },
                 );}
           else{
-            return Center(child: Text('No Application yet',),);
+            return Center(child: Text('No Application yet',style: TextStyle(color: myColor.myWhite),),);
           }
 
             }

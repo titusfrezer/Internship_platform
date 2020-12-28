@@ -98,7 +98,7 @@ class _HomeControllerState extends State<HomeController> {
                         if (snapshot.data[0]['identity'] == 'Intern') {
                           print("your are intern");
                           return InternCategoryPage(
-                              name != null ? name : snapshot.data[0]['email']);
+                               snapshot.data[0]['email'],snapshot.data[0]['furtherInfo']);
                         } else if (snapshot.data[0]['identity'] == 'Employer') {
                           print("your are employer");
                           return LandingPage(
@@ -106,11 +106,11 @@ class _HomeControllerState extends State<HomeController> {
                         }
 
                       }
-                      return SpinKitWave(color: Colors.purple,);
+                      return SpinKitWave(color: myColor.myWhite,size: 20,);
                     })
                     : LoginSevenPage();
               }else{
-              return SpinKitWave(color: Colors.purple,);}
+              return SpinKitWave(color: myColor.myWhite,size: 20,);}
 
 
       },

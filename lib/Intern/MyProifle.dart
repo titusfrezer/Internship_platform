@@ -63,12 +63,12 @@ class _MyProfileState extends State<MyProfile> {
         .orderByChild("email")
         .equalTo(widget.email);
     return Scaffold(
-        resizeToAvoidBottomPadding: false,
-      backgroundColor: myColor.myBackground,
+        resizeToAvoidBottomPadding: true,
+        backgroundColor: myColor.myBackground,
         appBar: AppBar(
-          title: Text("Personal Information"),backgroundColor: myColor.myBackground,
+          title: Text("My Profile"),
+          backgroundColor: myColor.myBackground,
         ),
-
         body: Form(
           key: _formKey,
           autovalidateMode: AutovalidateMode.always,
@@ -86,6 +86,7 @@ class _MyProfileState extends State<MyProfile> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 10,),
                       GestureDetector(
                         onTap: () async {
                           print('hi');
@@ -178,56 +179,13 @@ class _MyProfileState extends State<MyProfile> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Align(
-                                          alignment: Alignment.topCenter,
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 15, vertical: 10),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  height: 50,
-                                                  width: 50,
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          Colors.grey.shade400,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: IconButton(
-                                                      icon: Icon(
-                                                          Icons.arrow_back),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      }),
-                                                ),
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      left:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.15),
-                                                  alignment: Alignment.center,
-                                                  child: Text(
-                                                    "My Profile",
-                                                    style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
+
                                         Align(
                                           alignment: Alignment.center,
                                           child: CircleAvatar(
                                             backgroundColor: myColor.myWhite,
                                             child: Icon(Icons.person,
-                                                size: 100, color: Colors.black),
+                                                size: 100, color:myColor.myWhite),
                                           ),
                                         ),
                                         Padding(
@@ -249,7 +207,7 @@ class _MyProfileState extends State<MyProfile> {
                                     ),
                                   ),
                       ),
-                      SizedBox(height: 15,),
+                      SizedBox(height: 10),
                       Expanded(
                         child: ListView(
                           children: [
@@ -317,7 +275,7 @@ class _MyProfileState extends State<MyProfile> {
                                     fillColor: myColor.myWhite,
                                     icon: FaIcon(
                                       FontAwesomeIcons.telegram,
-                                      color: myColor.myWhite,
+                                      color:myColor.myWhite,
                                     )),
                                 controller: telegramController,
                               ),
@@ -364,20 +322,16 @@ class _MyProfileState extends State<MyProfile> {
                                       height: 50,
                                       width: double.infinity,
                                       child: RaisedButton(
-                                        color: myColor.myGreen,
+                                        color: myColor.myWhite,
                                         shape: RoundedRectangleBorder(
-                                            side: BorderSide(
-                                                color: Colors.black,
-                                                width: 1,
-                                                style: BorderStyle.solid),
+
                                             borderRadius:
                                                 BorderRadius.circular(50)),
                                         child: Text(
                                           'Update',
                                           style: GoogleFonts.delius(
-                                              fontSize: 18,
                                               fontWeight: FontWeight.w600,
-                                              color: myColor.myBackground),
+                                              color: myColor.myBlack),
                                         ),
                                         onPressed: () async {
                                           if (_formKey.currentState

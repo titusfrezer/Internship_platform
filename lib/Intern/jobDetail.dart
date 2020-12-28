@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internship_platform/Providers/Apply.dart';
 import 'package:internship_platform/Utilities/variables.dart';
+
 import 'package:internship_platform/WaveClipper.dart';
 import 'package:internship_platform/model/ApplyForJob.dart';
 import 'package:intl/intl.dart';
@@ -23,9 +24,9 @@ class jobDetail extends StatelessWidget {
   String allowance;
   String howLong;
   String companyName;
-  String token;
+
   jobDetail(this.jobTitle, this.jobDescription, this.postedBy, this.category,
-      this.postedAt, this.allowance, this.howLong, this.companyName,this.token);
+      this.postedAt, this.allowance, this.howLong, this.companyName);
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +163,7 @@ class jobDetail extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 decoration: BoxDecoration(
-                  color: myColor.myGreen,
+                  color: myColor.myDarkGrey,
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(
                         15,
@@ -275,12 +276,11 @@ class jobDetail extends StatelessWidget {
                                               duration: Duration(seconds: 3),
                                             )..show(context);
                                           } else {
-                                              application.submitApplication(
+                                             await application.submitApplication(
                                                 ApplyForJob(
                                                     category: category,
                                                     AppliedTo: postedBy,
                                                     jobTitle: jobTitle,
-                                                  token:token
                                                 ));
                                             Flushbar(
                                               icon: Icon(
